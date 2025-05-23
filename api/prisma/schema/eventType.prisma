@@ -1,0 +1,15 @@
+model EventType {
+    id                       Int                @id @default(autoincrement())
+    name                     String
+    description              String
+    EquipamentType           EquipamentType     @relation(fields: [equipamentTypeId], references: [id])
+    equipamentTypeId         Int
+    changeEquipamentStatusTo EQUIPAMENT_STATUS?
+    ActivateLicenses         LicenseType[]      @relation("activateLicenses")
+    DeactivateLicenses       LicenseType[]      @relation("deactivateLicenses")
+    // activateReports          ReportType[]       @relation("activateReports")
+    // deactivateReports        ReportType[]       @relation("deactivateReports")
+    Events                   Event[]
+
+    @@unique([name, equipamentTypeId])
+}

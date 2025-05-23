@@ -1,0 +1,16 @@
+model Equipament {
+  id               Int               @id @default(autoincrement())
+  patrimonio       String            @unique
+  tag              String            @unique
+  serie            String            @unique
+  name             String
+  location         Location          @relation(fields: [locationId], references: [id])
+  locationId       Int
+  status           EQUIPAMENT_STATUS @default(INACTIVE)
+  type             EquipamentType    @relation(fields: [equipamentTypeId], references: [id])
+  equipamentTypeId Int
+  description      String?
+  Fields           Field[]
+  License          License[]
+  Event            Event[]
+}

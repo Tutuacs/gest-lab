@@ -1,0 +1,8 @@
+model Local {
+    id         Int      @id @default(autoincrement())
+    role       ROLE
+    location   Location @relation(fields: [locationId], references: [id])
+    locationId Int
+    profile    Profile  @relation(fields: [profileId], references: [id])
+    profileId  String
+}

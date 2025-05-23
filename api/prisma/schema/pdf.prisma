@@ -1,0 +1,7 @@
+model PDF {
+  id        Int     @id @default(autoincrement())
+  name      String
+  base64    String
+  License   License @relation(fields: [licenseId], references: [id])
+  licenseId Int     @unique
+}

@@ -1,0 +1,24 @@
+enum ROLE {
+    MASTER
+    ADMIN
+    USER
+}
+
+enum LICENSE_STATUS {
+    ACTIVE
+    INACTIVE
+    EXPIRED
+}
+
+enum EQUIPAMENT_STATUS {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+}
+
+enum FIELD_TYPES {
+    STRING
+    NUMBER
+    BOOLEAN
+    DATE
+}

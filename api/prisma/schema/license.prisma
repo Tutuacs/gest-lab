@@ -1,0 +1,11 @@
+model License {
+  id            Int         @id @default(autoincrement())
+  valid         LICENSE_STATUS @default(INACTIVE)
+  from          DateTime
+  to            DateTime
+  PDF           PDF?
+  LicenseType   LicenseType    @relation(fields: [licenseTypeId], references: [id])
+  licenseTypeId Int
+  Equipament    Equipament     @relation(fields: [equipamentId], references: [id])
+  equipamentId  Int
+}

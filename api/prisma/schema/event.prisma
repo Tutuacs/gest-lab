@@ -1,0 +1,14 @@
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  description String
+  eventType   EventType @relation(fields: [eventTypeId], references: [id])
+  eventTypeId Int
+  from        DateTime
+  to          DateTime
+  value       Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  Equipament Equipament[]
+}
