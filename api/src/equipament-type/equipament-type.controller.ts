@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { EquipamentTypeService } from './equipament-type.service';
 import { CreateEquipamentTypeDto } from './dto/create-equipament-type.dto';
 import { UpdateEquipamentTypeDto } from './dto/update-equipament-type.dto';
@@ -12,17 +12,15 @@ import { ProfileAuth } from 'src/decorators/ProfileAtuh.decorator';
 export class EquipamentTypeController {
   constructor(private readonly equipamentTypeService: EquipamentTypeService) {}
 
+  @Access(ROLE.MASTER)
   @Post()
   create(@Body() createEquipamentTypeDto: CreateEquipamentTypeDto) {
     return this.equipamentTypeService.create(createEquipamentTypeDto);
   }
-  
 
   @Get()
-  findAll(@ProfileAuth() profile: { id: string; email: string; role: ROLE; name: string }) {
-    console.log('findAll');
-    console.log(profile);
-    return this.equipamentTypeService.findAll();
+  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
+    return this.equipamentTypeService.findAll({skip, take});
   }
 
   @Get(':id')
@@ -30,11 +28,13 @@ export class EquipamentTypeController {
     return this.equipamentTypeService.findOne(+id);
   }
 
+  @Access(ROLE.MASTER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEquipamentTypeDto: UpdateEquipamentTypeDto) {
     return this.equipamentTypeService.update(+id, updateEquipamentTypeDto);
   }
 
+  @Access(ROLE.MASTER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.equipamentTypeService.remove(+id);
