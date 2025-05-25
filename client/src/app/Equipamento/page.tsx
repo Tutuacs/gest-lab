@@ -38,7 +38,7 @@ export default function CadastroEquipamento() {
 
             <form
               onSubmit={handleSubmit}
-              className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded shadow"
+              className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-2xl shadow"
             >
               <Input
                 label="Nome"
@@ -104,7 +104,7 @@ export default function CadastroEquipamento() {
               <div className="col-span-1 md:col-span-2 mt-8">
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-700 transition"
+                  className="w-full bg-blue-950 text-white py-3 rounded-xl hover:bg-blue-800 transition"
                 >
                   Cadastrar Equipamento
                 </button>
@@ -138,7 +138,7 @@ const Input = ({ label, name, value, type = "text", placeholder, onChange }: Inp
       value={value}
       placeholder={placeholder}
       onChange={onChange}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       required
     />
   </div>
@@ -162,7 +162,7 @@ const Select = ({ label, name, value, onChange, options }: SelectProps) => (
       name={name}
       value={value}
       onChange={onChange}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       required
     >
       <option value="" disabled>
@@ -197,7 +197,7 @@ const TextArea = ({ label, name, value, placeholder, onChange }: TextAreaProps) 
       placeholder={placeholder}
       onChange={onChange}
       rows={4}
-      className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
 );
