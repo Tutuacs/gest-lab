@@ -9,7 +9,28 @@ import { useSession } from "next-auth/react";
 export default function NavLinks() {
   const { data: session, status } = useSession();
 
-  if (session?.profile?.role === ROLE.ADMIN) {
+  if (session?.profile?.role === ROLE.MASTER) {
+    return (
+      <main>
+        <div className="flex p-4 flex-row justify-between items-center">
+          <div className="flex space-x-4">
+            <Link className="p-2" href="/">
+              Home
+            </Link>
+            <Link className="p-2" href="/users">
+              Users
+            </Link>
+            <Link className="p-2" href="/home">
+              MasterName {session?.profile?.name}
+            </Link>
+          </div>
+          <div className="flex space-x-4">
+            <ButtonLogout />
+          </div>
+        </div>
+      </main>
+    );
+  } else if (session?.profile?.role === ROLE.ADMIN) {
     return (
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
@@ -18,9 +39,6 @@ export default function NavLinks() {
               Home
             </Link>
             <Link className="p-2" href="/home">
-              Users
-            </Link>
-            <Link className="p-2" href="/">
               AdminName {session?.profile?.name}
             </Link>
           </div>
@@ -39,7 +57,7 @@ export default function NavLinks() {
               Home
             </Link>
             <Link className="p-2" href="/home">
-              {session?.profile?.name}
+              UserName {session?.profile?.name}
             </Link>
           </div>
           <div className="flex space-x-4">
