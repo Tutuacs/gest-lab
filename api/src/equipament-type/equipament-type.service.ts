@@ -33,7 +33,7 @@ export class EquipamentTypeService {
     return this.prisma.find(id);
   }
 
-  update(id: number, updateEquipamentTypeDto: UpdateEquipamentTypeDto) {
+  async update(id: number, updateEquipamentTypeDto: UpdateEquipamentTypeDto) {
 
     const exist = this.prisma.exist(id);
     if (!exist) {
@@ -41,7 +41,7 @@ export class EquipamentTypeService {
     }
 
     if (updateEquipamentTypeDto.name) {
-      const canUpdate = this.prisma.canUpdate(id, updateEquipamentTypeDto.name);
+      const canUpdate = await this.prisma.canUpdate(id, updateEquipamentTypeDto.name);
 
       if (!canUpdate) {
         throw new ConflictException(`EquipamentType with name ${updateEquipamentTypeDto.name} already exists.`);
