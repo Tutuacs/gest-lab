@@ -8,7 +8,7 @@ export default function Home() {
                 <section className="w-full">
                     <div className="flex flex-col items-center">
                         <h1 className="mb-10 text-6xl font-bold text-center text-black animate-pulse">
-                            User Home
+                            User Home / Saymon
                         </h1>
                         <div className="flex flex-row items-center gap-4">
                             <ButtonByRole role={ROLE.MASTER} />
