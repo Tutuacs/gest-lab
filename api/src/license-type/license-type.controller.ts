@@ -3,6 +3,7 @@ import { LicenseTypeService } from './license-type.service';
 import { CreateLicenseTypeDto } from './dto/create-license-type.dto';
 import { UpdateLicenseTypeDto } from './dto/update-license-type.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
+import { ListDto } from 'src/common/list.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
 @Controller('license-type')
@@ -16,8 +17,8 @@ export class LicenseTypeController {
   
   @HttpCode(200)
   @Get()
-  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
-    return this.licenseTypeService.findAll({skip, take});
+  findAll(@Query() query: ListDto) {
+    return this.licenseTypeService.findAll(query);
   }
   
   @HttpCode(200)

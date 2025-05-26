@@ -5,6 +5,7 @@ import { UpdateFieldTypeDto } from './dto/update-field-type.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
+import { ListDto } from 'src/common/list.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
 @Controller('field-type')
@@ -19,8 +20,8 @@ export class FieldTypeController {
 
   @HttpCode(200)
   @Get()
-  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
-    return this.fieldTypeService.findAll({skip, take});
+  findAll(@Query() query: ListDto) {
+    return this.fieldTypeService.findAll(query);
   }
 
   @HttpCode(200)

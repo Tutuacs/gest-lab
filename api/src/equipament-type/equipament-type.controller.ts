@@ -5,6 +5,7 @@ import { UpdateEquipamentTypeDto } from './dto/update-equipament-type.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
+import { ListDto } from 'src/common/list.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
 @Controller('equipament-type')
@@ -19,8 +20,8 @@ export class EquipamentTypeController {
 
   @HttpCode(200)
   @Get()
-  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
-    return this.equipamentTypeService.findAll({skip, take});
+  findAll(@Query() query: ListDto) {
+    return this.equipamentTypeService.findAll(query);
   }
   
   @HttpCode(200)
