@@ -1,19 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EquipamentTypeService } from './equipament-type.service';
-import { EquipamentTypeFunctionsService } from './functions/equipament-type-functions.service';
+import { LicenseTypeFunctionsService } from './license-type-functions.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
-describe('EquipamentTypeService', () => {
-  let service: EquipamentTypeService;
+describe('LicenseTypeFunctionsService', () => {
+  let service: LicenseTypeFunctionsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EquipamentTypeService, EquipamentTypeFunctionsService],
+      providers: [LicenseTypeFunctionsService],
       imports: [AuthModule, PrismaModule],
     }).compile();
 
-    service = module.get<EquipamentTypeService>(EquipamentTypeService);
+    service = module.get<LicenseTypeFunctionsService>(LicenseTypeFunctionsService);
   });
 
   it('should be defined', () => {
