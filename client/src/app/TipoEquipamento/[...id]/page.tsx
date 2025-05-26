@@ -3,13 +3,11 @@ import useFetch from "@/utils/useFetch";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 
-type Props = {
-    params: {
-        id: string;
-    };
+type Params = {
+    params: Promise<{ id: string }>
 };
 
-export default function EquipamentEspecifications({ params }: { params: Promise<{ id: string }> }) {
+export default function EquipamentEspecifications({ params }: Params) {
     // Get the equipment ID from params
 
     const { id } = use(params);
