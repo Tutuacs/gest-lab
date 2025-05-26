@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { FIELD_TYPES } from "@prisma/client";
-import { IsEnum, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class CreateFieldTypeDto {
 
@@ -10,6 +10,7 @@ export class CreateFieldTypeDto {
 
     @ApiProperty()
     @IsNumber()
+    @Min(1)
     equipamentTypeId: number;
 
     @ApiProperty({default: FIELD_TYPES.STRING})
@@ -17,6 +18,8 @@ export class CreateFieldTypeDto {
     type: FIELD_TYPES = FIELD_TYPES.STRING;
 
     @ApiProperty({default: false})
+    @IsOptional()
+    @IsBoolean()
     optional: boolean = false;
 
     @ApiProperty({default: ""})

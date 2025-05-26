@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { IsNumber, IsOptional, IsString, Length, Min } from "class-validator";
 
 export class CreateLicenseTypeDto {
 
@@ -15,6 +15,7 @@ export class CreateLicenseTypeDto {
 
         @ApiProperty()
         @IsNumber()
+        @Min(1)
         equipamentTypeId: number;
 
 }
