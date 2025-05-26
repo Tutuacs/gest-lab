@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateLicenseTypeDto } from './dto/create-license-type.dto';
 import { UpdateLicenseTypeDto } from './dto/update-license-type.dto';
+import { LicenseTypeFunctionsService } from './functions/license-type-functions.service';
 
 @Injectable()
 export class LicenseTypeService {
-  create(createLicenseTypeDto: CreateLicenseTypeDto) {
-    return 'This action adds a new licenseType';
+
+  constructor(private readonly prisma: LicenseTypeFunctionsService) {}
+
+  async create(createLicenseTypeDto: CreateLicenseTypeDto) {
+
+    const existCombination = await this.prisma.existCombination(
+      createLicenseTypeDto.name,
+      createLicenseTypeDto.equipamentTypeId,
+    );
+
+    if (existCombination) {
+      throw new ConflictException(`LicenseType with name ${createLicenseTypeDto.name} already exists.`);
+    }
+
+    return this.prisma.create(createLicenseTypeDto);
   }
 
-  findAll() {
-    return `This action returns all licenseType`;
+  findAll({skip, take}: { skip?: number, take?: number } = {}) {
+    return this.prisma.list({ skip, take });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} licenseType`;
+  async findOne(id: number) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new ConflictException(`LicenseType with id ${id} does not exist.`);
+    }
+
+    return this.prisma.find(id);
   }
 
-  update(id: number, updateLicenseTypeDto: UpdateLicenseTypeDto) {
-    return `This action updates a #${id} licenseType`;
+  async update(id: number, updateLicenseTypeDto: UpdateLicenseTypeDto) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new ConflictException(`LicenseType with id ${id} does not exist.`);
+    }
+
+    if (updateLicenseTypeDto.name) {
+      const canUpdate = this.prisma.canUpdate(id, updateLicenseTypeDto.name, updateLicenseTypeDto.equipamentTypeId!);
+
+      if (!canUpdate) {
+        throw new ConflictException(`LicenseType with name ${updateLicenseTypeDto.name} already exists.`);
+      }
+    }
+
+    return this.prisma.update(id, updateLicenseTypeDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} licenseType`;
+  async remove(id: number) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new ConflictException(`LicenseType with id ${id} does not exist.`);
+    }
+
+    return this.prisma.delete(id);
   }
 }
