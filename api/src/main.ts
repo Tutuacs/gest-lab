@@ -16,10 +16,9 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Base Swagger API')
+    .setTitle('Gest - Lab Swagger API')
     .setDescription('')
     .setVersion('1.0')
-    .addTag('API')
     .build();
 
 
