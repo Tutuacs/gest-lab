@@ -12,7 +12,7 @@ describe('LicenseTypeController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LicenseTypeController],
       providers: [LicenseTypeService, LicenseTypeFunctionsService],
-            imports: [AuthModule, PrismaModule],
+      imports: [AuthModule, PrismaModule],
     }).compile();
 
     controller = module.get<LicenseTypeController>(LicenseTypeController);
