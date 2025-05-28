@@ -1,5 +1,6 @@
 import { ROLE } from "@/common/role.enums";
 import ButtonByRole from "@/components/ButtonByRole";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -14,6 +15,16 @@ export default function Home() {
                             <ButtonByRole role={ROLE.MASTER} />
                             <ButtonByRole role={ROLE.ADMIN} />
                             <ButtonByRole role={ROLE.USER} />
+                            <Link href="/Equipamento">
+                                <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
+                                    Cadastro de Equipamento
+                                </button>
+                            </Link>
+                            <Link href="/TipoEquipamento">
+                                <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
+                                    Cadastro de Tipo de Equipamento
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </section>
