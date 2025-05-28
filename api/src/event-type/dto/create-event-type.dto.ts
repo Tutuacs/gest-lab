@@ -9,6 +9,7 @@ export class CreateEventTypeDto {
         example: 'Maintenance',
         minLength: 1,
         maxLength: 100,
+        required: true,
         type: String,
         uniqueItems: true,
     })
@@ -20,8 +21,8 @@ export class CreateEventTypeDto {
         description: 'A brief description of the event type, must be at least 1 character long.',
         example: 'Scheduled maintenance for equipment',
         minLength: 1,
+        required: true,
         type: String,
-        uniqueItems: true,
     })
     @IsString()
     @MinLength(1)
@@ -31,6 +32,7 @@ export class CreateEventTypeDto {
         enumName: 'EQUIPAMENT_TYPE',
         description: 'The ID of the equipment type to which this event type is related.',
         type: Number,
+        required: true,
         minimum: 1,
         example: 1,
     })
@@ -40,6 +42,7 @@ export class CreateEventTypeDto {
 
     @ApiPropertyOptional({
         enumName: 'EQUIPAMENT_STATUS',
+        required: false,
         enum: EQUIPAMENT_STATUS,
     })
     @IsOptional()
