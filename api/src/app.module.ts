@@ -8,6 +8,7 @@ import { EventTypeModule } from './event-type/event-type.module';
 import { FieldTypeModule } from './field-type/field-type.module';
 import { LicenseTypeModule } from './license-type/license-type.module';
 import { AppController } from './app.controller';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppController } from './app.controller';
     EventTypeModule,
     FieldTypeModule,
     LicenseTypeModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [],
