@@ -17,11 +17,11 @@ export default function NavLinks() {
             <Link className="p-2" href="/">
               Home
             </Link>
-            <Link className="p-2" href="/users">
+            <Link className="p-2 text-gray-500" href="/users">
               Users
             </Link>
             <Link className="p-2" href="/home">
-              MasterName {session?.profile?.name}
+              MasterName: {session?.profile?.name}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -38,8 +38,8 @@ export default function NavLinks() {
             <Link className="p-2" href="/">
               Home
             </Link>
-            <Link className="p-2" href="/home">
-              AdminName {session?.profile?.name}
+            <Link className="p-2 text-gray-500" href="/home">
+              AdminName: {session?.profile?.name}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -56,8 +56,8 @@ export default function NavLinks() {
             <Link className="p-2" href="/">
               Home
             </Link>
-            <Link className="p-2" href="/home">
-              UserName {session?.profile?.name}
+            <Link className="p-2 text-gray-500" href="/home">
+              UserName: {session?.profile?.name}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -74,12 +74,12 @@ export default function NavLinks() {
             <Link className="p-2" href="/">
               Home
             </Link>
-            <Link className="p-2 text-gray-800" href="/">
+            <Link className="p-2 text-gray-500" href="/">
               Not logged
             </Link>
           </div>
           <div className="flex space-x-4">
-            <Link className="p-2" href="/login">
+            <Link className="p-2 ml-4" href="/login">
               Login
             </Link>
           </div>
