@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
+import { redirect } from "next/navigation";
 
 interface PrivateLayoutProps {
     children: React.ReactNode;
@@ -9,12 +9,10 @@ interface PrivateLayoutProps {
 export default async function PrivateLayout({ children }: PrivateLayoutProps) {
     const session = await getServerSession(authOptions);
 
-
-    // TODO: Uncomment this when authentication is implemented
-
-    // if (!session || session.profile.role !== "MASTER") {
-    //     redirect("/login");
-    // }
+    // if (!session || (session.profile.role !== "MASTER" && session.profile.role !== "ADMIN")) {
+    if (!session) {
+        redirect("/login");
+    }
 
     return <>{children}</>;
 }
