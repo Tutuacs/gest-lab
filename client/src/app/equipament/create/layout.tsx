@@ -1,0 +1,1 @@
+// restringir para apenas admin ou apenas master? diferentemente de user para não herdar de list

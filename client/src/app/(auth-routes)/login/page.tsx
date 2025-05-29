@@ -37,8 +37,20 @@ export default function Login() {
     }
 
     if (result?.error) {
+      toast({
+        title: "Erro ao fazer login",
+        description: result.error.toString(),
+        variant: "destructive",
+      });
       return;
     }
+    if (result?.ok) {
+      toast({
+        title: "Login realizado com sucesso",
+        description: "Redirecionando para a página inicial...",
+        variant: "default",
+      });
+    }    
 
     setTimeout(() => {
       router.push('/home');

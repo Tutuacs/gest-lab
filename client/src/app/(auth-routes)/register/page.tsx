@@ -34,20 +34,23 @@ export default function Register() {
       
       let message = 'Success';
 
-      let body = await result.json();
+      const body = await result.json();
 
       if (result.status != 200 && result.status != 201) {
-        message = body.message.toString() || "Error";
+        message = body.message?.toString() || "Unknown error";
+        
+        toast({ title: config!.title, description: message, variant: config!.variant });
+        return;
       }
-      
-      toast({ title: config!.title, description: message, variant: config!.variant });
+  
+      toast({
+        title: config!.title,
+        description: "Registration completed successfully",
+        variant: config!.variant,
+      });
+  
+      router.push('/login');
     }
-
-    if (result?.status !== 201 && result?.status !== 200) {
-      return;
-    }
-    
-    router.push('/login');
   }
 
   return (
