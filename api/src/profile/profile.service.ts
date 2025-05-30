@@ -36,7 +36,26 @@ export class ProfileService {
     if (!exist) {
       throw new NotFoundException(`Profile with id ${id} does not exist`);
     }
-    return `This action updates a #${id} profile`;
+
+    const profileToUpdate = await this.prisma.find(id);
+
+    if (profile.id === profileToUpdate!.id) {
+      updateProfileDto.role = profileToUpdate!.role;
+    } else if (updateProfileDto.role) {
+      const canUpdateRole = await this.prisma.canUpdateRole(profile.role, updateProfileDto.role!);
+      if (!canUpdateRole) {
+        throw new MethodNotAllowedException(`You cannot update the role to ${updateProfileDto.role}`);
+      }
+    }
+
+    if (updateProfileDto.email) {
+      const canUpdateEmail = await this.prisma.canUpdateEmail(id, updateProfileDto.email);
+      if (!canUpdateEmail) {
+        throw new ConflictException(`Email ${updateProfileDto.email} is already in use`);
+      }
+    }
+
+    return this.prisma.update(id, updateProfileDto);
   }
 
   async remove(id: string, profile: { id: string, role: ROLE }) {
