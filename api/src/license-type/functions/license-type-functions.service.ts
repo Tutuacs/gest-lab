@@ -56,8 +56,13 @@ export class LicenseTypeFunctionsService extends PrismaService {
         });
     }
 
-    async list({skip, take}: {skip?: number, take?: number}) {
+    async list({ skip, take }: { skip?: number, take?: number }) {
         return this.licenseType.findMany({
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
             skip,
             take,
         });

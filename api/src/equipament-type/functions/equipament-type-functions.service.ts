@@ -66,6 +66,11 @@ export class EquipamentTypeFunctionsService extends PrismaService {
 
     async list({ skip, take }: { skip?: number, take?: number }) {
         return await this.equipamentType.findMany({
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
             skip,
             take,
         });

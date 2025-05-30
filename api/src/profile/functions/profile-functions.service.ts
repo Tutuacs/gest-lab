@@ -55,6 +55,11 @@ export class ProfileFunctionsService extends PrismaService {
 
     async list({ skip, take }: { skip?: number, take?: number }) {
         return this.profile.findMany({
+            orderBy: [
+                {
+                    email: 'desc',
+                },
+            ],
             skip,
             take,
         });

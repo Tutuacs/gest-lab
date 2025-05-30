@@ -46,8 +46,13 @@ export class FieldTypeFunctionsService extends PrismaService {
         });
     }
 
-    async list({ skip, take }: {skip?: number , take?: number }) {
+    async list({ skip, take }: { skip?: number, take?: number }) {
         return await this.fieldType.findMany({
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
             skip,
             take,
         });

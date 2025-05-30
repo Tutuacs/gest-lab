@@ -56,11 +56,35 @@ export class LocationFunctionsService extends PrismaService {
         });
     }
 
-    async list({skip, take}: {skip?: number, take?: number}) {
+    async list({ skip, take }: { skip?: number, take?: number }) {
         return this.location.findMany({
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
             skip,
             take,
         });
+    }
+
+    async listBlockRooms(block: string, { skip, take }: { skip?: number, take?: number }) {
+        return this.location.findMany({
+            where: {
+                block: block,
+            },
+            select: {
+                id: true,
+                room: true,
+            },
+            orderBy: [
+                {
+                    createdAt: 'desc',
+                },
+            ],
+            skip,
+            take,
+        })
     }
 
     async update(id: number, data: UpdateLocationDto) {
