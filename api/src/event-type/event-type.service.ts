@@ -61,10 +61,7 @@ export class EventTypeService {
   }
 
   findAll({ skip, take }: { skip?: number; take?: number }) {
-    return this.prisma.list({
-      skip,
-      take,
-    })
+    return this.prisma.list({ skip, take })
   }
 
   async findOne(id: number) {
