@@ -36,13 +36,9 @@ export default function NewEquipamentTypeForm() {
         });
 
         if (result?.status === 201) {
-            console.log("Tipo de Equipamento cadastrado:", formData);
-            router.push(`/TipoEquipamento/${result.data.id}`);
+            router.push(`/equipament-type/${result.data.id}`);
         }
 
-        console.log("Erro ao cadastrar Tipo de Equipamento:", result?.status);
-        console.log("Dados enviados:", formData);
-        console.log("Resposta do servidor:", result?.data);
     };
 
     return (
