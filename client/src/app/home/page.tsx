@@ -15,12 +15,12 @@ export default function Home() {
                             <ButtonByRole role={ROLE.MASTER} />
                             <ButtonByRole role={ROLE.ADMIN} />
                             <ButtonByRole role={ROLE.USER} />
-                            <Link href="/equipament">
+                            <Link href="/Equipamento">
                                 <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
-                                    Relatório Equipamentos
+                                    Cadastro de Equipamento
                                 </button>
                             </Link>
-                            <Link href="/equipament/create">
+                            <Link href="/TipoEquipamento">
                                 <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
                                     Cadastrar Equipamento
                                 </button>
