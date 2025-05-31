@@ -11,23 +11,18 @@ export default function Home() {
                         <h1 className="mb-10 mt-10 text-6xl font-bold text-center text-black animate-pulse">
                             User Home / Saymon
                         </h1>
-                        <div className="flex flex-row flex-wrap items-center gap-4">
+                        <div className="flex flex-row items-center gap-4">
                             <ButtonByRole role={ROLE.MASTER} />
                             <ButtonByRole role={ROLE.ADMIN} />
                             <ButtonByRole role={ROLE.USER} />
-                            <Link href="/Equipamento">
+                            <Link href="/equipament">
                                 <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
                                     Cadastro de Equipamento
                                 </button>
                             </Link>
-                            <Link href="/TipoEquipamento">
-                                <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
-                                    Cadastrar Equipamento
-                                </button>
-                            </Link>
                             <Link href="/equipament-type">
                                 <button className="p-4 border border-gray-300 rounded-md hover:bg-green-100">
-                                    Cadastrar Tipo de Equipamento
+                                    Cadastro de Tipo de Equipamento
                                 </button>
                             </Link>
                         </div>
