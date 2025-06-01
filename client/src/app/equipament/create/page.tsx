@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import useFetch from "@/utils/useFetch";
@@ -15,11 +15,36 @@ export default function CadastroEquipamento() {
     patrimonio: "",
     tag: "",
     serie: "",
+    fabricante: "",      
+    modelo: "",      
     description: "",
     status: "INACTIVE",
-    locationId: "",         // Novo campo obrigatório no backend
-    equipamentTypeId: "",   // Novo campo obrigatório no backend
+    locationId: "",
+    equipamentTypeId: "",
   });
+
+  const [locations, setLocations] = useState([]);
+  const [equipamentTypes, setEquipamentTypes] = useState([]);
+
+  // Buscar opções do backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [locRes, typeRes] = await Promise.all([
+          fetchWithAuth("/location", { method: "GET" }),
+          fetchWithAuth("/equipament-type", { method: "GET" }),
+        ]);
+
+        if (locRes?.status === 200) setLocations(locRes.data);
+        if (typeRes?.status === 200) setEquipamentTypes(typeRes.data);
+      } catch (err) {
+        console.error("Erro ao buscar opções:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -41,6 +66,8 @@ export default function CadastroEquipamento() {
         patrimonio: formData.patrimonio,
         tag: formData.tag,
         serie: formData.serie,
+        fabricante: formData.fabricante,   
+        modelo: formData.modelo,     
         description: formData.description,
         status: formData.status,
         locationId: parseInt(formData.locationId),
@@ -77,12 +104,69 @@ export default function CadastroEquipamento() {
               onSubmit={handleSubmit}
               className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-2xl shadow"
             >
-              <Input label="Nome" name="name" value={formData.name} onChange={handleChange} />
-              <Input label="Nº Patrimônio" name="patrimonio" value={formData.patrimonio} onChange={handleChange} />
-              <Input label="Tag" name="tag" value={formData.tag} onChange={handleChange} />
-              <Input label="Nº de Série" name="serie" value={formData.serie} onChange={handleChange} />
-              <Input label="ID do Local" name="locationId" value={formData.locationId} onChange={handleChange} />
-              <Input label="ID do Tipo de Equipamento" name="equipamentTypeId" value={formData.equipamentTypeId} onChange={handleChange} />
+              <Input 
+                label="Nome" 
+                name="name" 
+                value={formData.name} 
+                onChange={handleChange} 
+              />
+
+              <Input 
+                label="Nº Patrimônio" 
+                name="patrimonio" 
+                value={formData.patrimonio} 
+                onChange={handleChange} 
+              />
+
+              <Input 
+                label="Tag" 
+                name="tag" 
+                value={formData.tag} 
+                onChange={handleChange} 
+              />
+
+              <Input 
+                label="Nº de Série" 
+                name="serie" 
+                value={formData.serie} 
+                onChange={handleChange} 
+              />
+
+              <Input
+                label="Fabricante"
+                name="fabricante"
+                value={formData.fabricante}
+                onChange={handleChange}
+              />
+
+              <Input
+                label="Modelo"
+                name="modelo"
+                value={formData.modelo}
+                onChange={handleChange}
+              />
+
+              <Select
+                label="Local"
+                name="locationId"
+                value={formData.locationId}
+                onChange={handleChange}
+                options={locations.map((loc: any) => ({
+                  value: loc.id.toString(),
+                  label: `${loc.block} - Sala ${loc.room}`,
+                }))}
+              />
+
+              <Select
+                label="Tipo de Equipamento"
+                name="equipamentTypeId"
+                value={formData.equipamentTypeId}
+                onChange={handleChange}
+                options={equipamentTypes.map((type: any) => ({
+                  value: type.id.toString(),
+                  label: type.name,
+                }))}
+              />
 
               <Select
                 label="Status"
@@ -119,6 +203,7 @@ export default function CadastroEquipamento() {
     </main>
   );
 }
+
 
 // ============== COMPONENTES AUXILIARES ==============
 
