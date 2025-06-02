@@ -1,4 +1,3 @@
-// restringir para apenas admin ou apenas master? diferentemente de user para não herdar de listimport { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
