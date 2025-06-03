@@ -36,14 +36,15 @@ export default function EquipamentTypeListPage() {
 
   return (
     <main className="min-h-screen p-10 bg-gray-100">
-      <h1 className="text-4xl font-bold text-center mb-8">Tipos de Equipamentos Cadastrados
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-4xl font-bold">Tipos de Equipamento</h1>
         <button
           className="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-800 transition"
           onClick={() => router.push("/equipament-type/create")}
         >
           Novo Tipo
         </button>
-      </h1>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-xl overflow-hidden">
