@@ -12,6 +12,7 @@ export type Field = {
 interface FieldListProps {
   fields: Field[];
   onDelete: (id: number) => void;
+  equipamentTypeId?: number;
 }
 
 export default function FieldList({ fields, onDelete }: FieldListProps) {

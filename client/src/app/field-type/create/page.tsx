@@ -2,11 +2,11 @@
 
 import FieldList from "@/components/FieldList";
 import { useSearchParams } from "next/navigation";
-import { useFieldTypeActions } from "@/hooks/useFieldTypeActions";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { useFieldTypeActions } from "@/hooks/useFieldTypeActions";
+import { Input } from "@/components/input";
+import { Label } from "@/components/label";
+import { Button } from "@/components/button";
 import { toast } from "@/components/ui/use-toast";
 
 export default function CreateFieldTypePage() {
@@ -52,7 +52,7 @@ export default function CreateFieldTypePage() {
 
     setLoading(false);
 
-    if (result?.status === 201) {
+    if (result) {
       toast({
         title: "Campo criado com sucesso",
         description: "O campo foi vinculado ao tipo de equipamento.",
@@ -122,7 +122,6 @@ export default function CreateFieldTypePage() {
                 disabled={!wasSaved}
                 onClick={() => setWasSaved(false)}
                 className="w-full"
-                variant="secondary"
               >
                 Mais
               </Button>
