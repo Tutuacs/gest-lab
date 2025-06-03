@@ -14,7 +14,7 @@ export default function NavLinks() {
       <main>
         <div className="flex p-4 flex-row justify-between items-center">
           <div className="flex space-x-4">
-            <Link className="p-2" href="/">
+            <Link className="p-2" href="/home">
               Home
             </Link>
             <Link className="p-2 text-gray-500" href="/users">

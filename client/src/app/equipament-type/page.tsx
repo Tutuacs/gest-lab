@@ -3,6 +3,7 @@
 import useFetch from "@/utils/useFetch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/button";
 
 type EquipamentType = {
   id: number;
@@ -38,12 +39,11 @@ export default function EquipamentTypeListPage() {
     <main className="min-h-screen p-10 bg-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-4xl font-bold">Tipos de Equipamento</h1>
-        <button
-          className="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-800 transition"
+        <Button
           onClick={() => router.push("/equipament-type/create")}
         >
           Novo Tipo
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto">
