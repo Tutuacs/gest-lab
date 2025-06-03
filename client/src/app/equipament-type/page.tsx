@@ -2,6 +2,7 @@
 
 import useFetch from "@/utils/useFetch";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type EquipamentType = {
   id: number;
@@ -17,6 +18,7 @@ type EquipamentType = {
 export default function EquipamentTypeListPage() {
   const { fetchWithAuth } = useFetch("Listagem de Tipos de Equipamentos");
   const [equipamentTypes, setEquipamentTypes] = useState<EquipamentType[]>([]);
+  const router = useRouter();
 
   const fetchEquipamentTypes = async () => {
     const result = await fetchWithAuth("/equipament-type", {
@@ -34,7 +36,14 @@ export default function EquipamentTypeListPage() {
 
   return (
     <main className="min-h-screen p-10 bg-gray-100">
-      <h1 className="text-4xl font-bold text-center mb-8">Tipos de Equipamentos Cadastrados</h1>
+      <h1 className="text-4xl font-bold text-center mb-8">Tipos de Equipamentos Cadastrados
+        <button
+          className="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-800 transition"
+          onClick={() => router.push("/equipament-type/create")}
+        >
+          Novo Tipo
+        </button>
+      </h1>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-xl overflow-hidden">
