@@ -1,5 +1,6 @@
 import NewEquipamentTypeForm from "@/components/NewEquipamentType";
 
+//list 
 export default function CadastroEquipamentType() {
   return (
     <main>
