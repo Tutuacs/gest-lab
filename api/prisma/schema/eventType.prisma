@@ -5,6 +5,7 @@ model EventType {
     EquipamentType           EquipamentType     @relation(fields: [equipamentTypeId], references: [id])
     equipamentTypeId         Int
     changeEquipamentStatusTo EQUIPAMENT_STATUS?
+    value                    Boolean            @default(false)
     ActivateLicenses         LicenseType[]      @relation("activateLicenses")
     DeactivateLicenses       LicenseType[]      @relation("deactivateLicenses")
     // activateReports          ReportType[]       @relation("activateReports")
