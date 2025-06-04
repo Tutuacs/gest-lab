@@ -9,6 +9,7 @@ import { FieldTypeModule } from './field-type/field-type.module';
 import { LicenseTypeModule } from './license-type/license-type.module';
 import { AppController } from './app.controller';
 import { LocationModule } from './location/location.module';
+import { EquipamentModule } from './equipament/equipament.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LocationModule } from './location/location.module';
     FieldTypeModule,
     LicenseTypeModule,
     LocationModule,
+    EquipamentModule,
   ],
   controllers: [AppController],
   providers: [],
