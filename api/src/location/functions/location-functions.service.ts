@@ -63,6 +63,26 @@ export class LocationFunctionsService extends PrismaService {
         });
     }
 
+    distinctBlock() {
+        return this.location.findMany({
+            distinct: ['block'],
+            select: {
+                block: true,
+            },
+        });
+    }
+
+    distinctRoom(block: string) {
+        return this.location.findMany({
+            where: { block },
+            distinct: ['room'],
+            select: {
+                id: true,
+                room: true,
+            },
+        });
+    }
+
     async update(id: number, data: UpdateLocationDto) {
         return this.location.update({
             where: { id },

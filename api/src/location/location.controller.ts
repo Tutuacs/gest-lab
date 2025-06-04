@@ -31,6 +31,18 @@ export class LocationController {
   }
   
   @HttpCode(200)
+  @Get('distinct/block/')
+  distinctBlock() {
+    return this.locationService.distinctBlock();
+  }
+  
+  @HttpCode(200)
+  @Get('distinct/room/:block')
+  distinctRoom(@Param('block') block: string) {
+    return this.locationService.distinctRoom(block);
+  }
+  
+  @HttpCode(200)
   // @Access(ROLE.MASTER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {

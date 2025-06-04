@@ -26,6 +26,14 @@ export class LocationService {
     return this.prisma.list({ skip, take });
   }
 
+  distinctBlock() {
+    return this.prisma.distinctBlock();
+  }
+
+  distinctRoom(block: string) {
+    return this.prisma.distinctRoom(block);
+  }
+
   async findOne(id: number) {
 
     const exist = await this.prisma.exist(id);
