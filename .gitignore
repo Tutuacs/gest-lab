@@ -142,3 +142,4 @@ dist
 /client/pnpm-lock.yaml
 /client/package-lock.json
 .vercel
+api/prisma/dev.db

@@ -1,4 +1,5 @@
 "use client";
+
 import useFetch from "@/utils/useFetch";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
@@ -10,7 +11,6 @@ type Params = {
 export default function EquipamentEspecifications({ params }: Params) {
   const { id } = use(params);
   const equipamentTypeId = id;
-
   const [equipamentType, setEquipamentType] = useState<EquipamentType | null>(null);
   const router = useRouter();
   const { fetchWithAuth } = useFetch();
@@ -23,6 +23,7 @@ export default function EquipamentEspecifications({ params }: Params) {
       },
     });
 
+    console.log("equipamentTypeId", equipamentTypeId);
     if (result?.status !== 200) {
       router.forward();
       return;
@@ -36,6 +37,10 @@ export default function EquipamentEspecifications({ params }: Params) {
     }
   });
 
+  const handleNavigate = (section: "field" | "license" | "event") => {
+    router.push(`/${section}-type?equipamentTypeId=${equipamentTypeId}`);
+  };
+
   return (
     <div className="min-h-screen flex items-start justify-center bg-gray-100 p-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
@@ -46,15 +51,13 @@ export default function EquipamentEspecifications({ params }: Params) {
               <h1 className="text-3xl font-bold text-blue-950 mb-2">
                 {equipamentType.name}
               </h1>
-              <p className="text-gray-700 mb-2">{equipamentType.description}</p>
               <p className="text-sm text-gray-500 mb-4">
                 Criado em: {new Date(equipamentType.createdAt).toLocaleString()}
               </p>
 
               <div className="border-t pt-4 mt-4">
-                <h2 className="text-xl font-semibold text-blue-800 mb-2">Especificações do equipamento</h2>
-                <p className="text-gray-600">Esta página ainda está em desenvolvimento.</p>
-                <p className="text-gray-600">Volte mais tarde para ver as especificações detalhadas.</p>
+                <h2 className="text-xl font-semibold text-blue-800 mb-2">Especificações</h2>
+                <p className="text-gray-600">Descrição: {equipamentType.description || "-"}</p>
               </div>
             </>
           ) : (
@@ -64,13 +67,22 @@ export default function EquipamentEspecifications({ params }: Params) {
 
         {/* Coluna da Direita */}
         <div className="bg-gray-50 p-6 rounded-xl shadow-md space-y-4 flex flex-col">
-          <button className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition">
+          <button
+            className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
+            onClick={() => handleNavigate("field")}
+          >
             Campos Personalizados
           </button>
-          <button className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition">
+          <button
+            className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
+            onClick={() => handleNavigate("license")}
+          >
             Tipos de Licença
           </button>
-          <button className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition">
+          <button
+            className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
+            onClick={() => handleNavigate("event")}
+          >
             Tipos de Evento
           </button>
         </div>

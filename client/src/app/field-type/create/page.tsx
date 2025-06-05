@@ -26,10 +26,10 @@ export default function CreateFieldTypePage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (equipamentTypeId) {
+    if (equipamentTypeId && fieldTypes.length === 0) {
       fetchFieldTypes(Number(equipamentTypeId));
     }
-  }, [equipamentTypeId]);
+  }, [equipamentTypeId, fieldTypes.length]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
