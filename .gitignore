@@ -143,3 +143,4 @@ dist
 /client/package-lock.json
 .vercel
 api/prisma/dev.db
+api/prisma/dev.db-journal
