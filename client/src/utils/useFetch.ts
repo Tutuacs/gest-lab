@@ -25,7 +25,10 @@ const useFetch = (title?: string) => {
   };
 
   const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-    if (!session || !session.profile) return;
+    if (!session || !session.profile) {
+      console.warn("Sessão não encontrada no fetchWithAuth");
+      return { data: null, status: 401 };
+    }
 
     const headers = {
       ...options.headers,
