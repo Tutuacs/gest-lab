@@ -1,73 +1,77 @@
-"use client";
+'use client'
 
-import FieldList from "@/components/FieldList";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useFieldTypeActions } from "@/hooks/useFieldTypeActions";
-import { Input } from "@/components/input";
-import { Label } from "@/components/label";
-import { Button } from "@/components/button";
-import { toast } from "@/components/ui/use-toast";
+import FieldList from '@/components/FieldList'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useFieldTypeActions } from '@/hooks/useFieldTypeActions'
+import { useRouter } from 'next/navigation'
+import { Input } from '@/components/input'
+import { Label } from '@/components/label'
+import { Button } from '@/components/button'
+import { toast } from '@/components/ui/use-toast'
 
 export default function CreateFieldTypePage() {
-  const searchParams = useSearchParams();
-  const equipamentTypeId = searchParams.get("equipamentTypeId");
-  const { fieldTypes, fetchFieldTypes, createFieldType, deleteFieldType } = useFieldTypeActions();
+  const searchParams = useSearchParams()
+  const equipamentTypeId = searchParams.get('equipamentTypeId')
+  const { fieldTypes, fetchFieldTypes, createFieldType, deleteFieldType } =
+    useFieldTypeActions()
+  const router = useRouter()
+  const [wasSaved, setWasSaved] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
-    name: "",
-    type: "STRING",
+    name: '',
+    type: 'STRING',
     optional: false,
-    min: "",
-    max: "",
-  });
-
-  const [wasSaved, setWasSaved] = useState(false);
-  const [loading, setLoading] = useState(false);
+    min: '',
+    max: ''
+  })
 
   useEffect(() => {
     if (equipamentTypeId && fieldTypes.length === 0) {
-      fetchFieldTypes(Number(equipamentTypeId));
+      fetchFieldTypes(Number(equipamentTypeId))
     }
-  }, [equipamentTypeId, fieldTypes.length]);
+  }, [equipamentTypeId, fieldTypes.length])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
-    const val = type === "checkbox" ? checked : value;
-    setFormData((prev) => ({ ...prev, [name]: val }));
-  };
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
+    const val = type === 'checkbox' ? checked : value
+    setFormData(prev => ({ ...prev, [name]: val }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!equipamentTypeId) return;
-    setLoading(true);
+    e.preventDefault()
+    if (!equipamentTypeId) return
+    setLoading(true)
 
     const result = await createFieldType({
       ...formData,
-      equipamentTypeId: Number(equipamentTypeId),
-    });
+      equipamentTypeId: Number(equipamentTypeId)
+    })
 
-    setLoading(false);
+    setLoading(false)
 
     if (result) {
       toast({
-        title: "Campo criado com sucesso",
-        description: "O campo foi vinculado ao tipo de equipamento.",
-      });
+        title: 'Campo criado com sucesso',
+        description: 'O campo foi vinculado ao tipo de equipamento.'
+      })
       setFormData({
-        name: "",
-        type: "STRING",
+        name: '',
+        type: 'STRING',
         optional: false,
-        min: "",
-        max: "",
-      });
-      setWasSaved(true);
-      fetchFieldTypes(Number(equipamentTypeId));
+        min: '',
+        max: ''
+      })
+      setWasSaved(true)
+      fetchFieldTypes(Number(equipamentTypeId))
     }
-  };
+  }
 
   return (
     <main className="flex justify-center p-10">
@@ -76,9 +80,14 @@ export default function CreateFieldTypePage() {
         <div className="bg-white shadow p-6 rounded-xl">
           <h2 className="text-2xl font-bold mb-4">Criar Novo Campo</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div className="w-1/2">
               <Label htmlFor="name">Nome</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} required />
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div>
               <Label htmlFor="type">Tipo</Label>
@@ -94,15 +103,13 @@ export default function CreateFieldTypePage() {
                 <option value="DATE">DATE</option>
               </select>
             </div>
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <Label htmlFor="min">Min</Label>
-                <Input name="min" value={formData.min} onChange={handleChange} />
-              </div>
-              <div className="w-1/2">
-                <Label htmlFor="max">Max</Label>
-                <Input name="max" value={formData.max} onChange={handleChange} />
-              </div>
+            <div className="w-1/2">
+              <Label htmlFor="min">Min</Label>
+              <Input name="min" value={formData.min} onChange={handleChange} />
+            </div>
+            <div className="w-1/2">
+              <Label htmlFor="max">Max</Label>
+              <Input name="max" value={formData.max} onChange={handleChange} />
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -115,15 +122,19 @@ export default function CreateFieldTypePage() {
             </div>
             <div className="flex justify-between gap-4 mt-6">
               <Button type="submit" disabled={loading} className="w-full">
-                Salvar
+                Adicionar
               </Button>
               <Button
                 type="button"
-                disabled={!wasSaved}
-                onClick={() => setWasSaved(false)}
-                className="w-full"
+                // disabled={!wasSaved}
+                onClick={() => {
+                  router.push(
+                    `/equipament-type/create?equipamentTypeId=${equipamentTypeId}`
+                  )
+                }}
+                className="w-full bg-green-700 text-white py-3 rounded-xl hover:bg-green-800 transition"
               >
-                Mais
+                Continuar
               </Button>
             </div>
           </form>
@@ -140,5 +151,5 @@ export default function CreateFieldTypePage() {
         </div>
       </div>
     </main>
-  );
+  )
 }
