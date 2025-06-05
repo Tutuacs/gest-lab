@@ -1,13 +1,13 @@
-import { ROLE } from "@/common/role.enums";
-import ButtonByRole from "@/components/ButtonByRole";
-import Link from "next/link";
+import { ROLE } from '@/common/role.enums'
+import ButtonByRole from '@/components/ButtonByRole'
+import Link from 'next/link'
 
 export default function Home() {
   return (
     <main className="min-h-screen p-10 bg-gray-100 flex flex-col items-center">
       {/* Título padrão centralizado */}
       <h1 className="text-4xl font-bold text-center text-black mb-6">
-        User Home / Saymon
+        Bem vindo ao Sistema de Gestão de Laboratório
       </h1>
 
       {/* Botões de perfil com estilo menor */}
@@ -21,21 +21,37 @@ export default function Home() {
       <div className="bg-white shadow rounded-xl p-8 w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Coluna esquerda: Consultas */}
         <div className="flex flex-col gap-4">
-            <Link href="/equipament-info">
+          <Link href="/equipament-info">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Informações Equipamento
+              Informações Equipamento
             </button>
-            </Link>
-            <Link href="/equipament">
+          </Link>
+          <Link href="/equipament">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Relatório de Equipamentos
+              Relatório de Equipamentos
             </button>
-            </Link>
-            <Link href="/equipament-type">
+          </Link>
+          <Link href="/equipament-type">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Relatório de Tipo de Equipamento
+              Relatório de Tipo de Equipamento
             </button>
-            </Link>
+          </Link>
+          <Link href="/field-type">
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+              Relatório de Tipo de Campo
+            </button>
+          </Link>
+          <Link href="/event-type">
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+              Relatório de Tipo de Evento
+            </button>
+          </Link>
+          <Link href="/license-type">
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+              Relatório de Tipo de Licença
+            </button>
+          </Link>
+          {/* Após desenvolver para os tipos, gerar páginas para os pŕoprios equipamentos, campos, eventos, licenças */}
         </div>
 
         {/* Divisória: vertical no desktop, horizontal no mobile */}
@@ -43,28 +59,28 @@ export default function Home() {
 
         {/* Coluna direita: Cadastros */}
         <div className="flex flex-col gap-4">
-            <Link href="/equipament/create">
+          <Link href="/equipament/create">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Cadastro de Equipamento
+              Cadastro de Equipamento
             </button>
-            </Link>
-            <Link href="/equipament-type/create">
+          </Link>
+          <Link href="/equipament-type/create">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Cadastro de Tipo de Equipamento
+              Cadastro de Tipo de Equipamento
             </button>
-            </Link>
-            <Link href="/event">
+          </Link>
+          <Link href="/event">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Cadastro de Evento
+              Cadastro de Evento
             </button>
-            </Link>
-            <Link href="/license">
+          </Link>
+          <Link href="/license">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-                Cadastro de Licença
+              Cadastro de Licença
             </button>
-            </Link>
-            </div>
+          </Link>
         </div>
+      </div>
     </main>
-  );
+  )
 }

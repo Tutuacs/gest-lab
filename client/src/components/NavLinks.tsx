@@ -1,13 +1,13 @@
 // NavLinks.tsx
-"use client";
+'use client'
 
-import { ROLE } from "@/common/role.enums";
-import Link from "next/link";
-import ButtonLogout from "./ButtonLogout";
-import { useSession } from "next-auth/react";
+import { ROLE } from '@/common/role.enums'
+import Link from 'next/link'
+import ButtonLogout from './ButtonLogout'
+import { useSession } from 'next-auth/react'
 
 export default function NavLinks() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   if (session?.profile?.role === ROLE.MASTER) {
     return (
@@ -21,7 +21,7 @@ export default function NavLinks() {
               Users
             </Link>
             <Link className="p-2" href="/home">
-              MasterName: {session?.profile?.name}
+              {session?.profile?.name.toUpperCase()}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -29,7 +29,7 @@ export default function NavLinks() {
           </div>
         </div>
       </main>
-    );
+    )
   } else if (session?.profile?.role === ROLE.ADMIN) {
     return (
       <main>
@@ -39,7 +39,7 @@ export default function NavLinks() {
               Home
             </Link>
             <Link className="p-2 text-gray-500" href="/home">
-              AdminName: {session?.profile?.name}
+              {session?.profile?.name.toUpperCase()}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -47,7 +47,7 @@ export default function NavLinks() {
           </div>
         </div>
       </main>
-    );
+    )
   } else if (session?.profile?.role === ROLE.USER) {
     return (
       <main>
@@ -57,7 +57,7 @@ export default function NavLinks() {
               Home
             </Link>
             <Link className="p-2 text-gray-500" href="/home">
-              UserName: {session?.profile?.name}
+              {session?.profile?.name.toUpperCase()}
             </Link>
           </div>
           <div className="flex space-x-4">
@@ -65,7 +65,7 @@ export default function NavLinks() {
           </div>
         </div>
       </main>
-    );
+    )
   } else {
     return (
       <main>
@@ -85,6 +85,6 @@ export default function NavLinks() {
           </div>
         </div>
       </main>
-    );
+    )
   }
 }
