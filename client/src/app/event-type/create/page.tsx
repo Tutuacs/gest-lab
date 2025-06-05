@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import LicenseList from '@/components/LicenseList'
+import EventList from '@/components/EventList'
 import useFetch from '@/utils/useFetch'
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
 import { Button } from '@/components/button'
 import { toast } from '@/components/ui/use-toast'
 
-export default function CreateLicenseTypePage() {
+export default function CreateEventTypePage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { fetchWithAuth } = useFetch()
@@ -23,40 +23,37 @@ export default function CreateLicenseTypePage() {
     description: ''
   })
 
-  const [licenseTypes, setLicenseTypes] = useState<
-    { id: number; name: string; description?: string }[]
+  const [eventTypes, setEventTypes] = useState<
+    { id: number; name: string; description: string }[]
   >([])
 
-  const fetchLicenseTypes = async () => {
+  const fetchEventTypes = async () => {
     if (!equipamentTypeId) return
     const result = await fetchWithAuth(`/equipament-type/${equipamentTypeId}`)
     if (result?.status === 200) {
-      setLicenseTypes(result.data.LicenseType || [])
+      setEventTypes(result.data.EventType || [])
     }
   }
 
-  const deleteLicenseType = async (id: number) => {
-    const result = await fetchWithAuth(`/license-type/${id}`, {
+  const deleteEventType = async (id: number) => {
+    const result = await fetchWithAuth(`/event-type/${id}`, {
       method: 'DELETE'
     })
 
     if (result?.status === 200) {
-      toast({ title: 'Licença excluída com sucesso' })
-      fetchLicenseTypes()
+      toast({ title: 'Evento excluído com sucesso' })
+      fetchEventTypes()
     } else {
       toast({
-        title: 'Erro ao excluir licença',
+        title: 'Erro ao excluir evento',
         variant: 'destructive'
       })
     }
   }
 
   useEffect(() => {
-    fetchLicenseTypes()
-    setFormData({
-      name: '',
-      description: ''
-    })
+    fetchEventTypes()
+    setFormData({ name: '', description: '' })
   }, [equipamentTypeId, nameFromUrl, descriptionFromUrl])
 
   const handleChange = (
@@ -70,7 +67,7 @@ export default function CreateLicenseTypePage() {
     e.preventDefault()
     if (!equipamentTypeId) return
 
-    const result = await fetchWithAuth('/license-type', {
+    const result = await fetchWithAuth('/event-type', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -83,11 +80,11 @@ export default function CreateLicenseTypePage() {
 
     if (result?.status === 201) {
       toast({
-        title: 'Licença criada com sucesso',
-        description: 'A licença foi vinculada ao tipo de equipamento.'
+        title: 'Evento criado com sucesso',
+        description: 'O evento foi vinculado ao tipo de equipamento.'
       })
       setFormData({ name: '', description: '' })
-      fetchLicenseTypes()
+      fetchEventTypes()
     }
   }
 
@@ -100,9 +97,9 @@ export default function CreateLicenseTypePage() {
   return (
     <main className="flex justify-center p-10">
       <div className="w-full max-w-5xl grid md:grid-cols-2 gap-10">
-        {/* Formulário para criar licença */}
+        {/* Formulário para criar evento */}
         <div className="bg-white shadow p-6 rounded-xl">
-          <h2 className="text-2xl font-bold mb-4">Criar Nova Licença</h2>
+          <h2 className="text-2xl font-bold mb-4">Criar Novo Evento</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="w-1/2">
               <Label htmlFor="name">Nome</Label>
@@ -136,14 +133,10 @@ export default function CreateLicenseTypePage() {
           </form>
         </div>
 
-        {/* Lista das licenças vinculadas */}
+        {/* Lista dos eventos vinculados */}
         <div className="bg-white shadow p-6 rounded-xl">
-          <h2 className="text-2xl font-bold mb-4">Licenças Vinculadas</h2>
-          <LicenseList
-            licenses={licenseTypes}
-            onDelete={deleteLicenseType}
-            equipamentTypeId={Number(equipamentTypeId)}
-          />
+          <h2 className="text-2xl font-bold mb-4">Eventos Vinculados</h2>
+          <EventList events={eventTypes} onDelete={deleteEventType} />
         </div>
       </div>
     </main>

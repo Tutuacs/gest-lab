@@ -135,6 +135,24 @@ export default function NewEquipamentTypeForm() {
           >
             ➕ Adicionar Licenças
           </button>
+          <button
+            type="button"
+            onClick={() =>
+              router.push(
+                `/event-type/create?equipamentTypeId=${createdId}&name=${formData.name}&description=${formData.description}`
+              )
+            }
+            className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition"
+          >
+            ➕ Adicionar Eventos
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push('/home')}
+            className="w-full bg-gray-600 text-white py-3 rounded-xl hover:bg-gray-700 transition"
+          >
+            Finalizar Cadastro
+          </button>
         </div>
       )}
     </form>
