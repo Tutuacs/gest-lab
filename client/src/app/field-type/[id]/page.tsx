@@ -14,7 +14,7 @@ type FieldType = {
 };
 
 export default function FieldTypeByEquipamentPage() {
-  const { fetchWithAuth } = useFetch("Campos vinculados ao tipo de equipamento");
+  const { fetchWithAuth } = useFetch("Campos vinculados a categoria");
   const params = useParams();
   const equipamentTypeId = Number(params.id);
 
@@ -55,7 +55,7 @@ export default function FieldTypeByEquipamentPage() {
   return (
     <main className="p-10 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-bold mb-8 text-center">
-        Campos do Tipo de Equipamento{" "}
+        Campos da categoria{" "}
         {equipamentTypeName ? `(${equipamentTypeName})` : `#${equipamentTypeId}`}
       </h1>
 

@@ -33,7 +33,7 @@ export default function Home() {
           </Link>
           <Link href="/equipament-type">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-              Relatório de Tipo de Equipamento
+              Relatório de Categorias
             </button>
           </Link>
           <Link href="/field-type">
@@ -66,7 +66,7 @@ export default function Home() {
           </Link>
           <Link href="/equipament-type/create">
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
-              Cadastro de Tipo de Equipamento
+              Cadastro de Categoria
             </button>
           </Link>
           <Link href="/event">

@@ -71,7 +71,7 @@ export default function NewEquipamentTypeForm() {
     if (result?.status === 201) {
       setCreatedId(result.data.id)
     } else {
-      console.error('Erro ao cadastrar Tipo de Equipamento:', result?.status)
+      console.error('Erro ao cadastrar categoria:', result?.status)
     }
   }
 
@@ -93,7 +93,7 @@ export default function NewEquipamentTypeForm() {
       className="w-full max-w-2xl grid grid-cols-1 gap-6 bg-white p-8 rounded-2xl shadow"
     >
       <Input
-        label="Nome do Tipo"
+        label="Categoria"
         name="name"
         value={formData.name}
         onChange={handleChange}
@@ -133,7 +133,7 @@ export default function NewEquipamentTypeForm() {
             onClick={() => redirectTo('license')}
             className="w-full bg-yellow-600 text-white py-3 rounded-xl hover:bg-yellow-700 transition"
           >
-            ➕ Adicionar Licenças
+            ➕ Adicionar Certificados
           </button>
           <button
             type="button"

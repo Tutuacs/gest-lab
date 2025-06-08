@@ -77,12 +77,12 @@ export default function CadastroLicenca() {
 
     // Se o cadastro foi bem-sucedido (status 201) ele redireciona
     if (result?.status === 201) {
-      toast({ title: "Licença cadastrada com sucesso!", description: "Redirecionando..." });
+      toast({ title: "Certificado cadastrado com sucesso!", description: "Redirecionando..." });
       router.push("/license");
     } else {
       toast({
         title: "Erro",
-        description: result?.data?.message || "Não foi possível cadastrar a licença.",
+        description: result?.data?.message || "Não foi possível cadastrar o certificado.",
         variant: "destructive",
       });
     }
@@ -92,7 +92,7 @@ export default function CadastroLicenca() {
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Select
-        label="Tipo de Licença"
+        label="Tipo de certificado"
         name="licenseTypeId"
         value={formData.licenseTypeId}
         onChange={handleChange}
@@ -130,7 +130,7 @@ export default function CadastroLicenca() {
         />
 
         <Select
-        label="Status da Licença"
+        label="Status do certificado"
         name="valid"
         value={formData.valid}
         onChange={handleChange}

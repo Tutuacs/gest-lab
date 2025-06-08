@@ -84,7 +84,7 @@ export default function CreateLicenseTypePage() {
     if (result?.status === 201) {
       toast({
         title: 'Licença criada com sucesso',
-        description: 'A licença foi vinculada ao tipo de equipamento.'
+        description: 'A licença foi vinculada a categoria.'
       })
       setFormData({ name: '', description: '' })
       fetchLicenseTypes()

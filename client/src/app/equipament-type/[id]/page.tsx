@@ -3,6 +3,7 @@
 import useFetch from "@/utils/useFetch";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
+import EquipamentoRelatorio from "@/components/RelatorioEquipament";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -42,8 +43,11 @@ export default function EquipamentEspecifications({ params }: Params) {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center bg-gray-100 p-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+  <div className="min-h-screen flex justify-center bg-gray-100 p-10">
+    <div className="flex flex-col gap-10 w-full max-w-6xl">
+      
+      {/* Grid de Colunas (esquerda e direita) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Coluna da Esquerda */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           {equipamentType ? (
@@ -77,17 +81,23 @@ export default function EquipamentEspecifications({ params }: Params) {
             className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
             onClick={() => handleNavigate("license")}
           >
-            Tipos de Licença
+            Tipos de Certificado
           </button>
           <button
             className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
             onClick={() => handleNavigate("event")}
           >
-            Tipos de Evento
+            Tipos de Atividade
           </button>
         </div>
       </div>
+
+      {/* Relatório abaixo das colunas */}
+      <div>
+        <EquipamentoRelatorio />
+      </div>
     </div>
+  </div>
   );
 }
 
