@@ -8,7 +8,7 @@ export default function CadastroEquipamentType() {
         <section className="w-full">
           <div className="flex flex-col items-center">
             <h1 className="mb-10 text-4xl sm:text-5xl md:text-6xl font-bold text-center text-black">
-              Tipo de Equipamento
+              Categoria
             </h1>
             <NewEquipamentTypeForm />
           </div>

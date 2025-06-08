@@ -24,7 +24,7 @@ type EquipamentType = {
 export default function EquipamentInfoPage() {
   const router = useRouter();
   const params = useParams();
-  const { fetchWithAuth } = useFetch("Equipamento com eventos/licenças");
+  const { fetchWithAuth } = useFetch("Equipamento com eventos/certificados");
 
   const [equipament, setEquipament] = useState<EquipamentType | null>(null);
   const [open, setOpen] = useState(false);
@@ -56,7 +56,7 @@ export default function EquipamentInfoPage() {
     <main className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-bold text-blue-950 mb-4">Info do Equipamento</h2>
+          <h2 className="text-xl font-bold text-blue-950 mb-4">Informação do Equipamento</h2>
 
           {equipament ? (
             <div className="space-y-6 text-gray-700">
@@ -92,7 +92,7 @@ export default function EquipamentInfoPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-500 ml-4">Nenhuma licença vinculada.</p>
+                  <p className="text-sm text-gray-500 ml-4">Nenhum certificado vinculado.</p>
                 )}
               </section>
             </div>
@@ -120,14 +120,6 @@ export default function EquipamentInfoPage() {
                     onClick={() => router.push(`/event?equipamentId=${params.id}`)}
                   >
                     Cadastrar Evento
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="w-full text-left px-4 py-2 hover:bg-blue-100"
-                    onClick={() => router.push(`/report?equipamentId=${params.id}`)}
-                  >
-                    Cadastrar Relatório
                   </button>
                 </li>
                 <li>

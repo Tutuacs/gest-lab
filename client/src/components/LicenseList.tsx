@@ -16,7 +16,7 @@ interface LicenseListProps {
 
 export default function LicenseList({ licenses, onDelete }: LicenseListProps) {
   if (!licenses.length) {
-    return <p className="text-gray-500">Nenhuma licença cadastrada ainda.</p>
+    return <p className="text-gray-500">Nenhum certificado cadastrado ainda.</p>
   }
 
   return (

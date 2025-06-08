@@ -68,7 +68,7 @@ export default function FieldTypeListPage() {
               <th className="py-3 px-4">Opcional</th>
               <th className="py-3 px-4">Min</th>
               <th className="py-3 px-4">Max</th>
-              <th className="py-3 px-4">Tipo de Equipamento</th>
+              <th className="py-3 px-4">Categoria</th>
             </tr>
           </thead>
           <tbody>

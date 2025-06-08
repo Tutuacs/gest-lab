@@ -81,7 +81,7 @@ export default function CreateEventTypePage() {
     if (result?.status === 201) {
       toast({
         title: 'Evento criado com sucesso',
-        description: 'O evento foi vinculado ao tipo de equipamento.'
+        description: 'O evento foi vinculado a categoria.'
       })
       setFormData({ name: '', description: '' })
       fetchEventTypes()

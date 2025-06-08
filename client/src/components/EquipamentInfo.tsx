@@ -66,7 +66,7 @@ export default function NewEquipamentInfo() {
 
             {/* Licenças */}
             <section>
-            <h3 className="font-semibold text-blue-800">Licenças</h3>
+            <h3 className="font-semibold text-blue-800">Certificados</h3>
             {Array.isArray(equipament.License) && equipament.License.length > 0 ? (
                 <ul className="list-disc list-inside ml-4">
                 {equipament.License.map((lic) => (
@@ -78,7 +78,7 @@ export default function NewEquipamentInfo() {
                 ))}
                 </ul>
             ) : (
-                <p className="text-sm text-gray-500 ml-4">Nenhuma licença vinculada.</p>
+                <p className="text-sm text-gray-500 ml-4">Nenhum certificado vinculado.</p>
             )}
             </section>
 
@@ -110,14 +110,6 @@ export default function NewEquipamentInfo() {
                 onClick={() => router.push("/event")}
                 >
                 Cadastrar Evento
-                </button>
-            </li>
-            <li>
-                <button
-                className="w-full text-left px-4 py-2 hover:bg-blue-100"
-                onClick={() => router.push("/relatorio")}
-                >
-                Cadastrar Relatório
                 </button>
             </li>
             <li>

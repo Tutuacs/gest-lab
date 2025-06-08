@@ -106,7 +106,7 @@ export default function EquipamentTypeListPage() {
             {equipamentTypes.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center py-6 text-gray-500">
-                  Nenhum tipo de equipamento cadastrado.
+                  Nenhuma categoria cadastrada.
                 </td>
               </tr>
             )}

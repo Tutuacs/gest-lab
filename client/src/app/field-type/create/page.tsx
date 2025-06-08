@@ -59,7 +59,7 @@ export default function CreateFieldTypePage() {
     if (result) {
       toast({
         title: 'Campo criado com sucesso',
-        description: 'O campo foi vinculado ao tipo de equipamento.'
+        description: 'O campo foi vinculado a categoria.'
       })
       setFormData({
         name: '',

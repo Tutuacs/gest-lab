@@ -156,7 +156,7 @@ export default function NewEquipamentForm() {
             />
 
             <Select
-            label="Tipo de Equipamento"
+            label="Categoria"
             name="equipamentTypeId"
             value={formData.equipamentTypeId}
             onChange={handleChange}
