@@ -1,14 +1,14 @@
-
 model Event {
-  id          Int       @id @default(autoincrement())
-  description String
-  eventType   EventType @relation(fields: [eventTypeId], references: [id])
-  eventTypeId Int
-  from        DateTime
-  to          DateTime
-  value       Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                 Int        @id @default(autoincrement())
+  name               String
+  description        String
+  from               DateTime
+  to                 DateTime
+  eventType          EVENT_TYPE
+  ActivateLicense    Boolean    @default(false)
+  DesactivateLicense Boolean    @default(false)
+  value              Float      @default(0)
+  createdAt          DateTime   @default(now())
 
   Equipament Equipament[]
 }

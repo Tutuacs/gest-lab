@@ -1,8 +1,8 @@
 model Equipament {
   id               Int               @id @default(autoincrement())
-  patrimonio       String
+  patrimonio       String            @unique
   tag              String
-  serie            String
+  serie            String            @unique
   name             String
   valid            Boolean           @default(false)
   location         Location          @relation(fields: [locationId], references: [id])
@@ -11,10 +11,6 @@ model Equipament {
   type             EquipamentType    @relation(fields: [equipamentTypeId], references: [id])
   equipamentTypeId Int
   description      String?
-  Fields           Field[]
-  License          License[]
+  Certified        Certified?
   Event            Event[]
-
-  @@unique([patrimonio, tag, serie])
-
 }

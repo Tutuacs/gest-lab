@@ -1,8 +1,0 @@
-model Field {
-  id           Int        @id @default(autoincrement())
-  value        String
-  fieldType    FieldType  @relation(fields: [fieldTypeId], references: [id])
-  fieldTypeId  Int
-  Equipament   Equipament @relation(fields: [equipamentId], references: [id])
-  equipamentId Int
-}

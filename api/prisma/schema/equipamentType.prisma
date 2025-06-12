@@ -1,13 +1,10 @@
 model EquipamentType {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  FieldType   FieldType[]
-  LicenseType LicenseType[]
-  EventType   EventType[]
-  // reportType  ReportType[]
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  description   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  CertifiedType CertifiedType?
 
   Equipament Equipament[]
 }

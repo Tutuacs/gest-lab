@@ -1,0 +1,10 @@
+model CertifiedType {
+  id               Int            @id @default(autoincrement())
+  description      String?
+  renovateInDays   Int
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  EquipamentType   EquipamentType @relation(fields: [equipamentTypeId], references: [id])
+  equipamentTypeId Int            @unique
+  Certified        Certified[]
+}

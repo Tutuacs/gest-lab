@@ -1,0 +1,12 @@
+model Certified {
+  id              Int              @id @default(autoincrement())
+  valid           CERTIFIED_STATUS @default(INACTIVE)
+  from            DateTime
+  to              DateTime
+  PDF             PDF?
+  CertifiedType   CertifiedType    @relation(fields: [certifiedTypeId], references: [id])
+  certifiedTypeId Int
+  Equipament      Equipament       @relation(fields: [equipamentId], references: [id])
+  equipamentId    Int              @unique
+  updatedAt       DateTime         @updatedAt
+}
