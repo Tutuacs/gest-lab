@@ -39,7 +39,16 @@ export class CategoryFunctionsService extends PrismaService {
 
     async create(data: CreateCategoryDto) {
         return await this.category.create({
-            data,
+            data: {
+                name: data.name,
+                description: data.description,
+                CertifiedType: {
+                    create: {
+                        description: data.certifiedType.description,
+                        renovateInDays: data.certifiedType.renovateInDays,
+                    }
+                }
+            }
         });
     }
 
@@ -57,9 +66,7 @@ export class CategoryFunctionsService extends PrismaService {
                 id: id,
             },
             include: {
-                FieldType: true,
-                LicenseType: true,
-                EventType: true,
+                CertifiedType: true,
             }
         });
     }
@@ -76,7 +83,16 @@ export class CategoryFunctionsService extends PrismaService {
             where: {
                 id: id,
             },
-            data,
+            data: {
+                name: data.name,
+                description: data.description,
+                CertifiedType: {
+                    update: {
+                        description: data.certifiedType!.description,
+                        renovateInDays: data.certifiedType!.renovateInDays,
+                    }
+                }
+            }
         });
     }
 
