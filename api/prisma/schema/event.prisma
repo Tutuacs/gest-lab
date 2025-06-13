@@ -5,8 +5,6 @@ model Event {
   from               DateTime
   to                 DateTime
   eventType          EVENT_TYPE
-  ActivateLicense    Boolean    @default(false)
-  DesactivateLicense Boolean    @default(false)
   value              Float      @default(0)
   createdAt          DateTime   @default(now())
 

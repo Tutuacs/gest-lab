@@ -4,7 +4,7 @@ model Equipament {
   tag              String
   serie            String            @unique
   name             String
-  valid            Boolean           @default(false)
+  brand            String            @default("")
   location         Location          @relation(fields: [locationId], references: [id])
   locationId       Int
   status           EQUIPAMENT_STATUS @default(INACTIVE)
