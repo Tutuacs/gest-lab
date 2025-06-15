@@ -4,6 +4,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { FilterCategoryDto } from '../dto/filter-category.dto';
 
 @Injectable()
 export class CategoryFunctionsService extends PrismaService {
@@ -106,10 +107,16 @@ export class CategoryFunctionsService extends PrismaService {
     }
 
 
-    async list({ skip, take }: { skip?: number, take?: number }) {
+    async list({ skip, take, search }: FilterCategoryDto) {
         return await this.category.findMany({
             skip,
             take,
+            where: {
+                OR: [
+                    { name: { contains: search, } },
+                    { description: { contains: search } },
+                ],
+            },
         });
     }
 

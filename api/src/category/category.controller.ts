@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ListDto } from 'src/common/list.dto';
+import { FilterCategoryDto } from './dto/filter-category.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
 @Controller('category')
@@ -16,7 +16,7 @@ export class CategoryController {
   }
 
   @Get()
-  findAll(@Query() query: ListDto) {
+  findAll(@Query() query: FilterCategoryDto) {
     return this.categoryService.findAll(query);
   }
 

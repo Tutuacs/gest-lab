@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryFunctionsService } from './functions/category-functions.service';
+import { FilterCategoryDto } from './dto/filter-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -33,8 +34,8 @@ export class CategoryService {
     return this.prisma.create(createCategoryDto);
   }
 
-  findAll({ skip, take }: { skip?: number; take?: number }) {
-    return this.prisma.list({ skip, take });
+  findAll(filter: FilterCategoryDto) {
+    return this.prisma.list(filter);
   }
 
   async findOne(id: number) {
