@@ -6,6 +6,7 @@ import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
 import { ListDto } from 'src/common/list.dto';
+import { FilterEquipamentDto } from './dto/filter-equipament.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
 @Controller('equipament')
@@ -19,7 +20,7 @@ export class EquipamentController {
   }
 
   @Get()
-  findAll(@Query() query: ListDto) {
+  findAll(@Query() query: FilterEquipamentDto) {
     return this.equipamentService.findAll(query);
   }
 

@@ -5,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateEquipamentDto } from '../dto/update-equipament.dto';
 import { CreateEquipamentDto } from '../dto/create-equipament.dto';
 import { CERTIFIED_STATUS } from '@prisma/client';
+import { FilterEquipamentDto } from '../dto/filter-equipament.dto';
 
 @Injectable()
 export class EquipamentFunctionsService extends PrismaService {
@@ -147,10 +148,22 @@ export class EquipamentFunctionsService extends PrismaService {
         });
     }
 
-    async list({ skip, take }: { skip?: number, take?: number }) {
+    async list({ skip, take, brand, locationId, status, search }: FilterEquipamentDto) {
         return await this.equipament.findMany({
             skip,
             take,
+            where: {
+                ...(brand && { brand }),
+                ...(locationId && { locationId }),
+                ...(status && { status }),
+                ...(search && {
+                    OR: [
+                        { serie: { contains: search } },
+                        { patrimonio: { contains: search } },
+                        { tag: { contains: search } },
+                    ]
+                }),
+            },
         });
     }
 

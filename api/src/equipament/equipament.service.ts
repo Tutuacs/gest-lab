@@ -2,6 +2,8 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { CreateEquipamentDto } from './dto/create-equipament.dto';
 import { UpdateEquipamentDto } from './dto/update-equipament.dto';
 import { EquipamentFunctionsService } from './functions/equipament-functions.service';
+import { FilterEquipamentDto } from './dto/filter-equipament.dto';
+import { EQUIPAMENT_STATUS } from '@prisma/client';
 
 @Injectable()
 export class EquipamentService {
@@ -15,11 +17,13 @@ export class EquipamentService {
       throw new ConflictException('Equipament with this combination already exists');
     }
 
+    createEquipamentDto.status = EQUIPAMENT_STATUS.INACTIVE;
+
     return this.prisma.create(createEquipamentDto);
   }
 
-  findAll({skip, take}: { skip?: number; take?: number }) {
-    return this.prisma.list({skip, take});
+  findAll(query: FilterEquipamentDto) {
+    return this.prisma.list(query);
   }
 
   findOne(id: number) {
