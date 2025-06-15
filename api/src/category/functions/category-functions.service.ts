@@ -85,6 +85,27 @@ export class CategoryFunctionsService extends PrismaService {
         });
     }
 
+    async distinctBrands() {
+        return await this.category.findMany({
+            distinct: ['brands'],
+            select: {
+                brands: true,
+            },
+        });
+    }
+
+    async findBrands(id: number) {
+        return await this.category.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                brands: true,
+            },
+        });
+    }
+
+
     async list({ skip, take }: { skip?: number, take?: number }) {
         return await this.category.findMany({
             skip,

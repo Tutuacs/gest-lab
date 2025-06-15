@@ -47,6 +47,20 @@ export class CategoryService {
     return this.prisma.find(id);
   }
 
+  async distinctBrands() {
+    return this.prisma.distinctBrands();
+  }
+
+  async findBrands(id: number) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new NotFoundException(`Category with id ${id} does not exist`);
+    }
+
+    return this.prisma.findBrands(id);
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
 
     const exist = await this.prisma.exist(id);

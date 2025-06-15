@@ -1,10 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { AuthGuard, RoleGuard } from 'src/guards';
-import { Access } from 'src/decorators';
-import { ROLE } from '@prisma/client';
 import { ListDto } from 'src/common/list.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
@@ -21,6 +18,16 @@ export class CategoryController {
   @Get()
   findAll(@Query() query: ListDto) {
     return this.categoryService.findAll(query);
+  }
+
+  @Get('distinct/brands')
+  distinctBrands() {
+    return this.categoryService.distinctBrands();
+  }
+
+  @Get('brands/:id')
+  findBrands(@Param('id') id: string) {
+    return this.categoryService.findBrands(+id);
   }
 
   @Get(':id')
