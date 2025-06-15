@@ -37,6 +37,14 @@ export class CreateEquipamentDto {
     tag: string;
 
     @ApiProperty({
+        description: 'Brand of the equipment',
+        example: 'Dell',
+        required: true
+    })
+    @IsString()
+    brand: string;
+
+    @ApiProperty({
         description: 'Serie of the equipment',
         example: 'SN123456789',
         required: true
@@ -62,11 +70,11 @@ export class CreateEquipamentDto {
     status: EQUIPAMENT_STATUS;
 
     @ApiProperty({
-        description: 'Type ID of the equipment',
+        description: 'Category ID of the equipment',
         example: 1,
         required: true
     })
     @IsNumber()
-    equipamentTypeId: number;
+    categoryId: number;
 
 }

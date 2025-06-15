@@ -9,14 +9,22 @@ export class LocationService {
   constructor(private readonly prisma: LocationFunctionsService) { }
 
   async create(createLocationDto: CreateLocationDto) {
-
-    const exist = await this.prisma.existCombination(
-      createLocationDto.block,
-      createLocationDto.room,
-    );
+    const [exist, existRamal, existName] = await Promise.all([
+      this.prisma.existCombination(createLocationDto.block, createLocationDto.room),
+      this.prisma.existRamal(createLocationDto.ramal),
+      this.prisma.existName(createLocationDto.name),
+    ]);
 
     if (exist) {
       throw new ConflictException('Location already exists with this block and room combination');
+    }
+
+    if (existName) {
+      throw new ConflictException('Location already exists with this name');
+    }
+
+    if (existRamal) {
+      throw new ConflictException('Location already exists with this ramal');
     }
 
     return this.prisma.create(createLocationDto);
@@ -30,8 +38,14 @@ export class LocationService {
     return this.prisma.distinctBlock();
   }
 
-  distinctRoom(block: string) {
-    return this.prisma.distinctRoom(block);
+  async distinctRoom(block: string) {
+    const response = await this.prisma.distinctRoom(block);
+    
+    if (response.length === 0) {
+      throw new NotFoundException(`This block ${block} does not exist`);
+    }
+
+    return response;
   }
 
   async findOne(id: number) {
@@ -55,8 +69,10 @@ export class LocationService {
     if (updateLocationDto.block && updateLocationDto.room) {
       const canUpdate = await this.prisma.canUpdate(
         id,
-        updateLocationDto.block,
-        updateLocationDto.room,
+        updateLocationDto.block!,
+        updateLocationDto.room!,
+        updateLocationDto.ramal!,
+        updateLocationDto.name!,
       );
 
       if (!canUpdate) {

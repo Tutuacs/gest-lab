@@ -42,10 +42,24 @@ export class CategoryFunctionsService extends PrismaService {
             data: {
                 name: data.name,
                 description: data.description,
+                brands: data.brands,
                 CertifiedType: {
                     create: {
                         description: data.certifiedType.description,
                         renovateInDays: data.certifiedType.renovateInDays,
+                    }
+                }
+            }, 
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                brands: true,
+                CertifiedType: {
+                    select: {
+                        id: true,
+                        description: true,
+                        renovateInDays: true,
                     }
                 }
             }

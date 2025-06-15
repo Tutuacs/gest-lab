@@ -2,6 +2,7 @@ model Category {
   id            Int            @id @default(autoincrement())
   name          String         @unique
   description   String?
+  brands        String         @default("Paralela,")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   CertifiedType CertifiedType?

@@ -4,8 +4,40 @@ import { IsOptional, IsString } from "class-validator";
 export class CreateLocationDto {
 
     @ApiProperty({
+        description: 'Nome do local',
+        example: 'Sala de Informática',
+        required: true,
+    })
+    @IsString()
+    name: string;
+
+    @ApiProperty({
+        description: 'Nome do responsável pelo local',
+        example: 'João da Silva',
+        required: true,
+    })
+    @IsString()
+    sponsor: string;
+
+    @ApiProperty({
+        description: 'Email do responsável pelo local',
+        example: 'joao.silva@example.com',
+        required: true,
+    })
+    @IsString()
+    email: string;
+
+    @ApiProperty({
+        description: 'Ramal de contato do responsável pelo local',
+        example: '1234',
+        required: true,
+    })
+    @IsString()
+    ramal: string;
+
+    @ApiProperty({
         description: 'Nome do bloco ou área',
-        example: 'Bloco 71',
+        example: '71',
         required: true,
     })
     @IsString()
@@ -13,7 +45,7 @@ export class CreateLocationDto {
 
     @ApiProperty({
         description: 'Sala ou local específico dentro do bloco',
-        example: 'Sala 101',
+        example: '101',
         required: true,
     })
     @IsString()

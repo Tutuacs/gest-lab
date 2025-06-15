@@ -4,6 +4,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateEquipamentDto } from '../dto/update-equipament.dto';
 import { CreateEquipamentDto } from '../dto/create-equipament.dto';
+import { CERTIFIED_STATUS } from '@prisma/client';
 
 @Injectable()
 export class EquipamentFunctionsService extends PrismaService {
@@ -42,8 +43,49 @@ export class EquipamentFunctionsService extends PrismaService {
     }
 
     async create(data: CreateEquipamentDto) {
+
+        const certifiedTypeId =  await this.category.findFirst({
+            where: {
+                id: data.categoryId,
+            },
+            select: {
+                CertifiedType: {
+                    select: {
+                        id: true,
+                    }
+                }
+            }
+        })
+
+        if (!certifiedTypeId || !certifiedTypeId.CertifiedType || !certifiedTypeId.CertifiedType.id) {
+            throw new Error('Category not found or does not have a CertifiedType');
+        }
+
         return await this.equipament.create({
-            data,
+            data: {
+                name: data.name,
+                brand: data.brand,
+                categoryId: data.categoryId,
+                description: data.description,
+                patrimonio: data.patrimonio,
+                tag: data.tag,
+                serie: data.serie,
+                locationId: data.locationId,
+                status: data.status,
+                Certified: {
+                    create: {
+                        from: new Date(),
+                        to: new Date(),
+                        valid: CERTIFIED_STATUS.EXPIRED,
+                        certifiedTypeId: certifiedTypeId.CertifiedType.id,
+                        PDF: {
+                            create: {
+                                base64: '',
+                            }
+                        },
+                    }
+                }
+            }
         });
     }
 
@@ -54,7 +96,7 @@ export class EquipamentFunctionsService extends PrismaService {
             },
         });
     }
-
+    
     async find(id: number) {
         return await this.equipament.findUnique({
             where: {
@@ -63,47 +105,41 @@ export class EquipamentFunctionsService extends PrismaService {
             select: {
                 id: true,
                 name: true,
+                brand: true,
+                categoryId: true,
                 description: true,
                 patrimonio: true,
                 tag: true,
                 serie: true,
                 locationId: true,
                 status: true,
-                location: true,
-                type: {
+                _count: {
+                    select: {
+                        Event: true,
+                    }
+                },
+                Location: true,
+                Category: {
                     select: {
                         id: true,
                         name: true,
                         description: true,
-                        EventType: true,
-                        FieldType: true,
-                        LicenseType: true,
+                        CertifiedType: {
+                            select: {
+                                id: true,
+                                description: true,
+                                renovateInDays: true,
+                            },
+                        },
                     },
                 },
-                Fields: {
-                    select: {
-                        id: true,
-                        value: true,
-                        fieldType: true,
-                    },
-                },
-                Event: {
-                    select: {
-                        id: true,
-                        description: true,
-                        from: true,
-                        to: true,
-                        value: true,
-                        eventType: true,
-                    },
-                },
-                License: {
+                Certified: {
                     select: {
                         id: true,
                         from: true,
                         to: true,
                         valid: true,
-                        LicenseType: true,
+                        updatedAt: true,
                         PDF: true,
                     }
                 }

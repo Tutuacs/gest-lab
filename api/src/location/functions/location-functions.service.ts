@@ -15,6 +15,22 @@ export class LocationFunctionsService extends PrismaService {
         });
     }
 
+    async existRamal(ramal: string) {
+        return 0 < await this.location.count({
+            where: {
+                ramal: ramal,
+            },
+        });
+    }
+
+    async existName(name: string) {
+        return 0 < await this.location.count({
+            where: {
+                name: name,
+            },
+        });
+    }
+
     async existCombination(block: string, room: string) {
         return 0 < await this.location.count({
             where: {
@@ -24,18 +40,40 @@ export class LocationFunctionsService extends PrismaService {
         });
     }
 
-    async canUpdate(id: number, block: string, room: string) {
+    async canUpdate(id: number, block: string, room: string, ramal: string, name: string) {
         const Location = await this.location.findFirst({
             where: {
-                block: block,
-                room: room,
+                id
             }
         });
-
-        if (Location && Location.id !== id) {
+        
+        if (!Location) {
             return false;
         }
-        return true;
+        
+        const existCombination = this.existCombination(block, room);
+        const existRamal = this.existRamal(Location.ramal);
+        const existName = this.existName(name);
+
+        Promise.all([existCombination, existRamal, existName])
+            .then(([existCombination, existRamal, existName]) => {
+                if (existCombination && (Location.block !== block || Location.room !== room)) {
+                    return false;
+                }
+
+                if (existRamal && Location.ramal !== ramal) {
+                    return false;
+                }
+
+                if (existName && Location.name !== name) {
+                    return false;
+                }
+
+                if (Location && Location.id !== id) {
+                    return false;
+                }
+                return true;
+            });
     }
 
     async create(data: CreateLocationDto) {
