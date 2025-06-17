@@ -49,7 +49,25 @@ export class CategoryService {
   }
 
   async distinctBrands() {
-    return this.prisma.distinctBrands();
+    const result = await this.prisma.distinctBrands();
+
+    // brands map
+    const brandsMap: Map<string, boolean> = new Map();
+
+    for (const brand of result) {
+      // brand is a string, split by ','
+      const brandList = brand.brands.split(',').map(b => b.trim());
+      for (const b of brandList) {
+        if (b && b !== '' && !brandsMap.has(b)) {
+          brandsMap.set(b, true);
+        }
+      }
+    }
+
+    return {
+      brands: Array.from(brandsMap.keys()),
+    }
+
   }
 
   async findBrands(id: number) {
