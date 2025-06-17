@@ -8,6 +8,7 @@ import { LocationModule } from './location/location.module';
 import { EquipamentModule } from './equipament/equipament.module';
 import { CategoryModule } from './category/category.module';
 import { CertifiedModule } from './certified/certified.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CertifiedModule } from './certified/certified.module';
     EquipamentModule,
     CategoryModule,
     CertifiedModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -34,18 +34,18 @@ export default function NewLocationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = await fetchWithAuth("/equipament", {
+    const result = await fetchWithAuth("/location", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         name: formData.name,
-        patrimonio: formData.sponsor,
-        tag: formData.email,
-        serie: formData.ramal,
-        fabricante: formData.block,   
-        modelo: formData.room,     
+        sponsor: formData.sponsor,
+        email: formData.email,
+        ramal: formData.ramal,
+        block: formData.block,   
+        room: formData.room,     
         description: formData.description,
       }),
     });
