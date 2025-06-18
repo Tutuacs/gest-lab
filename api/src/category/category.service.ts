@@ -93,8 +93,8 @@ export class CategoryService {
     }
 
     if (updateCategoryDto.name) {
-      const exist = await this.prisma.existName(updateCategoryDto.name);
-      if (exist) {
+      const canUpdate = await this.prisma.canUpdate(id, updateCategoryDto.name);
+      if (!canUpdate) {
         throw new ConflictException(`Category with name ${updateCategoryDto.name} already exists`);
       }
     }
