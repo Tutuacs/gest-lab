@@ -11,7 +11,7 @@ export class CategoryFunctionsService extends PrismaService {
     async existName(name: string) {
         return 0 < await this.category.count({
             where: {
-                name: name,
+                name: name.toLocaleLowerCase(),
             },
         });
     }
@@ -27,7 +27,7 @@ export class CategoryFunctionsService extends PrismaService {
     async canUpdate(id: number, name: string) {
         const eq = await this.category.findFirst({
             where: {
-                name: name,
+                name: name.toLocaleLowerCase(),
             },
         });
 
@@ -41,8 +41,8 @@ export class CategoryFunctionsService extends PrismaService {
     async create(data: CreateCategoryDto) {
         return await this.category.create({
             data: {
-                name: data.name,
-                description: data.description,
+                name: data.name.toLocaleLowerCase(),
+                description: data.description?.toLocaleLowerCase(),
                 brands: data.brands,
                 CertifiedType: {
                     create: {
@@ -50,7 +50,7 @@ export class CategoryFunctionsService extends PrismaService {
                         renovateInDays: data.certifiedType.renovateInDays,
                     }
                 }
-            }, 
+            },
             select: {
                 id: true,
                 name: true,
@@ -112,10 +112,12 @@ export class CategoryFunctionsService extends PrismaService {
             skip,
             take,
             where: {
-                OR: [
-                    { name: { contains: search, } },
-                    { description: { contains: search } },
-                ],
+                ...(search && {
+                    OR: [
+                        { name: { contains: search.toLocaleLowerCase() } },
+                        { description: { contains: search.toLocaleLowerCase() } },
+                    ]
+                }),
             },
         });
     }
@@ -126,14 +128,29 @@ export class CategoryFunctionsService extends PrismaService {
                 id: id,
             },
             data: {
-                name: data.name,
-                description: data.description,
+                name: data.name?.toLocaleLowerCase(),
+                description: data.description?.toLocaleLowerCase(),
                 CertifiedType: {
                     update: {
-                        description: data.certifiedType!.description,
-                        renovateInDays: data.certifiedType!.renovateInDays,
+                        description: data.certifiedType?.description,
+                        renovateInDays: data.certifiedType?.renovateInDays,
                     }
                 }
+            },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                brands: true,
+                createdAt: true,
+                CertifiedType: {
+                    select: {
+                        id: true,
+                        description: true,
+                        renovateInDays: true,
+                        createdAt: true,
+                    }
+                },
             }
         });
     }

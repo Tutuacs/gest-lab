@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { FilterEventDto } from './dto/filter-event.dto';
 
 @Controller('event')
 export class EventController {
@@ -13,8 +14,8 @@ export class EventController {
   }
 
   @Get()
-  findAll() {
-    return this.eventService.findAll();
+  findAll(@Query() filter: FilterEventDto) {
+    return this.eventService.findAll(filter);
   }
 
   @Get(':id')

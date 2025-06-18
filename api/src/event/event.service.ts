@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { EventFunctionsService } from './functions/event-functions.service';
+import { FilterEventDto } from './dto/filter-event.dto';
+import { EVENT_TYPE } from '@prisma/client';
 
 @Injectable()
 export class EventService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+
+  constructor(private readonly prisma: EventFunctionsService) { }
+
+  async create(createEventDto: CreateEventDto) {
+
+    switch (createEventDto.eventType) {
+      case EVENT_TYPE.INACTIVATE_EQUIPAMENT:
+        this.prisma.prepareEquipamentInactivate(createEventDto)
+        break;
+      case EVENT_TYPE.ENABLE_EQUIPAMENT:
+        this.prisma.prepareEquipamentActivate(createEventDto)
+        break;
+      case EVENT_TYPE.DISABLE_CERTIFIED:
+        this.prisma.prepareCertifiedDesable(createEventDto)
+        break;
+      case EVENT_TYPE.MAINTENANCE:
+        this.prisma.prepareEquipamentMaintenance(createEventDto)
+        break;
+      default:
+        console.log(`Event Type not implemented: ${createEventDto.eventType}`)
+    }
+
+    // TODO: Execute the changes before creating the event based on type
+
+    return this.prisma.create(createEventDto);
   }
 
-  findAll() {
-    return `This action returns all event`;
+  findAll(filter: FilterEventDto) {
+    return this.prisma.list(filter);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  async findOne(id: number) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new NotFoundException(`Event with id ${id} does not exist`);
+    }
+
+    return this.prisma.find(id);
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: number, updateEventDto: UpdateEventDto) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new NotFoundException(`Event with id ${id} does not exist`);
+    }
+
+    return this.prisma.update(id, updateEventDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async remove(id: number) {
+
+    const exist = await this.prisma.exist(id);
+    if (!exist) {
+      throw new NotFoundException(`Event with id ${id} does not exist`);
+    }
+
+    return this.prisma.delete(id);
   }
 }
