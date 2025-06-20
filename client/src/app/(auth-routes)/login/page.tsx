@@ -59,8 +59,8 @@ export default function Login() {
 
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
-      <div className="p-8 bg-white rounded-t-lg w-96">
+    <main className="flex-1 w-full flex flex-col items-center justify-center pt-28 bg-gray-200">
+      <div className="p-8 bg-white rounded-t-3xl w-96">
         <h1 className="mb-6 text-2xl font-bold text-center">Login</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -74,8 +74,8 @@ export default function Login() {
             <input
               type="email"
               id="email"
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:border-red-500 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-              placeholder="Digite seu email de login"
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded-xl shadow appearance-none focus:border-red-500 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+              placeholder="Digite seu email"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -89,7 +89,7 @@ export default function Login() {
             <input
               type="password"
               id="password"
-              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:border-red-500 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+              className="w-full px-3 py-2 leading-tight text-gray-700 border rounded-xl shadow appearance-none focus:border-red-500 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
               placeholder="Digite sua senha"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -100,15 +100,15 @@ export default function Login() {
             </Link> */}
             <button
               type="submit"
-              className="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
+              className="w-full py-2 font-bold text-white bg-red-500 rounded-xl hover:bg-red-700 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
             >
-              Login
+              Entrar
             </button>
           </div>
         </form>
       </div>
       <Link href="/register">
-        <div className="flex p-8 m-auto text-2xl text-white rounded-b-lg hover:bg-slate-800 bg-slate-900 w-96 hover:text-red-400">
+        <div className="flex p-6 m-auto text-2xl text-white rounded-b-3xl hover:bg-blue-900 bg-slate-900 w-96 transition-all duration-300 ease-in-out">
           <div className="m-auto">Não tenho cadastro</div>
         </div>
       </Link>
