@@ -3,17 +3,14 @@ import Link from 'next/link'
 
 export default async function Navbar() {
   return (
-    <header className="w-full bg-blue-950 shadow-md px-6 py-4 rounded-b-xl">
-      <nav className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        {/* Título da aplicação */}
+    <header className="w-full bg-blue-950 shadow-md" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+      <nav className="mx-auto flex flex-row items-center justify-between">
         <Link href="/home">
-          <div className="text-2xl font-bold text-white tracking-wide text-center sm:text-left cursor-pointer">
-            GestLab app
+          <div className="text-2xl font-bold text-white tracking-wide text-center cursor-pointer">
+            GestLab App
           </div>
         </Link>
-
-        {/* Links de navegação */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-white items-center sm:items-center justify-center sm:justify-end">
+        <div className="flex flex-row text-white items-center justify-end">
           <NavLinks />
         </div>
       </nav>

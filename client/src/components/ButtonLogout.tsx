@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function ButtonLogout() {
@@ -10,16 +11,16 @@ export default function ButtonLogout() {
     await signOut({
       redirect: false,
     });
-
     router.push("/login");
   }
 
   return (
-    <button
+    <Link
+      href="/login"
       onClick={logout}
-      className="ml-4 w-40 p-2 border border-gray-300 rounded-xl hover:bg-red-900"
+      className="py-2 px-6 rounded-xl font-bold bg-red-700 hover:bg-red-800 transition-all duration-300"
     >
       Sair
-    </button>
+    </Link>
   );
 }
