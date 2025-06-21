@@ -10,6 +10,7 @@ export default function NewEquipamentForm() {
   const { toast } = useToast();
   const { fetchWithAuth } = useFetch();
 
+
   const [formData, setFormData] = useState({
     name: "",
     patrimonio: "",
@@ -22,11 +23,11 @@ export default function NewEquipamentForm() {
     equipamentTypeId: "",
   });
 
+
   const [locations, setLocations] = useState([]);
   const [equipamentTypes, setEquipamentTypes] = useState([]);
 
 
-  // Buscar opções do backend
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,19 +35,16 @@ export default function NewEquipamentForm() {
           fetchWithAuth("/location", { method: "GET" }),
           fetchWithAuth("/equipament-type", { method: "GET" }),
         ]);
-
         if (locRes?.status === 200) setLocations(locRes.data);
         if (typeRes?.status === 200) setEquipamentTypes(typeRes.data);
       } catch (err) {
         console.error("Erro ao buscar opções:", err);
       }
     };
-
     fetchData();
   }, []);
 
   
-  // Atualiza o estado do formulário quando os inputs mudam
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -55,7 +53,6 @@ export default function NewEquipamentForm() {
   };
 
 
-  // Gravação dos dados no banco após clicar o botão de submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -76,7 +73,6 @@ export default function NewEquipamentForm() {
         equipamentTypeId: parseInt(formData.equipamentTypeId),
       }),
     });
-
     if (result?.status === 201) {
       toast({
         title: "Equipamento cadastrado com sucesso!",
@@ -176,10 +172,10 @@ export default function NewEquipamentForm() {
 
             <div className="col-span-1 md:col-span-2 mt-8">
             <button
-                type="submit"
-                className="w-full bg-blue-950 text-white py-3 rounded-xl hover:bg-blue-800 transition"
+              type="submit"
+              className="w-full py-4 font-bold text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
             >
-                Cadastrar Equipamento
+              Salvar
             </button>
             </div>
         </form>
@@ -190,8 +186,6 @@ export default function NewEquipamentForm() {
 
 
 // COMPONENTES
-
-// Componentes auxiliares para os inputs, select e textarea
 type InputProps = {
   label: string;
   name: string;
@@ -216,7 +210,7 @@ const Input = ({ label, name, value, type = "text", placeholder, onChange }: Inp
   </div>
 );
 
-// Componente Select para dropdowns
+
 type SelectProps = {
   label: string;
   name: string;
@@ -243,7 +237,7 @@ const Select = ({ label, name, value, onChange, options }: SelectProps) => (
   </div>
 );
 
-// Componente TextArea para descrições
+
 type TextAreaProps = {
   label: string;
   name: string;

@@ -5,6 +5,8 @@ import LocationRelatorio from "@/components/RelLocation";
 import { useRouter } from "next/navigation";
 
 export default function LocationPage() {
+  const router = useRouter();
+  
   return (
     <main className="flex-1 w-full flex flex-col items-center justify-center p-12 bg-gray-200">
       <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full mb-4 space-x-4">
@@ -14,7 +16,7 @@ export default function LocationPage() {
         </h1>
         <div className="flex justify-end">
           <Button
-            onClick={() => router.push("/equipament/create")}
+            onClick={() => router.push("/location/create")}
             className="font-bold"
           >
             Novo Local

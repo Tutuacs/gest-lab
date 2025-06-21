@@ -16,7 +16,7 @@ export default function EquipamentRelatorio() {
         </h1>
         <div className="flex justify-end">
           <Button
-            onClick={() => router.push("/equipament/create")}
+            onClick={() => router.push("/equipament-type/create")}
             className="font-bold"
           >
             Nova Categoria

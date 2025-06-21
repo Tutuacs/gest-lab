@@ -20,8 +20,6 @@ export default function NewLocationForm() {
     description: "",
   });
 
-  
-  // Atualiza o estado do formulário quando os inputs mudam
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -29,8 +27,6 @@ export default function NewLocationForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-
-  // Gravação dos dados no banco após clicar o botão de submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -101,6 +97,7 @@ export default function NewLocationForm() {
             name="ramal" 
             value={formData.ramal} 
             onChange={handleChange} 
+            placeholder="0000"
             />
 
             <Input 
@@ -127,10 +124,10 @@ export default function NewLocationForm() {
 
             <div className="col-span-1 md:col-span-2 mt-8">
             <button
-                type="submit"
-                className="w-full bg-blue-950 text-white py-3 rounded-xl hover:bg-blue-800 transition"
+              type="submit"
+              className="w-full py-4 font-bold text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
             >
-                Salvar
+              Salvar
             </button>
             </div>
         </form>
@@ -141,8 +138,6 @@ export default function NewLocationForm() {
 
 
 // COMPONENTES
-
-// Componentes auxiliares para os inputs, select e textarea
 type InputProps = {
   label: string;
   name: string;
@@ -167,34 +162,6 @@ const Input = ({ label, name, value, type = "text", placeholder, onChange }: Inp
   </div>
 );
 
-// Componente Select para dropdowns
-type SelectProps = {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: { value: string; label: string }[];
-};
-const Select = ({ label, name, value, onChange, options }: SelectProps) => (
-  <div className="flex flex-col">
-    <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-700">{label}</label>
-    <select
-      id={name}
-      name={name}
-      value={value}
-      onChange={onChange}
-      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      required
-    >
-      <option value="" disabled>Selecione uma opção</option>
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>{opt.label}</option>
-      ))}
-    </select>
-  </div>
-);
-
-// Componente TextArea para descrições
 type TextAreaProps = {
   label: string;
   name: string;

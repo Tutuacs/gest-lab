@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function NewEquipamentTypeForm() {
+export default function FormularioCategory() {
   const { fetchWithAuth } = useFetch()
   const router = useRouter()
   const searchParams = useSearchParams()
+
 
   const [formData, setFormData] = useState({
     name: searchParams.get('name') || '',
@@ -21,16 +22,13 @@ export default function NewEquipamentTypeForm() {
     const idFromUrl = searchParams.get('equipamentTypeId')
     const nameFromUrl = searchParams.get('name')
     const descriptionFromUrl = searchParams.get('description')
-
     if (idFromUrl) {
       setCreatedId(Number(idFromUrl))
-
       if (
         !formData.name &&
         !formData.description &&
         (!nameFromUrl || !descriptionFromUrl)
       ) {
-        // Buscar do servidor
         fetchWithAuth(`/equipament-type/${idFromUrl}`).then(result => {
           if (result?.status === 200) {
             setFormData({
@@ -41,7 +39,6 @@ export default function NewEquipamentTypeForm() {
         })
       }
     }
-
     if (nameFromUrl || descriptionFromUrl) {
       setFormData({
         name: nameFromUrl || '',
@@ -59,7 +56,6 @@ export default function NewEquipamentTypeForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     const result = await fetchWithAuth('/equipament-type', {
       method: 'POST',
       headers: {
@@ -67,7 +63,6 @@ export default function NewEquipamentTypeForm() {
       },
       body: JSON.stringify(formData)
     })
-
     if (result?.status === 201) {
       setCreatedId(result.data.id)
     } else {
@@ -90,7 +85,7 @@ export default function NewEquipamentTypeForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl grid grid-cols-1 gap-6 bg-white p-8 rounded-2xl shadow"
+      className="w-full max-w-4xl space-y-6 bg-white p-8 rounded-2xl shadow"
     >
       <Input
         label="Categoria"
@@ -109,13 +104,13 @@ export default function NewEquipamentTypeForm() {
       />
 
       {!createdId && (
-        <div className="mt-8">
+        <div className="flex justify-center">
           <button
-            type="submit"
-            className="w-full bg-blue-950 text-white py-3 rounded-xl hover:bg-blue-800 transition"
-          >
-            Cadastrar Tipo
-          </button>
+              type="submit"
+              className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
+            >
+              Cadastrar Tipo
+            </button>
         </div>
       )}
 
@@ -149,7 +144,7 @@ export default function NewEquipamentTypeForm() {
           <button
             type="button"
             onClick={() => router.push('/home')}
-            className="w-full bg-gray-600 text-white py-3 rounded-xl hover:bg-gray-700 transition"
+            className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
           >
             Finalizar Cadastro
           </button>
@@ -159,8 +154,8 @@ export default function NewEquipamentTypeForm() {
   )
 }
 
-// COMPONENTES
 
+// COMPONENTES
 type InputProps = {
   label: string
   name: string
