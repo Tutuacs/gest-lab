@@ -1,19 +1,17 @@
-import NewEquipamentTypeForm from "@/components/NewEquipamentType";
+import FormularioCategory from "@/components/NewCategory";
 
-//list 
 export default function CadastroEquipamentType() {
   return (
-    <main>
-      <div className="flex flex-col min-h-full mb-10 p-5">
-        <section className="w-full">
-          <div className="flex flex-col items-center">
-            <h1 className="mb-10 text-4xl sm:text-5xl md:text-6xl font-bold text-center text-black">
-              Categoria
-            </h1>
-            <NewEquipamentTypeForm />
-          </div>
-        </section>
+    <main className="flex-1 w-full flex flex-col items-center justify-center p-12 bg-gray-200">
+      <h1 className="text-4xl font-bold text-black text-center mb-8">
+        Cadastrar Categoria
+      </h1>
+      <div className="bg-white shadow rounded-3xl w-full max-w-3xl overflow-hidden">
+         <FormularioCategory />
       </div>
+          
     </main>
   );
 }
+
+

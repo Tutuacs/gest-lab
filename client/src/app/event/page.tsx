@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/button";
-import EquipamentoRelatorio from '@/components/RelEquipament';
+import RelatorioEvent from "@/components/RelEvent";
+
 import { useRouter } from "next/navigation";
 
 export default function CadastroEvent() {
@@ -16,7 +17,7 @@ export default function CadastroEvent() {
         </h1>
         <div className="flex justify-end">
           <Button
-            onClick={() => router.push("/equipament/create")}
+            onClick={() => router.push("/event/create")}
             className="font-bold"
           >
             Novo Evento
@@ -24,9 +25,10 @@ export default function CadastroEvent() {
         </div>
       </div>
       
-      <p className="text-red-600 mb-4">*Criar relatório de Evento</p>
       <div className="bg-white shadow rounded-3xl w-full overflow-hidden">
-        <EquipamentoRelatorio />
+        <RelatorioEvent events={[]} onDelete={function (id: number): void {
+          throw new Error("Function not implemented.");
+        } } />
       </div>
       
     </main>

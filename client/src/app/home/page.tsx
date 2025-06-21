@@ -26,7 +26,7 @@ export default function Home() {
         <div className="md:border-l border-t md:border-t-0 border-gray-200 h-full md:w-full md:h-auto" />
 
         <div className="flex flex-col gap-4">
-          <Link href="/certificados">
+          <Link href="/certificate">
             <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
               Certificados
             </button>
