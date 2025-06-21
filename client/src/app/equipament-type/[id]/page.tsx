@@ -3,7 +3,7 @@
 import useFetch from "@/utils/useFetch";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
-import EquipamentoRelatorio from "@/components/RelatorioEquipament";
+import EquipamentoRelatorio from "@/components/RelEquipament";
 
 type Params = {
   params: Promise<{ id: string }>;
