@@ -68,8 +68,7 @@ export default function EquipamentRelatorio() {
   };
 
   return (
-
-    <div className="overflow-x-auto rounded-xl">
+    <div className="overflow-x-auto">
     <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
         <tr className="bg-blue-950 text-white">
@@ -86,34 +85,34 @@ export default function EquipamentRelatorio() {
         </tr>
         </thead>
         <tbody>
-        {equipaments.map((equip) => (
-            <tr key={equip.id} className="border-t hover:bg-gray-50 transition">
-            <td className="py-3 px-4">{equip.name}</td>
-            <td className="py-3 px-4">{equip.patrimonio}</td>
-            <td className="py-3 px-4">{equip.tag}</td>
-            <td className="py-3 px-4">{equip.serie}</td>
-            <td className="py-3 px-4">{equip.modelo}</td>
-            <td className="py-3 px-4">{equip.fabricante}</td>
-            <td className="py-3 px-4">{equip.status}</td>
-            <td className="py-3 px-4">{getLocationName(equip.locationId)}</td>
-            <td className="py-3 px-4">{getTypeName(equip.equipamentTypeId)}</td>
-            <td className="py-3 px-4">
-                <button
-                className="text-blue-600 hover:underline"
-                onClick={() => router.push(`/equipament/${equip.id}`)}
-                >
-                Ver detalhes
-                </button>
-            </td>
-            </tr>
-        ))}
-        {equipaments.length === 0 && (
-            <tr>
-            <td colSpan={10} className="text-center py-6 text-gray-500">
-                Nenhum equipamento cadastrado.
-            </td>
-            </tr>
-        )}
+          {equipaments.map((equip) => (
+              <tr key={equip.id} className="border-t hover:bg-gray-50 transition">
+              <td className="py-3 px-4">{equip.name}</td>
+              <td className="py-3 px-4">{equip.patrimonio}</td>
+              <td className="py-3 px-4">{equip.tag}</td>
+              <td className="py-3 px-4">{equip.serie}</td>
+              <td className="py-3 px-4">{equip.modelo}</td>
+              <td className="py-3 px-4">{equip.fabricante}</td>
+              <td className="py-3 px-4">{equip.status}</td>
+              <td className="py-3 px-4">{getLocationName(equip.locationId)}</td>
+              <td className="py-3 px-4">{getTypeName(equip.equipamentTypeId)}</td>
+              <td className="py-3 px-4">
+                  <button
+                  className="text-blue-600 hover:underline"
+                  onClick={() => router.push(`/equipament/${equip.id}`)}
+                  >
+                  Ver detalhes
+                  </button>
+              </td>
+              </tr>
+          ))}
+          {equipaments.length === 0 && (
+              <tr>
+              <td colSpan={10} className="text-center py-6 text-gray-500">
+                  Nenhum equipamento cadastrado.
+              </td>
+              </tr>
+          )}
         </tbody>
     </table>
     </div>
