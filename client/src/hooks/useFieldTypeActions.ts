@@ -13,7 +13,7 @@ export function useFieldTypeActions() {
   // Busca todos os campos vinculados a um tipo de equipamento
   async function fetchFieldTypes(equipamentTypeId: number) {
     try {
-      const result = await fetchWithAuth(`/equipament-type/${equipamentTypeId}`);
+      const result = await fetchWithAuth(`/category/${equipamentTypeId}`);
       if (result?.status === 200) {
         setFieldTypes(result.data.FieldType || []);
       } else {

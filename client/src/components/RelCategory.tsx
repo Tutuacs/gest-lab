@@ -1,39 +1,39 @@
-"use client";
+'use client'
 
-import useFetch from "@/utils/useFetch";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Search, Edit, Trash } from "lucide-react";
+import useFetch from '@/utils/useFetch'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Search, Edit, Trash } from 'lucide-react'
 
 type EquipamentType = {
-  id: number;
-  name: string;
-  description?: string;
-  createdAt: string;
-  FieldType: { name: string }[];
-  LicenseType: { name: string }[];
-  EventType: { name: string }[];
-  Equipament: { id: number }[];
-};
+  id: number
+  name: string
+  description?: string
+  createdAt: string
+  FieldType: { name: string }[]
+  LicenseType: { name: string }[]
+  EventType: { name: string }[]
+  Equipament: { id: number }[]
+}
 
 export default function CategoryRelatorio() {
-  const { fetchWithAuth } = useFetch("Listagem de Tipos de Equipamentos");
-  const [equipamentTypes, setEquipamentTypes] = useState<EquipamentType[]>([]);
-  const router = useRouter();
+  const { fetchWithAuth } = useFetch('Listagem de Tipos de Equipamentos')
+  const [equipamentTypes, setEquipamentTypes] = useState<EquipamentType[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const fetchEquipamentTypes = async () => {
-      const result = await fetchWithAuth("/equipament-type", {
-        method: "GET",
-      });
+      const result = await fetchWithAuth('/category', {
+        method: 'GET'
+      })
 
       if (result?.status === 200) {
-        setEquipamentTypes(result.data);
+        setEquipamentTypes(result.data)
       }
-    };
+    }
 
-    fetchEquipamentTypes();
-  }, []);
+    fetchEquipamentTypes()
+  }, [])
 
   return (
     <div className="overflow-x-auto">
@@ -50,17 +50,17 @@ export default function CategoryRelatorio() {
           </tr>
         </thead>
         <tbody>
-          {equipamentTypes.map((type) => (
+          {equipamentTypes.map(type => (
             <tr key={type.id} className="border-t hover:bg-gray-50 transition">
               <td className="py-3 px-4">{type.id}</td>
               <td className="py-3 px-4">{type.name}</td>
-              <td className="py-3 px-4">{type.description || "-"}</td>
+              <td className="py-3 px-4">{type.description || '-'}</td>
               <td className="py-3 px-4">
                 {new Date(type.createdAt).toLocaleDateString()}
               </td>
               <td className="py-3 px-4">
                 <button
-                  onClick={() => router.push(`/equipament-type/${type.id}`)}
+                  onClick={() => router.push(`/category/${type.id}`)}
                   className="text-blue-700 hover:text-blue-900 transition"
                   title="Visualizar"
                 >
@@ -69,9 +69,7 @@ export default function CategoryRelatorio() {
               </td>
               <td className="py-3 px-4">
                 <button
-                  onClick={() =>
-                    router.push(`/equipament-type/edit/${type.id}`)
-                  }
+                  onClick={() => router.push(`/category/edit/${type.id}`)}
                   className="text-yellow-600 hover:text-yellow-800 transition"
                   title="Editar"
                 >
@@ -83,7 +81,7 @@ export default function CategoryRelatorio() {
                   onClick={() => {
                     if (
                       confirm(
-                        "Tem certeza que deseja excluir este tipo de equipamento?"
+                        'Tem certeza que deseja excluir este tipo de equipamento?'
                       )
                     ) {
                       // lógica de exclusão aqui
@@ -107,5 +105,5 @@ export default function CategoryRelatorio() {
         </tbody>
       </table>
     </div>
-  );
+  )
 }

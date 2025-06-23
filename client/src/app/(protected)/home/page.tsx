@@ -31,7 +31,7 @@ export default function Home() {
               Certificados
             </button>
           </Link>
-          <Link href="/equipament-type">
+          <Link href="/category">
             <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
               Categorias
             </button>

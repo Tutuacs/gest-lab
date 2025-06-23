@@ -10,7 +10,6 @@ export default function FormularioCategory() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-
   const [formData, setFormData] = useState({
     name: searchParams.get('name') || '',
     description: searchParams.get('description') || ''
@@ -29,7 +28,7 @@ export default function FormularioCategory() {
         !formData.description &&
         (!nameFromUrl || !descriptionFromUrl)
       ) {
-        fetchWithAuth(`/equipament-type/${idFromUrl}`).then(result => {
+        fetchWithAuth(`/category/${idFromUrl}`).then(result => {
           if (result?.status === 200) {
             setFormData({
               name: result.data.name || '',
@@ -56,7 +55,7 @@ export default function FormularioCategory() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const result = await fetchWithAuth('/equipament-type', {
+    const result = await fetchWithAuth('/category', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -106,11 +105,11 @@ export default function FormularioCategory() {
       {!createdId && (
         <div className="flex justify-center">
           <button
-              type="submit"
-              className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
-            >
-              Cadastrar Tipo
-            </button>
+            type="submit"
+            className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
+          >
+            Cadastrar Tipo
+          </button>
         </div>
       )}
 
@@ -153,7 +152,6 @@ export default function FormularioCategory() {
     </form>
   )
 }
-
 
 // COMPONENTES
 type InputProps = {
