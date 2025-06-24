@@ -46,34 +46,33 @@ export class LocationFunctionsService extends PrismaService {
                 id
             }
         });
-        
+
         if (!Location) {
             return false;
         }
-        
-        const existCombination = this.existCombination(block, room);
-        const existRamal = this.existRamal(Location.ramal);
-        const existName = this.existName(name);
 
-        Promise.all([existCombination, existRamal, existName])
-            .then(([existCombination, existRamal, existName]) => {
-                if (existCombination && (Location.block !== block || Location.room !== room)) {
-                    return false;
-                }
+        return Promise.all([
+            this.existCombination(block, room),
+            this.existRamal(ramal),
+            this.existName(name),
+        ]).then(([existCombination, existRamal, existName]) => {
+            if (existCombination && (Location.block !== block || Location.room !== room)) {
+                return false;
+            }
 
-                if (existRamal && Location.ramal !== ramal) {
-                    return false;
-                }
+            if (existRamal && Location.ramal !== ramal) {
+                return false;
+            }
 
-                if (existName && Location.name !== name) {
-                    return false;
-                }
+            if (existName && Location.name !== name) {
+                return false;
+            }
 
-                if (Location && Location.id !== id) {
-                    return false;
-                }
-                return true;
-            });
+            // if (Location && Location.id !== id) {
+            //     return false;
+            // }
+            return true;
+        });
     }
 
     async create(data: CreateLocationDto) {
@@ -94,7 +93,7 @@ export class LocationFunctionsService extends PrismaService {
         });
     }
 
-    async list({skip, take}: {skip?: number, take?: number}) {
+    async list({ skip, take }: { skip?: number, take?: number }) {
         return this.location.findMany({
             skip,
             take,

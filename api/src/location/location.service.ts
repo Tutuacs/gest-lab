@@ -40,7 +40,7 @@ export class LocationService {
 
   async distinctRoom(block: string) {
     const response = await this.prisma.distinctRoom(block);
-    
+
     if (response.length === 0) {
       throw new NotFoundException(`This block ${block} does not exist`);
     }

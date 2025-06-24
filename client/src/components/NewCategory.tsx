@@ -108,7 +108,7 @@ export default function FormularioCategory() {
             type="submit"
             className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
           >
-            Cadastrar Tipo
+            Cadastrar
           </button>
         </div>
       )}
