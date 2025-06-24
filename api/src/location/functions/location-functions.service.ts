@@ -67,10 +67,6 @@ export class LocationFunctionsService extends PrismaService {
             if (existName && Location.name !== name) {
                 return false;
             }
-
-            // if (Location && Location.id !== id) {
-            //     return false;
-            // }
             return true;
         });
     }

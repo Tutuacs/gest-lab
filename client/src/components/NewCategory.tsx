@@ -1,9 +1,8 @@
 'use client'
 
 import useFetch from '@/utils/useFetch'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 
 export default function FormularioCategory() {
   const { fetchWithAuth } = useFetch()
@@ -11,38 +10,26 @@ export default function FormularioCategory() {
   const searchParams = useSearchParams()
 
   const [formData, setFormData] = useState({
-    name: searchParams.get('name') || '',
-    description: searchParams.get('description') || ''
+    name: '',
+    description: '',
+    brands: '',
+    certifiedType: {
+      description: '',
+      renovateInDays: 0
+    }
   })
 
   const [createdId, setCreatedId] = useState<number | null>(null)
 
   useEffect(() => {
-    const idFromUrl = searchParams.get('equipamentTypeId')
     const nameFromUrl = searchParams.get('name')
     const descriptionFromUrl = searchParams.get('description')
-    if (idFromUrl) {
-      setCreatedId(Number(idFromUrl))
-      if (
-        !formData.name &&
-        !formData.description &&
-        (!nameFromUrl || !descriptionFromUrl)
-      ) {
-        fetchWithAuth(`/category/${idFromUrl}`).then(result => {
-          if (result?.status === 200) {
-            setFormData({
-              name: result.data.name || '',
-              description: result.data.description || ''
-            })
-          }
-        })
-      }
-    }
     if (nameFromUrl || descriptionFromUrl) {
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
         name: nameFromUrl || '',
         description: descriptionFromUrl || ''
-      })
+      }))
     }
   }, [searchParams])
 
@@ -50,35 +37,51 @@ export default function FormularioCategory() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+
+    if (name.startsWith('certifiedType.')) {
+      const field = name.split('.')[1]
+      setFormData(prev => ({
+        ...prev,
+        certifiedType: {
+          ...prev.certifiedType,
+          [field]: field === 'renovateInDays' ? Number(value) : value
+        }
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const payload = {
+      name: formData.name,
+      description: formData.description,
+      brands: formData.brands,
+      certifiedType: {
+        description: formData.certifiedType.description,
+        renovateInDays: Number(formData.certifiedType.renovateInDays)
+      }
+    }
+
     const result = await fetchWithAuth('/category', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(payload)
     })
+
     if (result?.status === 201) {
       setCreatedId(result.data.id)
+      router.push('/category')
     } else {
       console.error('Erro ao cadastrar categoria:', result?.status)
     }
-  }
-
-  const redirectTo = (type: 'field' | 'license') => {
-    if (!createdId) return
-    const base =
-      type === 'field' ? '/field-type/create' : '/license-type/create'
-    const queryParams = new URLSearchParams({
-      equipamentTypeId: createdId.toString(),
-      name: formData.name,
-      description: formData.description
-    }).toString()
-    router.push(`${base}?${queryParams}`)
   }
 
   return (
@@ -87,68 +90,54 @@ export default function FormularioCategory() {
       className="w-full max-w-4xl space-y-6 bg-white p-8 rounded-2xl shadow"
     >
       <Input
-        label="Categoria"
+        label="Nome da Categoria"
         name="name"
         value={formData.name}
         onChange={handleChange}
-        placeholder="Ex: Notebook, Impressora, Switch"
+        placeholder="Ex: Pipetas"
       />
 
       <TextArea
-        label="Descrição"
+        label="Descrição da Categoria"
         name="description"
         value={formData.description}
         onChange={handleChange}
-        placeholder="Descrição opcional do tipo de equipamento..."
+        placeholder="Categoria de equipamentos de laboratório para medição de líquidos."
       />
 
-      {!createdId && (
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
-          >
-            Cadastrar
-          </button>
-        </div>
-      )}
+      <Input
+        label="Marcas"
+        name="brands"
+        value={formData.brands}
+        onChange={handleChange}
+        placeholder="Ex: Paralela, MarcaX, MarcaY"
+      />
 
-      {createdId && (
-        <div className="flex flex-col gap-4 mt-8">
-          <button
-            type="button"
-            onClick={() => redirectTo('field')}
-            className="w-full bg-green-700 text-white py-3 rounded-xl hover:bg-green-800 transition"
-          >
-            ➕ Adicionar Campos
-          </button>
-          <button
-            type="button"
-            onClick={() => redirectTo('license')}
-            className="w-full bg-yellow-600 text-white py-3 rounded-xl hover:bg-yellow-700 transition"
-          >
-            ➕ Adicionar Certificados
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              router.push(
-                `/event-type/create?equipamentTypeId=${createdId}&name=${formData.name}&description=${formData.description}`
-              )
-            }
-            className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition"
-          >
-            ➕ Adicionar Eventos
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push('/home')}
-            className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
-          >
-            Finalizar Cadastro
-          </button>
-        </div>
-      )}
+      <TextArea
+        label="Descrição do Certificado"
+        name="certifiedType.description"
+        value={formData.certifiedType.description}
+        onChange={handleChange}
+        placeholder="Faixa de atuação 10, 20, 30... Renovação a cada 1 ano."
+      />
+
+      <Input
+        label="Renovação (em anos)"
+        name="certifiedType.renovateInDays"
+        type="number"
+        value={formData.certifiedType.renovateInDays.toString()}
+        onChange={handleChange}
+        placeholder="Ex: 365"
+      />
+
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="w-full py-4 font-bold mt-8 text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
+        >
+          Cadastrar
+        </button>
+      </div>
     </form>
   )
 }
@@ -215,6 +204,7 @@ const TextArea = ({
       onChange={onChange}
       rows={4}
       className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      required
     />
   </div>
 )
