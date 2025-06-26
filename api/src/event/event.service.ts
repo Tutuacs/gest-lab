@@ -34,8 +34,16 @@ export class EventService {
     return this.prisma.create(createEventDto);
   }
 
-  findAll(filter: FilterEventDto) {
-    return this.prisma.list(filter);
+  async findAll(filter: FilterEventDto) {
+    const filtered = await this.prisma.list(filter);
+
+    const aggregate = this.agregate(filtered);
+
+    return {
+      filter: filtered,
+      aggregate: aggregate
+    };
+
   }
 
   async findOne(id: number) {
@@ -67,4 +75,52 @@ export class EventService {
 
     return this.prisma.delete(id);
   }
+
+  agregate(filtered: {
+    id: number;
+    name: string;
+    description: string;
+    from: Date;
+    to: Date;
+    eventType: EVENT_TYPE;
+    value: number;
+    createdAt: Date;
+    equipamentId: number;
+  }[]) {
+
+    // create map
+    const types_map = new Map();
+    const value_map = new Map();
+
+    for (const event of filtered) {
+      const t = types_map.get(event.eventType);
+      const v = value_map.get(event.eventType);
+
+      if (!t) {
+        types_map.set(event.eventType, 1);
+      }
+
+      if (!v) {
+        value_map.set(event.eventType, event.value);
+        continue;
+      }
+
+      types_map.set(event.eventType, t + 1);
+      value_map.set(event.eventType, v + event.value);
+    }
+
+    const aggregate: { type: string, count: number, value: number }[] = [];
+
+    for (const [key, value] of types_map.entries()) {
+      aggregate.push({
+        type: key,
+        count: value,
+        value: value_map.get(key) || 0
+      });
+    }
+
+    return aggregate;
+
+  }
+
 }
