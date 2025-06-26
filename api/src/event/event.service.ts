@@ -14,17 +14,19 @@ export class EventService {
 
     switch (createEventDto.eventType) {
       case EVENT_TYPE.INACTIVATE_EQUIPAMENT:
-        this.prisma.prepareEquipamentInactivate(createEventDto)
+        await this.prisma.prepareEquipamentInactivate(createEventDto)
         break;
       case EVENT_TYPE.ENABLE_EQUIPAMENT:
-        this.prisma.prepareEquipamentActivate(createEventDto)
+        await this.prisma.prepareEquipamentActivate(createEventDto)
         break;
       case EVENT_TYPE.DISABLE_CERTIFIED:
-        this.prisma.prepareCertifiedDesable(createEventDto)
+        await this.prisma.prepareCertifiedDesable(createEventDto)
         break;
       case EVENT_TYPE.MAINTENANCE:
-        this.prisma.prepareEquipamentMaintenance(createEventDto)
+        await this.prisma.prepareEquipamentMaintenance(createEventDto)
         break;
+      case EVENT_TYPE.RENEW_CERTIFIED:
+        await this.prisma.prepareCertifiedRenew(createEventDto)
       default:
         console.log(`Event Type not implemented: ${createEventDto.eventType}`)
     }
