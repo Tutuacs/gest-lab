@@ -9,6 +9,8 @@ import { EquipamentModule } from './equipament/equipament.module';
 import { CategoryModule } from './category/category.module';
 import { CertifiedModule } from './certified/certified.module';
 import { EventModule } from './event/event.module';
+import { EmailModule } from './email/email.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { EventModule } from './event/event.module';
     CategoryModule,
     CertifiedModule,
     EventModule,
+    EmailModule,
+    CacheModule,
   ],
   controllers: [AppController],
   providers: [],
