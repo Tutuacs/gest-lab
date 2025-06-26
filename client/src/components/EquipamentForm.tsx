@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
 import useFetch from '@/utils/useFetch'
 
-export default function NewEquipamentForm() {
+type EquipamentFormProps = {
+  mode: 'create' | 'edit'
+  id?: string
+}
+
+export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   const router = useRouter()
   const { toast } = useToast()
   const { fetchWithAuth } = useFetch()
@@ -15,31 +20,93 @@ export default function NewEquipamentForm() {
     patrimonio: '',
     tag: '',
     serie: '',
-    fabricante: '',
-    modelo: '',
+    brand: '',
     description: '',
     locationId: '',
-    equipamentTypeId: ''
+    categoryId: ''
   })
 
   const [locations, setLocations] = useState([])
-  const [equipamentTypes, setEquipamentTypes] = useState([])
+  const [categories, setCategories] = useState([])
+  const [brands, setBrands] = useState<string[]>([])
 
+  // 1. Buscar dados de categorias e locais
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBaseData = async () => {
       try {
-        const [locRes, typeRes] = await Promise.all([
+        const [locRes, catRes] = await Promise.all([
           fetchWithAuth('/location', { method: 'GET' }),
           fetchWithAuth('/category', { method: 'GET' })
         ])
         if (locRes?.status === 200) setLocations(locRes.data)
-        if (typeRes?.status === 200) setEquipamentTypes(typeRes.data)
+        if (catRes?.status === 200) setCategories(catRes.data)
       } catch (err) {
-        console.error('Erro ao buscar opções:', err)
+        console.error('Erro ao buscar dados:', err)
       }
     }
-    fetchData()
+    fetchBaseData()
   }, [])
+
+  // 2. Buscar os dados do equipamento se for edição
+  useEffect(() => {
+    if (mode === 'edit' && id) {
+      const fetchEquipament = async () => {
+        const res = await fetchWithAuth(`/equipament/${id}`, { method: 'GET' })
+        if (res?.status === 200) {
+          const data = res.data
+          setFormData({
+            name: data.name || '',
+            patrimonio: data.patrimonio || '',
+            tag: data.tag || '',
+            serie: data.serie || '',
+            brand: data.brand || '',
+            description: data.description || '',
+            locationId: data.locationId?.toString() || '',
+            categoryId: data.categoryId?.toString() || ''
+          })
+        } else {
+          toast({
+            title: 'Erro',
+            description: 'Erro ao carregar dados do equipamento.',
+            variant: 'destructive'
+          })
+        }
+      }
+      fetchEquipament()
+    }
+  }, [mode, id])
+
+  // 3. Atualizar marcas de acordo com a categoria selecionada
+  useEffect(() => {
+    const fetchBrands = async () => {
+      if (formData.categoryId) {
+        const res = await fetchWithAuth(
+          `/category/brands/${formData.categoryId}`,
+          { method: 'GET' }
+        )
+        if (res?.status === 200) {
+          const brandString = (res.data.brands as string) || ''
+          const parsed = brandString
+            .split(',')
+            .map(b => b.trim())
+            .filter(b => b)
+          setBrands(parsed)
+        }
+      } else {
+        const res = await fetchWithAuth('/category/distinct/brands', {
+          method: 'GET'
+        })
+        if (res?.status === 200) {
+          const allBrands = (res.data.brands as string[]) || []
+          const uniqueBrands = [
+            ...new Set(allBrands.map((b: string) => b.trim()).filter(b => b))
+          ]
+          setBrands(uniqueBrands)
+        }
+      }
+    }
+    fetchBrands()
+  }, [formData.categoryId])
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -53,34 +120,39 @@ export default function NewEquipamentForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const result = await fetchWithAuth('/equipament', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        patrimonio: formData.patrimonio,
-        tag: formData.tag,
-        serie: formData.serie,
-        fabricante: formData.fabricante,
-        modelo: formData.modelo,
-        description: formData.description,
-        locationId: parseInt(formData.locationId),
-        equipamentTypeId: parseInt(formData.equipamentTypeId)
-      })
-    })
-    if (result?.status === 201) {
+    const payload = {
+      ...formData,
+      locationId: parseInt(formData.locationId),
+      categoryId: parseInt(formData.categoryId)
+    }
+
+    const result =
+      mode === 'create'
+        ? await fetchWithAuth('/equipament', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+        : await fetchWithAuth(`/equipament/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+
+    if (result?.status === 200 || result?.status === 201) {
       toast({
-        title: 'Equipamento cadastrado com sucesso!',
+        title:
+          mode === 'create'
+            ? 'Equipamento cadastrado com sucesso!'
+            : 'Equipamento atualizado com sucesso!',
         description: 'Redirecionando...'
       })
       router.push('/equipament')
     } else {
-      const msg = result?.data?.message || 'Erro ao cadastrar equipamento.'
       toast({
         title: 'Erro',
-        description: msg,
+        description:
+          result?.data?.message || 'Erro ao salvar os dados do equipamento.',
         variant: 'destructive'
       })
     }
@@ -99,21 +171,18 @@ export default function NewEquipamentForm() {
             value={formData.name}
             onChange={handleChange}
           />
-
           <Input
             label="Nº Patrimônio"
             name="patrimonio"
             value={formData.patrimonio}
             onChange={handleChange}
           />
-
           <Input
             label="Tag"
             name="tag"
             value={formData.tag}
             onChange={handleChange}
           />
-
           <Input
             label="Nº de Série"
             name="serie"
@@ -121,18 +190,23 @@ export default function NewEquipamentForm() {
             onChange={handleChange}
           />
 
-          <Input
-            label="Fabricante"
-            name="fabricante"
-            value={formData.fabricante}
+          <Select
+            label="Categoria"
+            name="categoryId"
+            value={formData.categoryId}
             onChange={handleChange}
+            options={categories.map((cat: any) => ({
+              value: cat.id.toString(),
+              label: cat.name
+            }))}
           />
 
-          <Input
-            label="Modelo"
-            name="modelo"
-            value={formData.modelo}
+          <Select
+            label="Marca"
+            name="brand"
+            value={formData.brand}
             onChange={handleChange}
+            options={brands.map(b => ({ value: b, label: b }))}
           />
 
           <Select
@@ -143,17 +217,6 @@ export default function NewEquipamentForm() {
             options={locations.map((loc: any) => ({
               value: loc.id.toString(),
               label: `${loc.block} - Sala ${loc.room}`
-            }))}
-          />
-
-          <Select
-            label="Categoria"
-            name="equipamentTypeId"
-            value={formData.equipamentTypeId}
-            onChange={handleChange}
-            options={equipamentTypes.map((type: any) => ({
-              value: type.id.toString(),
-              label: type.name
             }))}
           />
 
@@ -168,7 +231,7 @@ export default function NewEquipamentForm() {
           <div className="col-span-1 md:col-span-2 mt-8">
             <button
               type="submit"
-              className="w-full py-4 font-bold text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out"
+              className="w-full py-4 font-bold text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 transition-all"
             >
               Salvar
             </button>

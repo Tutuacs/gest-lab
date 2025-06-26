@@ -60,12 +60,13 @@ export class CreateEquipamentDto {
     @IsNumber()
     locationId: number;
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Status of the equipment',
         enum: EQUIPAMENT_STATUS,
         example: EQUIPAMENT_STATUS.MAINTENANCE,
         required: true
     })
+    @IsOptional()
     @IsEnum(EQUIPAMENT_STATUS)
     status: EQUIPAMENT_STATUS;
 

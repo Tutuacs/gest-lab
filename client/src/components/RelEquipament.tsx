@@ -3,18 +3,18 @@
 import useFetch from '@/utils/useFetch'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Search, Edit, Trash } from 'lucide-react'
 
 type Equipament = {
-  id: string
+  id: number
   name: string
   patrimonio: string
   tag: string
   serie: string
-  modelo: string
-  fabricante: string
+  brand: string
   status: string
   locationId: number
-  equipamentTypeId: number
+  categoryId: number
 }
 
 type Location = {
@@ -23,7 +23,7 @@ type Location = {
   room: string
 }
 
-type EquipamentType = {
+type Category = {
   id: number
   name: string
 }
@@ -34,13 +34,12 @@ export default function EquipamentRelatorio() {
 
   const [equipaments, setEquipaments] = useState<Equipament[]>([])
   const [locations, setLocations] = useState<Location[]>([])
-  const [equipamentTypes, setEquipamentTypes] = useState<EquipamentType[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
 
-  // Buscar dados de equipamentos, locais e tipos
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [equipamentRes, locRes, typeRes] = await Promise.all([
+        const [equipamentRes, locRes, catRes] = await Promise.all([
           fetchWithAuth('/equipament', { method: 'GET' }),
           fetchWithAuth('/location', { method: 'GET' }),
           fetchWithAuth('/category', { method: 'GET' })
@@ -48,7 +47,7 @@ export default function EquipamentRelatorio() {
 
         if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
         if (locRes?.status === 200) setLocations(locRes.data)
-        if (typeRes?.status === 200) setEquipamentTypes(typeRes.data)
+        if (catRes?.status === 200) setCategories(catRes.data)
       } catch (err) {
         console.error('Erro ao buscar dados:', err)
       }
@@ -62,9 +61,26 @@ export default function EquipamentRelatorio() {
     return loc ? `${loc.block} / Sala ${loc.room}` : '-'
   }
 
-  const getTypeName = (id: number) => {
-    const type = equipamentTypes.find(t => t.id === id)
-    return type?.name || '-'
+  const getCategoryName = (id: number) => {
+    const cat = categories.find(c => c.id === id)
+    return cat?.name || '-'
+  }
+
+  const handleDelete = async (id: number) => {
+    const confirmDelete = confirm(
+      'Tem certeza que deseja excluir este equipamento?'
+    )
+    if (!confirmDelete) return
+
+    const result = await fetchWithAuth(`/equipament/${id}`, {
+      method: 'DELETE'
+    })
+
+    if (result?.status === 200) {
+      setEquipaments(prev => prev.filter(eq => eq.id !== id))
+    } else {
+      alert('Erro ao excluir equipamento.')
+    }
   }
 
   return (
@@ -72,45 +88,68 @@ export default function EquipamentRelatorio() {
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
+            <th className="py-3 px-4 text-left">ID</th>
             <th className="py-3 px-4 text-left">Nome</th>
             <th className="py-3 px-4 text-left">Patrimônio</th>
             <th className="py-3 px-4 text-left">Tag</th>
             <th className="py-3 px-4 text-left">Nº de Série</th>
-            <th className="py-3 px-4 text-left">Modelo</th>
-            <th className="py-3 px-4 text-left">Fabricante</th>
+            <th className="py-3 px-4 text-left">Categoria</th>
+            <th className="py-3 px-4 text-left">Marca</th>
             <th className="py-3 px-4 text-left">Status</th>
             <th className="py-3 px-4 text-left">Local</th>
-            <th className="py-3 px-4 text-left">Categoria</th>
-            <th className="py-3 px-4 text-left">Ações</th>
+            <th className="py-3 px-4 text-left">Visualizar</th>
+            <th className="py-3 px-4 text-left">Editar</th>
+            <th className="py-3 px-4 text-left">Excluir</th>
           </tr>
         </thead>
         <tbody>
           {equipaments.map(equip => (
             <tr key={equip.id} className="border-t hover:bg-gray-50 transition">
+              <td className="py-3 px-4">{equip.id}</td>
               <td className="py-3 px-4">{equip.name}</td>
               <td className="py-3 px-4">{equip.patrimonio}</td>
               <td className="py-3 px-4">{equip.tag}</td>
               <td className="py-3 px-4">{equip.serie}</td>
-              <td className="py-3 px-4">{equip.modelo}</td>
-              <td className="py-3 px-4">{equip.fabricante}</td>
+              <td className="py-3 px-4">{getCategoryName(equip.categoryId)}</td>
+              <td className="py-3 px-4">{equip.brand || '-'}</td>
               <td className="py-3 px-4">{equip.status}</td>
               <td className="py-3 px-4">{getLocationName(equip.locationId)}</td>
               <td className="py-3 px-4">
-                {getTypeName(equip.equipamentTypeId)}
+                <button
+                  onClick={() => router.push(`/equipament/${equip.id}`)}
+                  className="text-blue-700 hover:text-blue-900 transition"
+                  aria-label="Visualizar"
+                  title="Visualizar"
+                >
+                  <Search size={18} />
+                </button>
               </td>
               <td className="py-3 px-4">
                 <button
-                  className="text-blue-600 hover:underline"
-                  onClick={() => router.push(`/equipament/${equip.id}`)}
+                  onClick={() => router.push(`/equipament/edit/${equip.id}`)}
+                  className="text-yellow-600 hover:text-yellow-800 transition"
+                  aria-label="Editar"
+                  title="Editar"
                 >
-                  Ver detalhes
+                  <Edit size={18} />
+                </button>
+              </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => handleDelete(equip.id)}
+                  className="text-red-600 hover:text-red-800 transition"
+                  aria-label="Excluir"
+                  title="Excluir"
+                >
+                  <Trash size={18} />
                 </button>
               </td>
             </tr>
           ))}
+
           {equipaments.length === 0 && (
             <tr>
-              <td colSpan={10} className="text-center py-6 text-gray-500">
+              <td colSpan={12} className="text-center py-6 text-gray-500">
                 Nenhum equipamento cadastrado.
               </td>
             </tr>
