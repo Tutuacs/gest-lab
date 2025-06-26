@@ -12,13 +12,14 @@ export default function FormularioCategory() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    brands: '',
     certifiedType: {
       description: '',
       renovateInDays: 0
     }
   })
 
+  const [brandInput, setBrandInput] = useState('')
+  const [brandList, setBrandList] = useState<string[]>([])
   const [createdId, setCreatedId] = useState<number | null>(null)
 
   useEffect(() => {
@@ -55,13 +56,25 @@ export default function FormularioCategory() {
     }
   }
 
+  const handleAddBrand = () => {
+    const trimmed = brandInput.trim()
+    if (trimmed && !brandList.includes(trimmed)) {
+      setBrandList(prev => [...prev, trimmed])
+      setBrandInput('')
+    }
+  }
+
+  const handleRemoveBrand = (brand: string) => {
+    setBrandList(prev => prev.filter(b => b !== brand))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const payload = {
       name: formData.name,
       description: formData.description,
-      brands: formData.brands,
+      brands: brandList.join(', '),
       certifiedType: {
         description: formData.certifiedType.description,
         renovateInDays: Number(formData.certifiedType.renovateInDays)
@@ -105,13 +118,50 @@ export default function FormularioCategory() {
         placeholder="Categoria de equipamentos de laboratório para medição de líquidos."
       />
 
-      <Input
-        label="Marcas"
-        name="brands"
-        value={formData.brands}
-        onChange={handleChange}
-        placeholder="Ex: Paralela, MarcaX, MarcaY"
-      />
+      <div className="flex flex-col">
+        <label
+          htmlFor="brandInput"
+          className="mb-1 text-sm font-medium text-gray-700"
+        >
+          Marcas
+        </label>
+        <div className="flex gap-2 mb-2">
+          <input
+            id="brandInput"
+            name="brandInput"
+            value={brandInput}
+            onChange={e => setBrandInput(e.target.value)}
+            placeholder="Ex: MarcaX"
+            className="border border-gray-300 rounded-xl px-3 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="button"
+            onClick={handleAddBrand}
+            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+          >
+            Adicionar
+          </button>
+        </div>
+        {brandList.length > 0 && (
+          <ul className="flex flex-wrap gap-2 mb-2">
+            {brandList.map((brand, index) => (
+              <li
+                key={index}
+                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full flex items-center"
+              >
+                {brand}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveBrand(brand)}
+                  className="ml-2 text-red-500 hover:text-red-700"
+                >
+                  &times;
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <TextArea
         label="Descrição do Certificado"
@@ -127,7 +177,7 @@ export default function FormularioCategory() {
         type="number"
         value={formData.certifiedType.renovateInDays.toString()}
         onChange={handleChange}
-        placeholder="Ex: 365"
+        placeholder="Ex: 1"
       />
 
       <div className="flex justify-center">
@@ -143,6 +193,7 @@ export default function FormularioCategory() {
 }
 
 // COMPONENTES
+
 type InputProps = {
   label: string
   name: string

@@ -1,4 +1,4 @@
-import FormularioCategory from "@/components/NewCategory";
+import FormularioCategory from '@/components/NewCategory'
 
 export default function CadastroEquipamentType() {
   return (
@@ -7,11 +7,8 @@ export default function CadastroEquipamentType() {
         Cadastrar Categoria
       </h1>
       <div className="bg-white shadow rounded-3xl w-full max-w-3xl overflow-hidden">
-         <FormularioCategory />
+        <FormularioCategory />
       </div>
-          
     </main>
-  );
+  )
 }
-
-

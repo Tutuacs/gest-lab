@@ -130,6 +130,7 @@ export class CategoryFunctionsService extends PrismaService {
             data: {
                 name: data.name?.toLocaleLowerCase(),
                 description: data.description?.toLocaleLowerCase(),
+                brands: data.brands,
                 CertifiedType: {
                     update: {
                         description: data.certifiedType?.description,

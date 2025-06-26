@@ -19,6 +19,9 @@ export default function EditCategoryPage() {
     }
   })
 
+  const [brandInput, setBrandInput] = useState('')
+  const [brandList, setBrandList] = useState<string[]>([])
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -31,15 +34,25 @@ export default function EditCategoryPage() {
 
       if (result?.status === 200) {
         const category = result.data
+        const brandsArray =
+          category.brands
+            ?.split(',')
+            .map((b: string) => b.trim())
+            .filter((b: string) => b) || []
         setFormData({
           name: category.name || '',
           description: category.description || '',
           brands: category.brands || '',
           certifiedType: {
-            description: category.certifiedType?.description || '',
-            renovateInDays: category.certifiedType?.renovateInDays || 0
+            description: category.CertifiedType?.description || '',
+            renovateInDays: category.CertifiedType?.renovateInDays
+              ? parseFloat(
+                  (category.CertifiedType.renovateInDays / 365).toFixed(2)
+                )
+              : 0
           }
         })
+        setBrandList(brandsArray)
       } else {
         setError('Erro ao carregar categoria.')
       }
@@ -63,12 +76,25 @@ export default function EditCategoryPage() {
         ...prev,
         certifiedType: {
           ...prev.certifiedType,
-          [field]: field === 'renovateInDays' ? Number(value) : value
+          [field]:
+            field === 'renovateInDays' ? Number(value.replace(',', '.')) : value
         }
       }))
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
     }
+  }
+
+  const handleAddBrand = () => {
+    const trimmed = brandInput.trim()
+    if (trimmed && !brandList.includes(trimmed)) {
+      setBrandList([...brandList, trimmed])
+    }
+    setBrandInput('')
+  }
+
+  const handleRemoveBrand = (brand: string) => {
+    setBrandList(prev => prev.filter(b => b !== brand))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +103,7 @@ export default function EditCategoryPage() {
     const payload = {
       name: formData.name,
       description: formData.description,
-      brands: formData.brands,
+      brands: brandList.join(', '),
       certifiedType: {
         description: formData.certifiedType.description,
         renovateInDays: Number(formData.certifiedType.renovateInDays)
@@ -140,13 +166,52 @@ export default function EditCategoryPage() {
           placeholder="Categoria de equipamentos de laboratório para medição de líquidos."
         />
 
-        <Input
-          label="Marcas"
-          name="brands"
-          value={formData.brands}
-          onChange={handleChange}
-          placeholder="Ex: Paralela, MarcaX, MarcaY"
-        />
+        <div className="flex flex-col">
+          <label
+            htmlFor="brandInput"
+            className="mb-1 text-sm font-medium text-gray-700"
+          >
+            Marcas
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="brandInput"
+              name="brandInput"
+              type="text"
+              value={brandInput}
+              placeholder="Ex: MarcaX"
+              onChange={e => setBrandInput(e.target.value)}
+              className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={handleAddBrand}
+              className="bg-indigo-600 text-white px-4 rounded-xl hover:bg-indigo-700"
+            >
+              Adicionar
+            </button>
+          </div>
+          <span className="text-sm text-red-600 mt-1">
+            * Apagar uma marca impactará na seleção de filtros
+          </span>
+          <ul className="flex flex-wrap gap-2 mt-2">
+            {brandList.map((brand, idx) => (
+              <li
+                key={idx}
+                className="bg-gray-200 px-3 py-1 rounded-xl text-sm flex items-center gap-2"
+              >
+                {brand}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveBrand(brand)}
+                  className="text-red-600 font-bold"
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <TextArea
           label="Descrição do Certificado"
@@ -162,7 +227,7 @@ export default function EditCategoryPage() {
           type="number"
           value={formData.certifiedType.renovateInDays.toString()}
           onChange={handleChange}
-          placeholder="Ex: 365"
+          placeholder="Ex: 1"
         />
 
         <button
@@ -184,6 +249,7 @@ type InputProps = {
   type?: string
   placeholder?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  note?: string
 }
 
 const Input = ({
@@ -192,7 +258,8 @@ const Input = ({
   value,
   type = 'text',
   placeholder,
-  onChange
+  onChange,
+  note
 }: InputProps) => (
   <div className="flex flex-col">
     <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-700">
@@ -208,6 +275,7 @@ const Input = ({
       className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       required
     />
+    {note && <span className="text-sm text-red-600 mt-1">{note}</span>}
   </div>
 )
 

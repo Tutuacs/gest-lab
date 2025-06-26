@@ -1,143 +1,131 @@
 'use client'
 
 import useFetch from '@/utils/useFetch'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, use } from 'react'
-import EquipamentoRelatorio from '@/components/RelEquipament'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-type Params = {
-  params: Promise<{ id: string }>
-}
-
-export default function EquipamentEspecifications({ params }: Params) {
-  const { id } = use(params)
-  const equipamentTypeId = id
-  const [equipamentType, setEquipamentType] = useState<EquipamentType | null>(
-    null
-  )
-  const router = useRouter()
+export default function ViewCategoryPage() {
+  const { id } = useParams()
   const { fetchWithAuth } = useFetch()
+  const router = useRouter()
 
-  const fetchData = async () => {
-    const result = await fetchWithAuth(`/category/${equipamentTypeId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    console.log('equipamentTypeId', equipamentTypeId)
-    if (result?.status !== 200) {
-      router.forward()
-      return
-    }
-    setEquipamentType(result.data)
-  }
+  const [category, setCategory] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!equipamentType) {
-      fetchData()
-    }
-  })
+    const loadCategory = async () => {
+      setLoading(true)
+      setError(null)
 
-  const handleNavigate = (section: 'field' | 'license' | 'event') => {
-    router.push(`/${section}-type?equipamentTypeId=${equipamentTypeId}`)
+      const result = await fetchWithAuth(`/category/${id}`)
+
+      if (result?.status === 200) {
+        setCategory(result.data)
+      } else {
+        setError('Erro ao carregar categoria.')
+      }
+
+      setLoading(false)
+    }
+
+    if (id) {
+      loadCategory()
+    }
+  }, [id])
+
+  if (loading) {
+    return (
+      <main className="flex justify-center items-center h-screen">
+        <p className="text-gray-600 text-lg">Carregando categoria...</p>
+      </main>
+    )
   }
 
-  return (
-    <div className="min-h-screen flex justify-center bg-gray-100 p-10">
-      <div className="flex flex-col gap-10 w-full max-w-6xl">
-        {/* Grid de Colunas (esquerda e direita) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Coluna da Esquerda */}
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            {equipamentType ? (
-              <>
-                <h1 className="text-3xl font-bold text-blue-950 mb-2">
-                  {equipamentType.name}
-                </h1>
-                <p className="text-sm text-gray-500 mb-4">
-                  Criado em:{' '}
-                  {new Date(equipamentType.createdAt).toLocaleString()}
-                </p>
+  if (error || !category) {
+    return (
+      <main className="flex justify-center items-center h-screen">
+        <p className="text-red-600 text-lg">
+          {error || 'Categoria não encontrada.'}
+        </p>
+      </main>
+    )
+  }
 
-                <div className="border-t pt-4 mt-4">
-                  <h2 className="text-xl font-semibold text-blue-800 mb-2">
-                    Especificações
-                  </h2>
-                  <p className="text-gray-600">
-                    Descrição: {equipamentType.description || '-'}
-                  </p>
-                </div>
-              </>
+  const brandsList = category.brands
+    ? category.brands
+        .split(',')
+        .map((b: string) => b.trim())
+        .filter((b: string) => b !== '')
+    : []
+
+  return (
+    <main className="flex-1 w-full flex flex-col items-center justify-center p-12 bg-gray-100">
+      <div className="bg-white p-10 rounded-2xl shadow max-w-4xl w-full space-y-6">
+        <h1 className="text-4xl font-bold text-center text-indigo-950 mb-6">
+          Detalhes da Categoria
+        </h1>
+
+        <InfoRow label="Nome da Categoria" value={category.name} />
+        <InfoRow label="Descrição da Categoria" value={category.description} />
+
+        <div className="flex flex-col">
+          <label className="mb-1 text-sm font-medium text-gray-700">
+            Marcas
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {brandsList.length > 0 ? (
+              brandsList.map((brand: string, index: number) => (
+                <span
+                  key={index}
+                  className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium"
+                >
+                  {brand}
+                </span>
+              ))
             ) : (
-              <p className="text-gray-600">
-                Carregando informações do tipo de equipamento...
-              </p>
+              <span className="text-gray-500">Nenhuma marca registrada.</span>
             )}
           </div>
-
-          {/* Coluna da Direita */}
-          <div className="bg-gray-50 p-6 rounded-xl shadow-md space-y-4 flex flex-col">
-            <button
-              className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
-              onClick={() => handleNavigate('field')}
-            >
-              Campos Personalizados
-            </button>
-            <button
-              className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
-              onClick={() => handleNavigate('license')}
-            >
-              Tipos de Certificado
-            </button>
-            <button
-              className="bg-blue-950 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition"
-              onClick={() => handleNavigate('event')}
-            >
-              Tipos de Atividade
-            </button>
-          </div>
         </div>
 
-        {/* Relatório abaixo das colunas */}
-        <div>
-          <EquipamentoRelatorio />
+        <InfoRow
+          label="Descrição do Certificado"
+          value={category.CertifiedType?.description || 'N/A'}
+        />
+
+        <InfoRow
+          label="Renovação (em anos)"
+          value={
+            category.CertifiedType?.renovateInDays
+              ? (category.CertifiedType.renovateInDays / 365).toFixed(2)
+              : '0'
+          }
+        />
+
+        <div className="pt-6 text-center">
+          <button
+            onClick={() => router.push('/category')}
+            className="bg-indigo-950 text-white font-semibold px-6 py-3 rounded-xl hover:bg-indigo-900"
+          >
+            Voltar para Listagem
+          </button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
-// Tipagens
-type EquipamentType = {
-  id: string
-  name: string
-  description: string
-  createdAt: Date
-  FieldType: FieldType[]
-  LicenseType: LicenseType[]
-  EventType: EventType[]
+type InfoRowProps = {
+  label: string
+  value: string
 }
 
-type FieldType = {
-  id: string
-  name: string
-  type: string
-  optional: boolean
-  createdAt: Date
-}
-
-type LicenseType = {
-  id: string
-  name: string
-  description: string
-  createdAt: Date
-}
-
-type EventType = {
-  id: string
-  name: string
-  description: string
-  createdAt: Date
-}
+const InfoRow = ({ label, value }: InfoRowProps) => (
+  <div className="flex flex-col">
+    <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
+    <p className="text-gray-800 text-base border border-gray-300 rounded-xl px-3 py-2 bg-gray-50">
+      {value}
+    </p>
+  </div>
+)
