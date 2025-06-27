@@ -5,7 +5,6 @@ model Category {
   brands        String         @default("Paralela,")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  CertifiedType CertifiedType?
 
   Equipament Equipament[]
 }

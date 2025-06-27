@@ -39,6 +39,12 @@ export class EventService {
   async findAll(filter: FilterEventDto) {
     const filtered = await this.prisma.list(filter);
 
+    if (filter.categoryId || filter.eventType || filter.equipamentId || filter.search) {
+      return {
+        filter: filtered,
+      }
+    }
+
     const aggregate = this.agregate(filtered);
 
     return {

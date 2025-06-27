@@ -1,6 +1,5 @@
 model Event {
   id          Int        @id @default(autoincrement())
-  name        String
   description String
   from        DateTime
   to          DateTime
