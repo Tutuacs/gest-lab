@@ -10,22 +10,6 @@ export class CategoryService {
   constructor(private readonly prisma: CategoryFunctionsService) { }
 
   async create(createCategoryDto: CreateCategoryDto) {
-
-    if (!createCategoryDto.certifiedType || !createCategoryDto.certifiedType.renovateInDays) {
-      throw new BadRequestException('Certified type and renovateInDays are required');
-    }
-    // parse the renovateInDays(years) to days
-    createCategoryDto.certifiedType.renovateInDays = createCategoryDto.certifiedType.renovateInDays * 365;
-    let categoryBrands = "";
-
-    for (const brand of createCategoryDto.brands.split(",")) {
-      if (brand && brand.trim() !== "") {
-        categoryBrands += brand + ", ";
-      }
-    }
-
-    createCategoryDto.brands = categoryBrands
-
     const exist = await this.prisma.existName(createCategoryDto.name);
     if (exist) {
       throw new ConflictException(`Category with name ${createCategoryDto.name} already exists`);
@@ -82,11 +66,6 @@ export class CategoryService {
     const exist = await this.prisma.exist(id);
     if (!exist) {
       throw new NotFoundException(`Category with id ${id} does not exist`);
-    }
-
-    if (updateCategoryDto.certifiedType && updateCategoryDto.certifiedType.renovateInDays) {
-      // parse the renovateInDays(years) to days
-      updateCategoryDto.certifiedType.renovateInDays = updateCategoryDto.certifiedType.renovateInDays * 365;
     }
 
     if (updateCategoryDto.name) {
