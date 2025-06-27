@@ -61,12 +61,4 @@ export class CreateEventDto {
     @IsNumber()
     equipamentId: number;
 
-    @ApiProperty({
-        
-    })
-    @IsOptional()
-    @IsNotEmpty()
-    @IsBase64()
-    certified: string;
-
 }

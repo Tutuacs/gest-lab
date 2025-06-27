@@ -36,8 +36,10 @@ export class EquipamentService {
     return this.prisma.find(id);
   }
 
-  pendents() {
-    return this.prisma.pendents();
+  pendents(locationId?: number) {
+    // TODO: handle locationId
+    locationId = 0;
+    return this.prisma.pendents(locationId);
   }
 
   async update(id: number, updateEquipamentDto: UpdateEquipamentDto) {

@@ -124,12 +124,13 @@ export class EquipamentFunctionsService extends PrismaService {
         });
     }
 
-    async pendents() {
+    async pendents(locationId?: number) {
         const today = new Date();
         // add 30 days from today
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
         return await this.equipament.findMany({
             where: {
+                ...(locationId != 0 && { locationId }),
                 OR: [
                     {
                         status: EQUIPAMENT_STATUS.MAINTENANCE,

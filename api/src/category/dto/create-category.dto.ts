@@ -20,13 +20,4 @@ export class CreateCategoryDto {
     @IsString()
     description?: string;
 
-    @ApiProperty({
-        description: 'Lista de marcas associadas à categoria',
-        example: 'Paralela, MarcaX, MarcaY',
-        required: true,
-    })
-    @IsOptional()
-    @IsString()
-    brands: string = "Paralela,";
-
 }
