@@ -30,6 +30,10 @@ export class EquipamentService {
     return this.prisma.find(id);
   }
 
+  pendents() {
+    return this.prisma.pendents();
+  }
+
   async update(id: number, updateEquipamentDto: UpdateEquipamentDto) {
 
     if (!await this.prisma.exist(id)) {

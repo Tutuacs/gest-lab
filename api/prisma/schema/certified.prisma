@@ -6,7 +6,6 @@ model Certified {
   to              DateTime
   needsRenovation Boolean          @default(false)
   renovateInYears Float            @default(0)
-  PDF             PDF?
   Equipament      Equipament       @relation(fields: [equipamentId], references: [id])
   equipamentId    Int              @unique
   updatedAt       DateTime         @updatedAt
