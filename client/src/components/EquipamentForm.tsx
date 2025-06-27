@@ -23,14 +23,23 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     brand: '',
     description: '',
     locationId: '',
-    categoryId: ''
+    categoryId: '',
+    next_maintenance: '',
+    maintenance_periodicity: '30',
+    certifiedDescription: '',
+    certifiedNeedsRenovation: false,
+    certifiedRenovateInYears: '1'
   })
 
-  const [locations, setLocations] = useState([])
-  const [categories, setCategories] = useState([])
+  const [locations, setLocations] = useState<
+    { id: number; block: string; room: string }[]
+  >([])
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+    []
+  )
   const [brands, setBrands] = useState<string[]>([])
+  const [isOtherBrand, setIsOtherBrand] = useState(false)
 
-  // 1. Buscar dados de categorias e locais
   useEffect(() => {
     const fetchBaseData = async () => {
       try {
@@ -47,7 +56,6 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     fetchBaseData()
   }, [])
 
-  // 2. Buscar os dados do equipamento se for edição
   useEffect(() => {
     if (mode === 'edit' && id) {
       const fetchEquipament = async () => {
@@ -62,12 +70,19 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             brand: data.brand || '',
             description: data.description || '',
             locationId: data.locationId?.toString() || '',
-            categoryId: data.categoryId?.toString() || ''
+            categoryId: data.categoryId?.toString() || '',
+            next_maintenance: data.next_maintenance?.substring(0, 10) || '',
+            maintenance_periodicity:
+              data.maintenance_periodicity?.toString() || '30',
+            certifiedDescription: data.certifiedDescription || '',
+            certifiedNeedsRenovation: data.certifiedNeedsRenovation || false,
+            certifiedRenovateInYears:
+              data.certifiedRenovateInYears?.toString() || '1'
           })
         } else {
           toast({
             title: 'Erro',
-            description: 'Erro ao carregar dados do equipamento.',
+            description: 'Erro ao carregar dados.',
             variant: 'destructive'
           })
         }
@@ -76,13 +91,11 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     }
   }, [mode, id])
 
-  // 3. Atualizar marcas de acordo com a categoria selecionada
   useEffect(() => {
     const fetchBrands = async () => {
       if (formData.categoryId) {
         const res = await fetchWithAuth(
-          `/category/brands/${formData.categoryId}`,
-          { method: 'GET' }
+          `/category/brands/${formData.categoryId}`
         )
         if (res?.status === 200) {
           const brandString = (res.data.brands as string) || ''
@@ -93,13 +106,11 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           setBrands(parsed)
         }
       } else {
-        const res = await fetchWithAuth('/category/distinct/brands', {
-          method: 'GET'
-        })
+        const res = await fetchWithAuth('/category/distinct/brands')
         if (res?.status === 200) {
           const allBrands = (res.data.brands as string[]) || []
           const uniqueBrands = [
-            ...new Set(allBrands.map((b: string) => b.trim()).filter(b => b))
+            ...new Set(allBrands.map(b => b.trim()).filter(b => b))
           ]
           setBrands(uniqueBrands)
         }
@@ -110,20 +121,45 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
 
   const handleChange = (
     e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked ?? false
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }))
+    if (name === 'brand') {
+      setIsOtherBrand(value === 'Outra')
+    }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  interface FormDataPayload {
+    name: string
+    patrimonio: string
+    tag: string
+    serie: string
+    brand: string
+    description: string
+    locationId: number
+    categoryId: number
+    next_maintenance: Date
+    maintenance_periodicity: number
+    certifiedDescription: string
+    certifiedNeedsRenovation: boolean
+    certifiedRenovateInYears: number
+  }
 
-    const payload = {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const payload: FormDataPayload = {
       ...formData,
       locationId: parseInt(formData.locationId),
-      categoryId: parseInt(formData.categoryId)
+      categoryId: parseInt(formData.categoryId),
+      maintenance_periodicity: parseInt(formData.maintenance_periodicity),
+      certifiedRenovateInYears: parseInt(formData.certifiedRenovateInYears),
+      next_maintenance: new Date(formData.next_maintenance)
     }
 
     const result =
@@ -143,124 +179,170 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       toast({
         title:
           mode === 'create'
-            ? 'Equipamento cadastrado com sucesso!'
-            : 'Equipamento atualizado com sucesso!',
+            ? 'Equipamento cadastrado!'
+            : 'Equipamento atualizado!',
         description: 'Redirecionando...'
       })
       router.push('/equipament')
     } else {
       toast({
         title: 'Erro',
-        description:
-          result?.data?.message || 'Erro ao salvar os dados do equipamento.',
+        description: result?.data?.message || 'Erro ao salvar os dados.',
         variant: 'destructive'
       })
     }
   }
 
   return (
-    <section className="w-full">
-      <div className="flex flex-col items-center">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-2xl shadow"
-        >
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col md:flex-row gap-6 p-6"
+    >
+      <div className="w-full md:w-1/2 bg-white rounded-2xl shadow p-6 space-y-4">
+        <Input
+          label="Nome"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <Input
+          label="Nº Patrimônio"
+          name="patrimonio"
+          value={formData.patrimonio}
+          onChange={handleChange}
+        />
+        <Input
+          label="Tag"
+          name="tag"
+          value={formData.tag}
+          onChange={handleChange}
+        />
+        <Input
+          label="Nº de Série"
+          name="serie"
+          value={formData.serie}
+          onChange={handleChange}
+        />
+        <Select
+          label="Categoria"
+          name="categoryId"
+          value={formData.categoryId}
+          onChange={handleChange}
+          options={categories.map(c => ({
+            value: c.id.toString(),
+            label: c.name
+          }))}
+        />
+        <Select
+          label="Marca"
+          name="brand"
+          value={formData.brand}
+          onChange={handleChange}
+          disabled={!formData.categoryId}
+          options={[
+            ...brands.map(b => ({ value: b, label: b })),
+            { value: 'Outra', label: 'Outra' }
+          ]}
+        />
+        {isOtherBrand && (
           <Input
-            label="Nome"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <Input
-            label="Nº Patrimônio"
-            name="patrimonio"
-            value={formData.patrimonio}
-            onChange={handleChange}
-          />
-          <Input
-            label="Tag"
-            name="tag"
-            value={formData.tag}
-            onChange={handleChange}
-          />
-          <Input
-            label="Nº de Série"
-            name="serie"
-            value={formData.serie}
-            onChange={handleChange}
-          />
-
-          <Select
-            label="Categoria"
-            name="categoryId"
-            value={formData.categoryId}
-            onChange={handleChange}
-            options={categories.map((cat: any) => ({
-              value: cat.id.toString(),
-              label: cat.name
-            }))}
-          />
-
-          <Select
-            label="Marca"
+            label="Nova Marca"
             name="brand"
             value={formData.brand}
             onChange={handleChange}
-            options={brands.map(b => ({ value: b, label: b }))}
           />
-
-          <Select
-            label="Local"
-            name="locationId"
-            value={formData.locationId}
-            onChange={handleChange}
-            options={locations.map((loc: any) => ({
-              value: loc.id.toString(),
-              label: `${loc.block} - Sala ${loc.room}`
-            }))}
-          />
-
-          <TextArea
-            label="Descrição"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Descrição do equipamento..."
-          />
-
-          <div className="col-span-1 md:col-span-2 mt-8">
-            <button
-              type="submit"
-              className="w-full py-4 font-bold text-white bg-indigo-950 rounded-2xl hover:bg-indigo-900 transition-all"
-            >
-              Salvar
-            </button>
-          </div>
-        </form>
+        )}
+        <Select
+          label="Local"
+          name="locationId"
+          value={formData.locationId}
+          onChange={handleChange}
+          options={locations.map(loc => ({
+            value: loc.id.toString(),
+            label: loc.block + ' - Sala ' + loc.room
+          }))}
+        />
+        <TextArea
+          label="Descrição"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+        />
       </div>
-    </section>
+
+      <div className="w-full md:w-1/2 bg-white rounded-2xl shadow p-6 space-y-4">
+        <Input
+          type="date"
+          label="Próxima Manutenção"
+          name="next_maintenance"
+          value={formData.next_maintenance}
+          onChange={handleChange}
+        />
+        <Input
+          label="Periodicidade (dias)"
+          name="maintenance_periodicity"
+          value={formData.maintenance_periodicity}
+          onChange={handleChange}
+        />
+        <TextArea
+          label="Descrição Certificado"
+          name="certifiedDescription"
+          value={formData.certifiedDescription}
+          onChange={handleChange}
+        />
+        <Input
+          label="Renovação em Anos"
+          name="certifiedRenovateInYears"
+          value={formData.certifiedRenovateInYears}
+          onChange={handleChange}
+        />
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="certifiedNeedsRenovation"
+            name="certifiedNeedsRenovation"
+            checked={formData.certifiedNeedsRenovation}
+            onChange={handleChange}
+          />
+          <label
+            htmlFor="certifiedNeedsRenovation"
+            className="text-sm text-gray-700"
+          >
+            Precisa de renovação
+          </label>
+        </div>
+
+        <div className="flex flex-col gap-3 pt-4">
+          <button
+            type="submit"
+            className="w-full py-3 font-bold text-white bg-indigo-950 rounded-xl hover:bg-indigo-900 transition"
+          >
+            Cadastrar
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push('/equipament')}
+            className="w-full py-3 font-bold text-indigo-950 border border-indigo-950 rounded-xl hover:bg-gray-100 transition"
+          >
+            Voltar para Listagem
+          </button>
+        </div>
+      </div>
+    </form>
   )
 }
 
-// COMPONENTES
-type InputProps = {
+// COMPONENTES BÁSICOS
+
+const Input: React.FC<{
   label: string
   name: string
   value: string
-  type?: string
-  placeholder?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
-const Input = ({
-  label,
-  name,
-  value,
-  type = 'text',
-  placeholder,
-  onChange
-}: InputProps) => (
+  type?: string
+}> = ({ label, name, value, onChange, type = 'text' }) => (
   <div className="flex flex-col">
-    <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-700">
+    <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
     </label>
     <input
@@ -268,7 +350,6 @@ const Input = ({
       name={name}
       type={type}
       value={value}
-      placeholder={placeholder}
       onChange={onChange}
       className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       required
@@ -276,16 +357,16 @@ const Input = ({
   </div>
 )
 
-type SelectProps = {
+const Select: React.FC<{
   label: string
   name: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   options: { value: string; label: string }[]
-}
-const Select = ({ label, name, value, onChange, options }: SelectProps) => (
+  disabled?: boolean
+}> = ({ label, name, value, onChange, options, disabled = false }) => (
   <div className="flex flex-col">
-    <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-700">
+    <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
     </label>
     <select
@@ -293,13 +374,14 @@ const Select = ({ label, name, value, onChange, options }: SelectProps) => (
       name={name}
       value={value}
       onChange={onChange}
+      disabled={disabled}
       className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       required
     >
       <option value="" disabled>
         Selecione uma opção
       </option>
-      {options.map(opt => (
+      {options.map((opt: { value: string; label: string }) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}
         </option>
@@ -308,31 +390,22 @@ const Select = ({ label, name, value, onChange, options }: SelectProps) => (
   </div>
 )
 
-type TextAreaProps = {
+const TextArea: React.FC<{
   label: string
   name: string
   value: string
-  placeholder?: string
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-}
-const TextArea = ({
-  label,
-  name,
-  value,
-  placeholder,
-  onChange
-}: TextAreaProps) => (
-  <div className="flex flex-col col-span-1 md:col-span-2">
-    <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-700">
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement>
+}> = ({ label, name, value, onChange }) => (
+  <div className="flex flex-col">
+    <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
     </label>
     <textarea
       id={name}
       name={name}
       value={value}
-      placeholder={placeholder}
       onChange={onChange}
-      rows={4}
+      rows={3}
       className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
