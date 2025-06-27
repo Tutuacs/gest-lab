@@ -4,7 +4,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateEquipamentDto } from '../dto/update-equipament.dto';
 import { CreateEquipamentDto } from '../dto/create-equipament.dto';
-import { CERTIFIED_STATUS } from '@prisma/client';
+import { CERTIFIED_STATUS, EQUIPAMENT_STATUS } from '@prisma/client';
 import { FilterEquipamentDto } from '../dto/filter-equipament.dto';
 
 @Injectable()
@@ -44,24 +44,6 @@ export class EquipamentFunctionsService extends PrismaService {
     }
 
     async create(data: CreateEquipamentDto) {
-
-        const certifiedTypeId =  await this.category.findFirst({
-            where: {
-                id: data.categoryId,
-            },
-            select: {
-                CertifiedType: {
-                    select: {
-                        id: true,
-                    }
-                }
-            }
-        })
-
-        if (!certifiedTypeId || !certifiedTypeId.CertifiedType || !certifiedTypeId.CertifiedType.id) {
-            throw new Error('Category not found or does not have a CertifiedType');
-        }
-
         return await this.equipament.create({
             data: {
                 name: data.name,
@@ -78,12 +60,9 @@ export class EquipamentFunctionsService extends PrismaService {
                         from: new Date(),
                         to: new Date(),
                         valid: CERTIFIED_STATUS.EXPIRED,
-                        certifiedTypeId: certifiedTypeId.CertifiedType.id,
-                        PDF: {
-                            create: {
-                                base64: '',
-                            }
-                        },
+                        description: data.certifiedDescription,
+                        needsRenovation: data.certifiedNeedsRenovation,
+                        renovateInYears: data.certifiedRenovateInYears,
                     }
                 }
             }
@@ -97,7 +76,7 @@ export class EquipamentFunctionsService extends PrismaService {
             },
         });
     }
-    
+
     async find(id: number) {
         return await this.equipament.findUnique({
             where: {
@@ -144,6 +123,43 @@ export class EquipamentFunctionsService extends PrismaService {
                         PDF: true,
                     }
                 }
+            }
+        });
+    }
+
+    async pendents() {
+        const today = new Date();
+        // add 30 days to today
+        const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        return await this.equipament.findMany({
+            where: {
+                OR: [
+                    {
+                        status: EQUIPAMENT_STATUS.MAINTENANCE,
+                    },
+                    {
+                        Certified: {
+                            needsRenovation: true,
+                            OR: [
+                                {
+                                    to: {
+                                        gte: today,
+                                        lte: nextMonth,
+                                    },
+                                },
+                                {
+                                    valid: CERTIFIED_STATUS.EXPIRED,
+                                }
+                            ]
+                        }
+                    },
+                ],
+            },
+            include: {
+                Event: {
+                    take: 1,
+                },
+                Certified: true,
             }
         });
     }

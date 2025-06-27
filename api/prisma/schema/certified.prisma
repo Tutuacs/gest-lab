@@ -1,11 +1,11 @@
 model Certified {
   id              Int              @id @default(autoincrement())
+  description     String?
   valid           CERTIFIED_STATUS @default(EXPIRED)
   from            DateTime
   to              DateTime
-  PDF             PDF?
-  CertifiedType   CertifiedType    @relation(fields: [certifiedTypeId], references: [id])
-  certifiedTypeId Int
+  needsRenovation Boolean          @default(false)
+  renovateInYears Float            @default(0)
   Equipament      Equipament       @relation(fields: [equipamentId], references: [id])
   equipamentId    Int              @unique
   updatedAt       DateTime         @updatedAt

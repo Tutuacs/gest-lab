@@ -1,6 +1,0 @@
-model PDF {
-  id          Int       @id @default(autoincrement())
-  base64      String
-  Certified   Certified @relation(fields: [certifiedId], references: [id])
-  certifiedId Int       @unique
-}

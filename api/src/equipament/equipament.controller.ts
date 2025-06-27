@@ -5,7 +5,6 @@ import { UpdateEquipamentDto } from './dto/update-equipament.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
-import { ListDto } from 'src/common/list.dto';
 import { FilterEquipamentDto } from './dto/filter-equipament.dto';
 
 // @UseGuards(AuthGuard, RoleGuard)
@@ -27,6 +26,11 @@ export class EquipamentController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.equipamentService.findOne(+id);
+  }
+
+  @Get('consult/pendents')
+  pendents() {
+    return this.equipamentService.pendents();
   }
 
   // @Access(ROLE.ADMIN, ROLE.MASTER)

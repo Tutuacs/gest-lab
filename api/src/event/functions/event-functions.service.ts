@@ -41,13 +41,33 @@ export class EventFunctionsService extends PrismaService {
     }
 
     async prepareCertifiedRenew(data: CreateEventDto) {
+
+        const equipament = await this.equipament.findFirst({
+            where: {
+                id: data.equipamentId,
+            },
+            include: {
+                Certified: {
+                    include: {
+                        CertifiedType: true,
+                    }
+                }
+            }
+        });
+
+        const renew = equipament!.Certified!.CertifiedType.renovateInDays;
+
+        const to_date = new Date();
+        to_date.setDate(to_date.getDate() + renew);
+
         return this.certified.update({
             where: {
                 equipamentId: data.equipamentId,
             },
             data: {
-                valid: CERTIFIED_STATUS.EXPIRED,
-                to: new Date(),
+                valid: CERTIFIED_STATUS.ACTIVE,
+                from: new Date(),
+                to: to_date,
                 updatedAt: new Date(),
             }
         })
