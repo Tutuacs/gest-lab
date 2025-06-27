@@ -52,13 +52,6 @@ export default function ViewCategoryPage() {
     )
   }
 
-  const brandsList = category.brands
-    ? category.brands
-        .split(',')
-        .map((b: string) => b.trim())
-        .filter((b: string) => b !== '')
-    : []
-
   return (
     <main className="flex-1 w-full flex flex-col items-center justify-center p-12 bg-gray-100">
       <div className="bg-white p-10 rounded-2xl shadow max-w-4xl w-full space-y-6">
@@ -67,40 +60,9 @@ export default function ViewCategoryPage() {
         </h1>
 
         <InfoRow label="Nome da Categoria" value={category.name} />
-        <InfoRow label="Descrição da Categoria" value={category.description} />
-
-        <div className="flex flex-col">
-          <label className="mb-1 text-sm font-medium text-gray-700">
-            Marcas
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {brandsList.length > 0 ? (
-              brandsList.map((brand: string, index: number) => (
-                <span
-                  key={index}
-                  className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  {brand}
-                </span>
-              ))
-            ) : (
-              <span className="text-gray-500">Nenhuma marca registrada.</span>
-            )}
-          </div>
-        </div>
-
         <InfoRow
-          label="Descrição do Certificado"
-          value={category.CertifiedType?.description || 'N/A'}
-        />
-
-        <InfoRow
-          label="Renovação (em anos)"
-          value={
-            category.CertifiedType?.renovateInDays
-              ? (category.CertifiedType.renovateInDays / 365).toFixed(2)
-              : '0'
-          }
+          label="Descrição da Categoria"
+          value={category.description || 'Sem descrição cadastrada.'}
         />
 
         <div className="pt-6 text-center">

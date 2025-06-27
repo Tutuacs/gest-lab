@@ -88,7 +88,6 @@ export default function EquipamentRelatorio() {
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
-            <th className="py-3 px-4 text-left">ID</th>
             <th className="py-3 px-4 text-left">Nome</th>
             <th className="py-3 px-4 text-left">Patrimônio</th>
             <th className="py-3 px-4 text-left">Tag</th>
@@ -105,7 +104,6 @@ export default function EquipamentRelatorio() {
         <tbody>
           {equipaments.map(equip => (
             <tr key={equip.id} className="border-t hover:bg-gray-50 transition">
-              <td className="py-3 px-4">{equip.id}</td>
               <td className="py-3 px-4">{equip.name}</td>
               <td className="py-3 px-4">{equip.patrimonio}</td>
               <td className="py-3 px-4">{equip.tag}</td>

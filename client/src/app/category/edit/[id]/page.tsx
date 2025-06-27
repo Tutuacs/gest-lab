@@ -11,16 +11,8 @@ export default function EditCategoryPage() {
 
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    brands: '',
-    certifiedType: {
-      description: '',
-      renovateInDays: 0
-    }
+    description: ''
   })
-
-  const [brandInput, setBrandInput] = useState('')
-  const [brandList, setBrandList] = useState<string[]>([])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -34,25 +26,10 @@ export default function EditCategoryPage() {
 
       if (result?.status === 200) {
         const category = result.data
-        const brandsArray =
-          category.brands
-            ?.split(',')
-            .map((b: string) => b.trim())
-            .filter((b: string) => b) || []
         setFormData({
           name: category.name || '',
-          description: category.description || '',
-          brands: category.brands || '',
-          certifiedType: {
-            description: category.CertifiedType?.description || '',
-            renovateInDays: category.CertifiedType?.renovateInDays
-              ? parseFloat(
-                  (category.CertifiedType.renovateInDays / 365).toFixed(2)
-                )
-              : 0
-          }
+          description: category.description || ''
         })
-        setBrandList(brandsArray)
       } else {
         setError('Erro ao carregar categoria.')
       }
@@ -69,32 +46,7 @@ export default function EditCategoryPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-
-    if (name.startsWith('certifiedType.')) {
-      const field = name.split('.')[1]
-      setFormData(prev => ({
-        ...prev,
-        certifiedType: {
-          ...prev.certifiedType,
-          [field]:
-            field === 'renovateInDays' ? Number(value.replace(',', '.')) : value
-        }
-      }))
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }))
-    }
-  }
-
-  const handleAddBrand = () => {
-    const trimmed = brandInput.trim()
-    if (trimmed && !brandList.includes(trimmed)) {
-      setBrandList([...brandList, trimmed])
-    }
-    setBrandInput('')
-  }
-
-  const handleRemoveBrand = (brand: string) => {
-    setBrandList(prev => prev.filter(b => b !== brand))
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,12 +54,7 @@ export default function EditCategoryPage() {
 
     const payload = {
       name: formData.name,
-      description: formData.description,
-      brands: brandList.join(', '),
-      certifiedType: {
-        description: formData.certifiedType.description,
-        renovateInDays: Number(formData.certifiedType.renovateInDays)
-      }
+      description: formData.description
     }
 
     const result = await fetchWithAuth(`/category/${id}`, {
@@ -164,70 +111,6 @@ export default function EditCategoryPage() {
           value={formData.description}
           onChange={handleChange}
           placeholder="Categoria de equipamentos de laboratório para medição de líquidos."
-        />
-
-        <div className="flex flex-col">
-          <label
-            htmlFor="brandInput"
-            className="mb-1 text-sm font-medium text-gray-700"
-          >
-            Marcas
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="brandInput"
-              name="brandInput"
-              type="text"
-              value={brandInput}
-              placeholder="Ex: MarcaX"
-              onChange={e => setBrandInput(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={handleAddBrand}
-              className="bg-indigo-600 text-white px-4 rounded-xl hover:bg-indigo-700"
-            >
-              Adicionar
-            </button>
-          </div>
-          <span className="text-sm text-red-600 mt-1">
-            * Apagar uma marca impactará na seleção de filtros
-          </span>
-          <ul className="flex flex-wrap gap-2 mt-2">
-            {brandList.map((brand, idx) => (
-              <li
-                key={idx}
-                className="bg-gray-200 px-3 py-1 rounded-xl text-sm flex items-center gap-2"
-              >
-                {brand}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveBrand(brand)}
-                  className="text-red-600 font-bold"
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <TextArea
-          label="Descrição do Certificado"
-          name="certifiedType.description"
-          value={formData.certifiedType.description}
-          onChange={handleChange}
-          placeholder="Faixa de atuação 10, 20, 30... Renovação a cada 1 ano."
-        />
-
-        <Input
-          label="Renovação (em anos)"
-          name="certifiedType.renovateInDays"
-          type="number"
-          value={formData.certifiedType.renovateInDays.toString()}
-          onChange={handleChange}
-          placeholder="Ex: 1"
         />
 
         <button

@@ -11,7 +11,6 @@ type Category = {
   description?: string
   createdAt: string
   Equipament: { id: number }[]
-  brands: string
 }
 
 export default function CategoryTable() {
@@ -64,10 +63,8 @@ export default function CategoryTable() {
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
-            <th className="py-3 px-4 text-left">ID</th>
             <th className="py-3 px-4 text-left">Nome</th>
             <th className="py-3 px-4 text-left">Descrição</th>
-            <th className="py-3 px-4 text-left">Marcas</th>
             <th className="py-3 px-4 text-left">Criado em</th>
             <th className="py-3 px-4 text-left">Visualizar</th>
             <th className="py-3 px-4 text-left">Editar</th>
@@ -77,7 +74,7 @@ export default function CategoryTable() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={7} className="text-center py-6 text-gray-500">
+              <td colSpan={6} className="text-center py-6 text-gray-500">
                 Carregando categorias...
               </td>
             </tr>
@@ -85,7 +82,7 @@ export default function CategoryTable() {
 
           {!loading && error && (
             <tr>
-              <td colSpan={7} className="text-center py-6 text-red-500">
+              <td colSpan={6} className="text-center py-6 text-red-500">
                 {error}
               </td>
             </tr>
@@ -93,7 +90,7 @@ export default function CategoryTable() {
 
           {!loading && !error && categories.length === 0 && (
             <tr>
-              <td colSpan={7} className="text-center py-6 text-gray-500">
+              <td colSpan={6} className="text-center py-6 text-gray-500">
                 Nenhuma categoria cadastrada.
               </td>
             </tr>
@@ -108,16 +105,8 @@ export default function CategoryTable() {
                   key={category.id}
                   className="border-t hover:bg-gray-50 transition"
                 >
-                  <td className="py-3 px-4">{category.id}</td>
                   <td className="py-3 px-4">{category.name}</td>
                   <td className="py-3 px-4">{category.description || '-'}</td>
-                  <td className="py-3 px-4">
-                    {(category.brands || '-')
-                      .split(',')
-                      .map(b => b.trim())
-                      .filter(b => b)
-                      .join(', ')}
-                  </td>
                   <td className="py-3 px-4">
                     {new Date(category.createdAt).toLocaleDateString()}
                   </td>

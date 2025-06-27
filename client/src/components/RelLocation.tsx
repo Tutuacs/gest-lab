@@ -53,7 +53,6 @@ export default function LocationRelatorio() {
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
-            <th className="py-3 px-4 text-left">ID</th>
             <th className="py-3 px-4 text-left">Nome</th>
             <th className="py-3 px-4 text-left">Responsável</th>
             <th className="py-3 px-4 text-left">Email</th>
@@ -70,7 +69,6 @@ export default function LocationRelatorio() {
         <tbody>
           {locations.map(loc => (
             <tr key={loc.id} className="border-t hover:bg-gray-50 transition">
-              <td className="py-3 px-4">{loc.id}</td>
               <td className="py-3 px-4">{loc.name}</td>
               <td className="py-3 px-4">{loc.sponsor}</td>
               <td className="py-3 px-4">{loc.email}</td>
@@ -112,7 +110,7 @@ export default function LocationRelatorio() {
           ))}
           {locations.length === 0 && (
             <tr>
-              <td colSpan={7} className="text-center py-6 text-gray-500">
+              <td colSpan={11} className="text-center py-6 text-gray-500">
                 Nenhum local cadastrado.
               </td>
             </tr>

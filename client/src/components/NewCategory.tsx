@@ -11,16 +11,8 @@ export default function FormularioCategory() {
 
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    certifiedType: {
-      description: '',
-      renovateInDays: 0
-    }
+    description: ''
   })
-
-  const [brandInput, setBrandInput] = useState('')
-  const [brandList, setBrandList] = useState<string[]>([])
-  const [createdId, setCreatedId] = useState<number | null>(null)
 
   useEffect(() => {
     const nameFromUrl = searchParams.get('name')
@@ -38,34 +30,10 @@ export default function FormularioCategory() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-
-    if (name.startsWith('certifiedType.')) {
-      const field = name.split('.')[1]
-      setFormData(prev => ({
-        ...prev,
-        certifiedType: {
-          ...prev.certifiedType,
-          [field]: field === 'renovateInDays' ? Number(value) : value
-        }
-      }))
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }))
-    }
-  }
-
-  const handleAddBrand = () => {
-    const trimmed = brandInput.trim()
-    if (trimmed && !brandList.includes(trimmed)) {
-      setBrandList(prev => [...prev, trimmed])
-      setBrandInput('')
-    }
-  }
-
-  const handleRemoveBrand = (brand: string) => {
-    setBrandList(prev => prev.filter(b => b !== brand))
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,12 +41,7 @@ export default function FormularioCategory() {
 
     const payload = {
       name: formData.name,
-      description: formData.description,
-      brands: brandList.join(', '),
-      certifiedType: {
-        description: formData.certifiedType.description,
-        renovateInDays: Number(formData.certifiedType.renovateInDays)
-      }
+      description: formData.description
     }
 
     const result = await fetchWithAuth('/category', {
@@ -90,7 +53,6 @@ export default function FormularioCategory() {
     })
 
     if (result?.status === 201) {
-      setCreatedId(result.data.id)
       router.push('/category')
     } else {
       console.error('Erro ao cadastrar categoria:', result?.status)
@@ -116,68 +78,6 @@ export default function FormularioCategory() {
         value={formData.description}
         onChange={handleChange}
         placeholder="Categoria de equipamentos de laboratório para medição de líquidos."
-      />
-
-      <div className="flex flex-col">
-        <label
-          htmlFor="brandInput"
-          className="mb-1 text-sm font-medium text-gray-700"
-        >
-          Marcas
-        </label>
-        <div className="flex gap-2 mb-2">
-          <input
-            id="brandInput"
-            name="brandInput"
-            value={brandInput}
-            onChange={e => setBrandInput(e.target.value)}
-            placeholder="Ex: MarcaX"
-            className="border border-gray-300 rounded-xl px-3 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={handleAddBrand}
-            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
-          >
-            Adicionar
-          </button>
-        </div>
-        {brandList.length > 0 && (
-          <ul className="flex flex-wrap gap-2 mb-2">
-            {brandList.map((brand, index) => (
-              <li
-                key={index}
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full flex items-center"
-              >
-                {brand}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveBrand(brand)}
-                  className="ml-2 text-red-500 hover:text-red-700"
-                >
-                  &times;
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <TextArea
-        label="Descrição do Certificado"
-        name="certifiedType.description"
-        value={formData.certifiedType.description}
-        onChange={handleChange}
-        placeholder="Faixa de atuação 10, 20, 30... Renovação a cada 1 ano."
-      />
-
-      <Input
-        label="Renovação (em anos)"
-        name="certifiedType.renovateInDays"
-        type="number"
-        value={formData.certifiedType.renovateInDays.toString()}
-        onChange={handleChange}
-        placeholder="Ex: 1"
       />
 
       <div className="flex justify-center">

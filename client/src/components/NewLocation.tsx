@@ -100,6 +100,7 @@ export default function NewLocationForm({
             name="email"
             value={formData.email}
             onChange={handleChange}
+            type="email"
           />
 
           <Input

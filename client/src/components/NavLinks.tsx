@@ -27,7 +27,7 @@ export default function NavLinks() {
                 href="/equipament"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/equipament/create"
@@ -48,7 +48,7 @@ export default function NavLinks() {
                 href="/category"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/category/create"
@@ -69,7 +69,7 @@ export default function NavLinks() {
                 href="/location"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/location/create"
@@ -101,7 +101,7 @@ export default function NavLinks() {
                 href="/equipament"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/equipament/create"
@@ -122,7 +122,7 @@ export default function NavLinks() {
                 href="/category"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/category/create"
@@ -143,7 +143,7 @@ export default function NavLinks() {
                 href="/location"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/location/create"
@@ -175,7 +175,7 @@ export default function NavLinks() {
                 href="/equipament"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/equipament/create"
@@ -196,7 +196,7 @@ export default function NavLinks() {
                 href="/category"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/category/create"
@@ -217,7 +217,7 @@ export default function NavLinks() {
                 href="/location"
                 className="px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
               >
-                Relatório
+                Listagem
               </Link>
               <Link
                 href="/location/create"
