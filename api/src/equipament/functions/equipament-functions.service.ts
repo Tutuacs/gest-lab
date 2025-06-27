@@ -104,13 +104,6 @@ export class EquipamentFunctionsService extends PrismaService {
                         id: true,
                         name: true,
                         description: true,
-                        CertifiedType: {
-                            select: {
-                                id: true,
-                                description: true,
-                                renovateInDays: true,
-                            },
-                        },
                     },
                 },
                 Certified: {
@@ -118,9 +111,11 @@ export class EquipamentFunctionsService extends PrismaService {
                         id: true,
                         from: true,
                         to: true,
+                        description: true,
+                        needsRenovation: true,
+                        renovateInYears: true,
                         valid: true,
                         updatedAt: true,
-                        PDF: true,
                     }
                 }
             }
@@ -129,7 +124,7 @@ export class EquipamentFunctionsService extends PrismaService {
 
     async pendents() {
         const today = new Date();
-        // add 30 days to today
+        // add 30 days from today
         const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
         return await this.equipament.findMany({
             where: {

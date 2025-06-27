@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { EQUIPAMENT_STATUS } from "@prisma/client";
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateEquipamentDto {
 
@@ -77,5 +77,29 @@ export class CreateEquipamentDto {
     })
     @IsNumber()
     categoryId: number;
+
+    @ApiProperty({
+        description: 'Certified description of the equipment',
+        example: 'This equipment is certified for use in high-performance tasks.',
+        required: true
+    })
+    @IsString()
+    certifiedDescription: string;
+
+    @ApiProperty({
+        description: 'Indicates if the equipment needs renovation',
+        example: true,
+        required: true
+    })
+    @IsBoolean()
+    certifiedNeedsRenovation: boolean;
+
+    @ApiProperty({
+        description: 'Number of years until the next certification is required',
+        example: 2,
+        required: true
+    })
+    @IsNumber()
+    certifiedRenovateInYears: number;
 
 }

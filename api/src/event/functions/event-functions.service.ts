@@ -47,18 +47,17 @@ export class EventFunctionsService extends PrismaService {
                 id: data.equipamentId,
             },
             include: {
-                Certified: {
-                    include: {
-                        CertifiedType: true,
-                    }
-                }
+                Certified: true
             }
         });
 
-        const renew = equipament!.Certified!.CertifiedType.renovateInDays;
+        const renew = equipament!.Certified!.renovateInYears * 365; // Convert years to days
 
         const to_date = new Date();
         to_date.setDate(to_date.getDate() + renew);
+        if (! equipament!.Certified!.needsRenovation) {
+            to_date.setFullYear(to_date.getFullYear() + 100);
+        }
 
         return this.certified.update({
             where: {
@@ -104,25 +103,9 @@ export class EventFunctionsService extends PrismaService {
         })
     }
 
-    async prepareRenewCertified(data: CreateEventDto) {
-        return this.certified.update({
-            where: {
-                equipamentId: data.equipamentId,
-            },
-            data: {
-                PDF: {
-                    update: {
-                        base64: data.certified,
-                    }
-                }
-            }
-        })
-    }
-
     create(data: CreateEventDto) {
         return this.event.create({
             data: {
-                name: data.name.toLocaleLowerCase(),
                 description: data.description.toLocaleLowerCase(),
                 from: data.from,
                 to: data.to,
@@ -148,7 +131,6 @@ export class EventFunctionsService extends PrismaService {
             },
             select: {
                 id: true,
-                name: true,
                 description: true,
                 from: true,
                 to: true,
@@ -171,7 +153,6 @@ export class EventFunctionsService extends PrismaService {
                 ...(eventType && { eventType }),
                 ...(search && {
                     OR: [
-                        { name: { contains: search.toLocaleLowerCase() } },
                         { description: { contains: search.toLocaleLowerCase() } },
                     ]
                 }),
@@ -191,7 +172,6 @@ export class EventFunctionsService extends PrismaService {
                 id: id,
             },
             data: {
-                name: data.name,
                 description: data.description,
                 from: data.from,
                 to: data.to,

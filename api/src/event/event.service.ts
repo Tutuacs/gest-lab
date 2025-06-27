@@ -19,14 +19,14 @@ export class EventService {
       case EVENT_TYPE.ENABLE_EQUIPAMENT:
         await this.prisma.prepareEquipamentActivate(createEventDto)
         break;
-      case EVENT_TYPE.DISABLE_CERTIFIED:
-        await this.prisma.prepareCertifiedDesable(createEventDto)
+      case EVENT_TYPE.CALIBRATION:
+        await this.prisma.prepareCertifiedRenew(createEventDto)
         break;
-      case EVENT_TYPE.MAINTENANCE:
+      case EVENT_TYPE.MAINTENANCE_CORRECTIVE:
         await this.prisma.prepareEquipamentMaintenance(createEventDto)
         break;
-      case EVENT_TYPE.RENEW_CERTIFIED:
-        await this.prisma.prepareCertifiedRenew(createEventDto)
+      case EVENT_TYPE.MAINTENANCE_PREVENTIVE:
+        await this.prisma.prepareEquipamentMaintenance(createEventDto)
       default:
         console.log(`Event Type not implemented: ${createEventDto.eventType}`)
     }
@@ -86,7 +86,6 @@ export class EventService {
 
   agregate(filtered: {
     id: number;
-    name: string;
     description: string;
     from: Date;
     to: Date;
