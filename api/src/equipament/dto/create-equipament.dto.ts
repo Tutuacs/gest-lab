@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { EQUIPAMENT_STATUS } from "@prisma/client";
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateEquipamentDto {
 
@@ -27,6 +27,25 @@ export class CreateEquipamentDto {
     })
     @IsString()
     patrimonio: string;
+
+    @ApiProperty({
+        description: 'Next maintenance date of the equipment',
+        example: '2024-12-31',
+        required: true
+    })
+    @IsDateString()
+    @IsDate()
+    next_maintenance: Date;
+
+    @ApiPropertyOptional({
+        description: 'Maintenance periodicity in days',
+        default: 30,
+        example: 30,
+        required: false
+    })
+    @IsOptional()
+    @IsNumber()
+    maintenance_periodicity: number;
 
     @ApiProperty({
         description: 'Tag of the equipment',

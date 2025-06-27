@@ -19,6 +19,12 @@ export class EquipamentService {
 
     createEquipamentDto.status = EQUIPAMENT_STATUS.INACTIVE;
 
+    if (!createEquipamentDto.certifiedNeedsRenovation) {
+      createEquipamentDto.next_maintenance = new Date();
+      createEquipamentDto.next_maintenance.setFullYear(createEquipamentDto.next_maintenance.getFullYear() + 100);
+      createEquipamentDto.maintenance_periodicity = 1000
+    }
+
     return this.prisma.create(createEquipamentDto);
   }
 

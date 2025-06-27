@@ -1,16 +1,18 @@
 model Equipament {
-  id          Int               @id @default(autoincrement())
-  patrimonio  String            @unique
-  tag         String
-  serie       String            @unique
-  name        String
-  brand       String            @default("Paralela")
-  Location    Location          @relation(fields: [locationId], references: [id])
-  locationId  Int
-  status      EQUIPAMENT_STATUS @default(INACTIVE)
-  Category    Category          @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  description String?
-  Certified   Certified?
-  Event       Event[]
+  id                      Int               @id @default(autoincrement())
+  patrimonio              String            @unique
+  tag                     String
+  serie                   String            @unique
+  name                    String
+  brand                   String            @default("Paralela")
+  next_maintenance        DateTime
+  maintenance_periodicity Int               @default(30)
+  Location                Location          @relation(fields: [locationId], references: [id])
+  locationId              Int
+  status                  EQUIPAMENT_STATUS @default(INACTIVE)
+  Category                Category          @relation(fields: [categoryId], references: [id])
+  categoryId              Int
+  description             String?
+  Certified               Certified?
+  Event                   Event[]
 }

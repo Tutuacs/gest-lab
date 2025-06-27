@@ -43,26 +43,11 @@ export class CategoryFunctionsService extends PrismaService {
             data: {
                 name: data.name.toLocaleLowerCase(),
                 description: data.description?.toLocaleLowerCase(),
-                brands: data.brands,
-                CertifiedType: {
-                    create: {
-                        description: data.certifiedType.description,
-                        renovateInDays: data.certifiedType.renovateInDays,
-                    }
-                }
             },
             select: {
                 id: true,
                 name: true,
                 description: true,
-                brands: true,
-                CertifiedType: {
-                    select: {
-                        id: true,
-                        description: true,
-                        renovateInDays: true,
-                    }
-                }
             }
         });
     }
@@ -80,28 +65,37 @@ export class CategoryFunctionsService extends PrismaService {
             where: {
                 id: id,
             },
-            include: {
-                CertifiedType: true,
-            }
         });
     }
 
     async distinctBrands() {
-        return await this.category.findMany({
-            distinct: ['brands'],
+        return await this.equipament.findMany({
+            distinct: ['brand'],
             select: {
-                brands: true,
+                brand: true,
+                locationId: true,
             },
         });
     }
 
-    async findBrands(id: number) {
+    async findBrands(id: number, locationId: number) {
         return await this.category.findUnique({
             where: {
                 id: id,
             },
             select: {
-                brands: true,
+                Equipament: {
+                    ...(locationId != 0 && {
+                        where: {
+                            locationId: locationId,
+                        },
+                    }),
+                    distinct: ['brand'],
+                    select: {
+                        brand: true,
+                        locationId: true,
+                    },
+                }
             },
         });
     }
@@ -130,28 +124,12 @@ export class CategoryFunctionsService extends PrismaService {
             data: {
                 name: data.name?.toLocaleLowerCase(),
                 description: data.description?.toLocaleLowerCase(),
-                brands: data.brands,
-                CertifiedType: {
-                    update: {
-                        description: data.certifiedType?.description,
-                        renovateInDays: data.certifiedType?.renovateInDays,
-                    }
-                }
             },
             select: {
                 id: true,
                 name: true,
                 description: true,
-                brands: true,
                 createdAt: true,
-                CertifiedType: {
-                    select: {
-                        id: true,
-                        description: true,
-                        renovateInDays: true,
-                        createdAt: true,
-                    }
-                },
             }
         });
     }

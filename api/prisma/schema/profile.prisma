@@ -1,9 +1,10 @@
 model Profile {
-    id         String    @id @default(uuid())
-    name       String?
-    email      String    @unique
-    password   String
-    role       ROLE      @default(USER)
-    Location   Location? @relation(fields: [locationId], references: [id])
-    locationId Int?
+    id          String    @id @default(uuid())
+    name        String?
+    email       String    @unique
+    password    String
+    periodicity Int       @default(30)
+    role        ROLE      @default(USER)
+    Location    Location? @relation(fields: [locationId], references: [id])
+    locationId  Int?
 }

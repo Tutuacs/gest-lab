@@ -49,6 +49,8 @@ export class EquipamentFunctionsService extends PrismaService {
                 name: data.name,
                 brand: data.brand,
                 categoryId: data.categoryId,
+                next_maintenance: data.next_maintenance,
+                maintenance_periodicity: data.maintenance_periodicity,
                 description: data.description,
                 patrimonio: data.patrimonio,
                 tag: data.tag,

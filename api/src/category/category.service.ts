@@ -54,15 +54,10 @@ export class CategoryService {
     // brands map
     const brandsMap: Map<string, boolean> = new Map();
 
-    for (const brand of result) {
-      // brand is a string, split by ','
-      const brandList = brand.brands.split(',').map(b => b.trim());
-      for (const b of brandList) {
-        if (b && b !== '' && !brandsMap.has(b)) {
-          brandsMap.set(b, true);
-        }
-      }
-    }
+    result.forEach((item) => {
+      // TODO by locationId
+      brandsMap.set(item.brand, true);
+    })
 
     return {
       brands: Array.from(brandsMap.keys()),
@@ -77,7 +72,9 @@ export class CategoryService {
       throw new NotFoundException(`Category with id ${id} does not exist`);
     }
 
-    return this.prisma.findBrands(id);
+    // TODO by locationId
+    const locationId = 1
+    return this.prisma.findBrands(id, locationId);
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
