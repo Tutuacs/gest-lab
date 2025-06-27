@@ -12,8 +12,8 @@ export class EquipamentService {
 
   async create(createEquipamentDto: CreateEquipamentDto) {
 
-    const { patrimonio, tag, serie } = createEquipamentDto;
-    if (await this.prisma.existCombination(patrimonio, tag, serie)) {
+    const { patrimonio, tag, serie, locationId } = createEquipamentDto;
+    if (await this.prisma.existCombination(patrimonio, tag, serie, locationId)) {
       throw new ConflictException('Equipament with this combination already exists');
     }
 

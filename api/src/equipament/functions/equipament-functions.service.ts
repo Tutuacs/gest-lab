@@ -9,14 +9,31 @@ import { FilterEquipamentDto } from '../dto/filter-equipament.dto';
 
 @Injectable()
 export class EquipamentFunctionsService extends PrismaService {
-    async existCombination(patrimonio: string, tag: string, serie: string) {
-        return 0 < await this.equipament.count({
+    async existCombination(patrimonio: string, tag: string, serie: string, locationId: number) {
+        const patrimonioExist = await this.equipament.findFirst({
             where: {
                 patrimonio: patrimonio,
-                tag: tag,
+            },
+        })
+
+        const serieExist = await this.equipament.findFirst({
+            where: {
                 serie: serie,
             },
-        });
+        })
+
+        const tagExist = await this.equipament.findFirst({
+            where: {
+                tag: tag,
+                locationId: locationId,
+            },
+        })
+
+        if (patrimonioExist || serieExist || tagExist) {
+            return true
+        }
+
+        return false
     }
 
     async exist(id: number) {
