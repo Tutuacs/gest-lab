@@ -34,8 +34,7 @@ export class CreateEquipamentDto {
         required: true
     })
     @IsDateString()
-    @IsDate()
-    next_maintenance: Date;
+    next_maintenance: string;
 
     @ApiPropertyOptional({
         description: 'Maintenance periodicity in days',

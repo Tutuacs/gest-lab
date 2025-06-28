@@ -39,6 +39,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   )
   const [brands, setBrands] = useState<string[]>([])
   const [isOtherBrand, setIsOtherBrand] = useState(false)
+  const [otherBrand, setOtherBrand] = useState('')
 
   useEffect(() => {
     const fetchBaseData = async () => {
@@ -136,62 +137,71 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   }
 
   interface FormDataPayload {
-    name: string
-    patrimonio: string
-    tag: string
-    serie: string
-    brand: string
-    description: string
-    locationId: number
-    categoryId: number
-    next_maintenance: Date
-    maintenance_periodicity: number
-    certifiedDescription: string
-    certifiedNeedsRenovation: boolean
-    certifiedRenovateInYears: number
+  name: string
+  patrimonio: string
+  tag: string
+  serie: string
+  brand: string
+  description: string
+  locationId: number
+  categoryId: number
+  next_maintenance: string 
+  maintenance_periodicity: number
+  certifiedDescription: string
+  certifiedNeedsRenovation: boolean
+  certifiedRenovateInYears: number
+}
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  
+  const isoMaintenance = formData.next_maintenance
+    ? `${formData.next_maintenance}T00:00:00Z`
+    : new Date().toISOString()
+
+  const payload: FormDataPayload = {
+    name: formData.name,
+    patrimonio: formData.patrimonio,
+    tag: formData.tag,
+    serie: formData.serie,
+    brand: isOtherBrand ? otherBrand : formData.brand,
+    description: formData.description,
+    locationId: parseInt(formData.locationId),
+    categoryId: parseInt(formData.categoryId),
+    next_maintenance: isoMaintenance,
+    maintenance_periodicity: parseInt(formData.maintenance_periodicity),
+    certifiedDescription: formData.certifiedDescription,
+    certifiedNeedsRenovation: formData.certifiedNeedsRenovation,
+    certifiedRenovateInYears: parseInt(formData.certifiedRenovateInYears)
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const payload: FormDataPayload = {
-      ...formData,
-      locationId: parseInt(formData.locationId),
-      categoryId: parseInt(formData.categoryId),
-      maintenance_periodicity: parseInt(formData.maintenance_periodicity),
-      certifiedRenovateInYears: parseInt(formData.certifiedRenovateInYears),
-      next_maintenance: new Date(formData.next_maintenance)
-    }
+  const result =
+    mode === 'create'
+      ? await fetchWithAuth('/equipament', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+      : await fetchWithAuth(`/equipament/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
 
-    const result =
-      mode === 'create'
-        ? await fetchWithAuth('/equipament', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-        : await fetchWithAuth(`/equipament/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-
-    if (result?.status === 200 || result?.status === 201) {
-      toast({
-        title:
-          mode === 'create'
-            ? 'Equipamento cadastrado!'
-            : 'Equipamento atualizado!',
-        description: 'Redirecionando...'
-      })
-      router.push('/equipament')
-    } else {
-      toast({
-        title: 'Erro',
-        description: result?.data?.message || 'Erro ao salvar os dados.',
-        variant: 'destructive'
-      })
-    }
+  if (result?.status === 200 || result?.status === 201) {
+    toast({
+      title: mode === 'create' ? 'Equipamento cadastrado!' : 'Equipamento atualizado!',
+      description: 'Redirecionando...'
+    })
+    router.push('/equipament')
+  } else {
+    toast({
+      title: 'Erro',
+      description: result?.data?.message || 'Erro ao salvar os dados.',
+      variant: 'destructive'
+    })
   }
+}
 
   return (
     <form
@@ -247,9 +257,9 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
         {isOtherBrand && (
           <Input
             label="Nova Marca"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
+            name="otherBrand"
+            value={otherBrand}
+            onChange={(e) => setOtherBrand(e.target.value)}
           />
         )}
         <Select
