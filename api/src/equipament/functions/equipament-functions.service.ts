@@ -120,25 +120,8 @@ export class EquipamentFunctionsService extends PrismaService {
                     }
                 },
                 Location: true,
-                Category: {
-                    select: {
-                        id: true,
-                        name: true,
-                        description: true,
-                    },
-                },
-                Certified: {
-                    select: {
-                        id: true,
-                        from: true,
-                        to: true,
-                        description: true,
-                        needsRenovation: true,
-                        renovateInYears: true,
-                        valid: true,
-                        updatedAt: true,
-                    }
-                }
+                Category: true,
+                Certified: true,
             }
         });
     }
