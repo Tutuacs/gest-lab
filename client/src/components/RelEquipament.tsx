@@ -13,8 +13,15 @@ type Equipament = {
   serie: string
   brand: string
   status: string
-  locationId: number
-  categoryId: number
+  Location: {
+    id: number
+    block: string
+    room: string
+  }
+  Category?: {
+    id: number
+    name: string
+  }
 }
 
 type Location = {
@@ -108,10 +115,12 @@ export default function EquipamentRelatorio() {
               <td className="py-3 px-4">{equip.patrimonio}</td>
               <td className="py-3 px-4">{equip.tag}</td>
               <td className="py-3 px-4">{equip.serie}</td>
-              <td className="py-3 px-4">{getCategoryName(equip.categoryId)}</td>
+              <td className="py-3 px-4">{equip.Category?.name || '-'}</td>
               <td className="py-3 px-4">{equip.brand || '-'}</td>
               <td className="py-3 px-4">{equip.status}</td>
-              <td className="py-3 px-4">{getLocationName(equip.locationId)}</td>
+              <td className="py-3 px-4">
+                {equip.Location ? `${equip.Location.block} / Sala ${equip.Location.room}` : '-'}
+              </td>
               <td className="py-3 px-4">
                 <button
                   onClick={() => router.push(`/equipament/${equip.id}`)}
