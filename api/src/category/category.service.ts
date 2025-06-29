@@ -46,7 +46,6 @@ export class CategoryService {
     const brandsMap: Map<string, boolean> = new Map();
 
     result.forEach((item) => {
-      // TODO by locationId
       brandsMap.set(item.brand, true);
     })
 
@@ -63,7 +62,6 @@ export class CategoryService {
       throw new NotFoundException(`Category with id ${id} does not exist`);
     }
 
-    // TODO by locationId
     if (profile.role !== ROLE.MASTER) {
       locationId = profile.locationId;
     } else {
