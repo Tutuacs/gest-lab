@@ -70,6 +70,8 @@ export class AuthFunctionsService extends PrismaService {
         name: true,
         email: true,
         role: true,
+        locationId: true,
+        periodicity: true,
       },
     });
   }

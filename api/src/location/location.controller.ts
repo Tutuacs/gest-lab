@@ -6,6 +6,7 @@ import { ListDto } from 'src/common/list.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
+import { ProfileAuth } from 'src/decorators/ProfileAtuh.decorator';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('location')
@@ -20,8 +21,8 @@ export class LocationController {
   
   @HttpCode(200)
   @Get()
-  findAll(@Query() query: ListDto) {
-    return this.locationService.findAll(query);
+  findAll(@Query() query: ListDto, @ProfileAuth() profile: { role: ROLE, locationId: number }) {
+    return this.locationService.findAll(query, profile);
   }
   
   @HttpCode(200)

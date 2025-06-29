@@ -1,7 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationFunctionsService } from './functions/location-functions.service';
+import { ROLE } from '@prisma/client';
 
 @Injectable()
 export class LocationService {
@@ -30,7 +31,15 @@ export class LocationService {
     return this.prisma.create(createLocationDto);
   }
 
-  findAll({ skip, take }: { skip?: number; take?: number }) {
+  async findAll({ skip, take }: { skip?: number; take?: number }, profile: { role: ROLE, locationId: number }) {
+    if (profile.role !== ROLE.MASTER) {
+      if (!profile.locationId) {
+        throw new ForbiddenException('Profile does not have a location associated');
+      }
+
+      return [ await this.prisma.find(profile.locationId) ]
+    }
+
     return this.prisma.list({ skip, take });
   }
 
