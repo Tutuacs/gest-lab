@@ -8,6 +8,8 @@ declare module "next-auth" {
       email: string;
       role: ROLE;
       name: string;
+      locationId: number | null;
+      periodicity: number;
     };
 
     tokens: {
@@ -16,6 +18,8 @@ declare module "next-auth" {
         email: string;
         role: ROLE;
         name: string;
+        locationId: number | null;
+        periodicity: number;
       };
       access: string;
       refresh: string;
@@ -33,6 +37,8 @@ declare module "next-auth/jwt" {
       email: string;
       role: ROLE;
       name: string;
+      locationId: number | null;
+      periodicity: number;
     };
 
     tokens: {
@@ -41,6 +47,8 @@ declare module "next-auth/jwt" {
         email: string;
         role: ROLE;
         name: string;
+        locationId: number | null;
+        periodicity: number;
       };
       access: string;
       refresh: string;

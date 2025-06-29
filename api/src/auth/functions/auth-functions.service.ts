@@ -21,6 +21,8 @@ export class AuthFunctionsService extends PrismaService {
         name: true,
         password: true,
         role: true,
+        locationId: true,
+        periodicity: true,
       },
     });
     if (profile && (await bcrypt.compare(login.password, profile.password!))) {
@@ -29,6 +31,8 @@ export class AuthFunctionsService extends PrismaService {
         email: profile.email,
         role: profile.role,
         name: profile.name,
+        locationId: profile.locationId,
+        periodicity: profile.periodicity,
       };
     } else {
       throw new UnauthorizedException('Usuário ou senha incorretos');

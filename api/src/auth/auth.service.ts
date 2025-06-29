@@ -39,6 +39,8 @@ export class AuthService {
     email: string;
     role: ROLE;
     name: string | null;
+    locationId: number | null;
+    periodicity: number;
   }) {
     return {
       token: await this.jwt.signAsync(
@@ -47,6 +49,8 @@ export class AuthService {
           email: profile.email,
           role: profile.role,
           name: profile.name,
+          locationId: profile.locationId,
+          periodicity: profile.periodicity,
         },
         {
           expiresIn: '20s',
@@ -64,6 +68,8 @@ export class AuthService {
     email: string;
     role: ROLE;
     name: string | null;
+    locationId: number | null;
+    periodicity: number;
   }) {
     return {
       token: await this.jwt.signAsync(
@@ -89,6 +95,8 @@ export class AuthService {
     email: string;
     role: ROLE;
     name: string | null;
+    locationId: number | null;
+    periodicity: number;
   }) {
     const token = (await this.createToken(profile)).token;
     const refreshToken = (await this.createRefreshToken(profile)).token;
@@ -110,6 +118,8 @@ export class AuthService {
     email: string;
     role: ROLE;
     name: string;
+    locationId: number | null;
+    periodicity: number;
   }) {
     const token = (await this.createToken(profile)).token;
     const refreshToken = (await this.createRefreshToken(profile)).token;
