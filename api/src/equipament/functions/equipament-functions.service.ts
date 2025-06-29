@@ -189,6 +189,11 @@ export class EquipamentFunctionsService extends PrismaService {
                     ]
                 }),
             },
+            include: {
+                Certified: true,
+                Location: true,
+                Category: true,
+            }
         });
     }
 
