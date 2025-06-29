@@ -18,35 +18,30 @@ export class LocationController {
     return this.locationService.create(createLocationDto);
   }
   
-  @Access()
   @HttpCode(200)
   @Get()
   findAll(@Query() query: ListDto) {
     return this.locationService.findAll(query);
   }
   
-  @Access()
   @HttpCode(200)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.locationService.findOne(+id);
   }
   
-  @Access()
   @HttpCode(200)
   @Get('distinct/block/')
   distinctBlock() {
     return this.locationService.distinctBlock();
   }
   
-  @Access()
   @HttpCode(200)
   @Get('distinct/room/:block')
   distinctRoom(@Param('block') block: string) {
     return this.locationService.distinctRoom(block);
   }
   
-  @Access()
   @HttpCode(200)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {

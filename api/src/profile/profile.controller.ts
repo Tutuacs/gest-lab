@@ -17,7 +17,6 @@ export class ProfileController {
     return this.profileService.findAll(profile);
   }
   
-  @Access()
   @Get(':id')
   findOne(@Param('id') id: string, @ProfileAuth() profile: {id: string, role: ROLE, locationId: number}) {
     return this.profileService.findOne(id, profile);
