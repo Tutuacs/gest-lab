@@ -179,7 +179,7 @@ export class EquipamentFunctionsService extends PrismaService {
             take,
             where: {
                 ...(brand && { brand }),
-                ...(locationId && { locationId }),
+                ...(locationId != 0 && { locationId }),
                 ...(status && { status }),
                 ...(search && {
                     OR: [

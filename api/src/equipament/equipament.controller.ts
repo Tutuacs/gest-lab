@@ -20,8 +20,8 @@ export class EquipamentController {
   }
   
   @Get()
-  findAll(@Query() query: FilterEquipamentDto) {
-    return this.equipamentService.findAll(query);
+  findAll(@Query() query: FilterEquipamentDto, @ProfileAuth() profile: { role: ROLE, locationId: number }) {
+    return this.equipamentService.findAll(query, profile);
   }
   
   @Get(':id')

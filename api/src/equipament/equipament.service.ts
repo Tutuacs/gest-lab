@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEquipamentDto } from './dto/create-equipament.dto';
 import { UpdateEquipamentDto } from './dto/update-equipament.dto';
 import { EquipamentFunctionsService } from './functions/equipament-functions.service';
@@ -29,7 +29,18 @@ export class EquipamentService {
     return this.prisma.create(createEquipamentDto);
   }
 
-  findAll(query: FilterEquipamentDto) {
+  findAll(query: FilterEquipamentDto, profile: { role: ROLE, locationId: number }) {
+
+    if (profile.role !== ROLE.MASTER) {
+      if (!profile.locationId) {
+        console.log('Profile does not have a location associated');
+        throw new ForbiddenException('Profile does not have a location associated');
+      }
+      query.locationId = profile.locationId;
+    } else {
+      query.locationId = query.locationId || 0;
+    }
+
     return this.prisma.list(query);
   }
 
