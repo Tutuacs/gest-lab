@@ -3,12 +3,12 @@ import { CreateEquipamentDto } from './dto/create-equipament.dto';
 import { UpdateEquipamentDto } from './dto/update-equipament.dto';
 import { EquipamentFunctionsService } from './functions/equipament-functions.service';
 import { FilterEquipamentDto } from './dto/filter-equipament.dto';
-import { EQUIPAMENT_STATUS } from '@prisma/client';
+import { EQUIPAMENT_STATUS, ROLE } from '@prisma/client';
 
 @Injectable()
 export class EquipamentService {
 
-  constructor(private readonly prisma: EquipamentFunctionsService) {}
+  constructor(private readonly prisma: EquipamentFunctionsService) { }
 
   async create(createEquipamentDto: CreateEquipamentDto) {
 
@@ -37,9 +37,10 @@ export class EquipamentService {
     return this.prisma.find(id);
   }
 
-  pendents(locationId?: number) {
-    // TODO: handle locationId
-    locationId = 0;
+  pendents(profile: { role: ROLE, locationId: number }, locationId?: number) {
+    if (profile.role !== ROLE.MASTER) {
+      locationId = profile.locationId;
+    }
     return this.prisma.pendents(locationId);
   }
 

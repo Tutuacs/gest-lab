@@ -68,8 +68,13 @@ export class CategoryFunctionsService extends PrismaService {
         });
     }
 
-    async distinctBrands() {
+    async distinctBrands(locationId: number) {
         return await this.equipament.findMany({
+            ...(locationId != 0 && {
+                where: {
+                    locationId: locationId,
+                },
+            }),
             distinct: ['brand'],
             select: {
                 brand: true,

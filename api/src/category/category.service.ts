@@ -3,6 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryFunctionsService } from './functions/category-functions.service';
 import { FilterCategoryDto } from './dto/filter-category.dto';
+import { ROLE } from '@prisma/client';
 
 @Injectable()
 export class CategoryService {
@@ -32,8 +33,14 @@ export class CategoryService {
     return this.prisma.find(id);
   }
 
-  async distinctBrands() {
-    const result = await this.prisma.distinctBrands();
+  async distinctBrands(profile: { role: ROLE, locationId: number }, locationId?: number) {
+
+    if (profile.role !== ROLE.MASTER) {
+      locationId = profile.locationId;
+    }else {
+      locationId = locationId || 0;
+    }
+    const result = await this.prisma.distinctBrands(locationId);
 
     // brands map
     const brandsMap: Map<string, boolean> = new Map();
@@ -49,7 +56,7 @@ export class CategoryService {
 
   }
 
-  async findBrands(id: number) {
+  async findBrands(id: number, profile: { role: ROLE, locationId: number }, locationId?: number) {
 
     const exist = await this.prisma.exist(id);
     if (!exist) {
@@ -57,7 +64,12 @@ export class CategoryService {
     }
 
     // TODO by locationId
-    const locationId = 1
+    if (profile.role !== ROLE.MASTER) {
+      locationId = profile.locationId;
+    } else {
+      locationId = locationId || 0;
+    }
+
     return this.prisma.findBrands(id, locationId);
   }
 

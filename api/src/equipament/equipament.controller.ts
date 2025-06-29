@@ -6,8 +6,9 @@ import { AuthGuard, RoleGuard } from 'src/guards';
 import { Access } from 'src/decorators';
 import { ROLE } from '@prisma/client';
 import { FilterEquipamentDto } from './dto/filter-equipament.dto';
+import { ProfileAuth } from 'src/decorators/ProfileAtuh.decorator';
 
-// @UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('equipament')
 export class EquipamentController {
   constructor(private readonly equipamentService: EquipamentService) { }
@@ -17,20 +18,21 @@ export class EquipamentController {
   create(@Body() createEquipamentDto: CreateEquipamentDto) {
     return this.equipamentService.create(createEquipamentDto);
   }
-
+  
   @Get()
   findAll(@Query() query: FilterEquipamentDto) {
     return this.equipamentService.findAll(query);
   }
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.equipamentService.findOne(+id);
   }
-
+  
+  @Access()
   @Get('consult/pendents')
-  pendents() {
-    return this.equipamentService.pendents();
+  pendents(@ProfileAuth() profile: { role: ROLE, locationId: number }, @Query('locationId') locationId?: number) {
+    return this.equipamentService.pendents(profile, locationId);
   }
 
   // @Access(ROLE.ADMIN, ROLE.MASTER)
