@@ -34,6 +34,7 @@ export class LocationService {
   async findAll({ skip, take }: { skip?: number; take?: number }, profile: { role: ROLE, locationId: number }) {
     if (profile.role !== ROLE.MASTER) {
       if (!profile.locationId) {
+        console.log('Profile does not have a location associated');
         throw new ForbiddenException('Profile does not have a location associated');
       }
 
