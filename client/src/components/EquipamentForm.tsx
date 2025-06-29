@@ -64,21 +64,19 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
         if (res?.status === 200) {
           const data = res.data
           setFormData({
-            name: data.name || '',
-            patrimonio: data.patrimonio || '',
-            tag: data.tag || '',
-            serie: data.serie || '',
-            brand: data.brand || '',
-            description: data.description || '',
-            locationId: data.locationId?.toString() || '',
-            categoryId: data.categoryId?.toString() || '',
+            name: data.name ?? '',
+            patrimonio: data.patrimonio ?? '',
+            tag: data.tag ?? '',
+            serie: data.serie ?? '',
+            brand: data.brand ?? '',
+            description: data.description ?? '',
+            locationId: data.locationId?.toString() ?? '',
+            categoryId: data.categoryId?.toString() ?? '',
             next_maintenance: data.next_maintenance?.substring(0, 10) || '',
-            maintenance_periodicity:
-              data.maintenance_periodicity?.toString() || '30',
-            certifiedDescription: data.certifiedDescription || '',
-            certifiedNeedsRenovation: data.certifiedNeedsRenovation || false,
-            certifiedRenovateInYears:
-              data.certifiedRenovateInYears?.toString() || '1'
+            maintenance_periodicity: data.maintenance_periodicity?.toString() || '30',
+            certifiedDescription: data.Certified?.description || '',
+            certifiedNeedsRenovation: data.Certified?.needsRenovation || false,
+            certifiedRenovateInYears: data.Certified?.renovateInYears?.toString() || '1'
           })
         } else {
           toast({
@@ -95,16 +93,15 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   useEffect(() => {
     const fetchBrands = async () => {
       if (formData.categoryId) {
-        const res = await fetchWithAuth(
-          `/category/brands/${formData.categoryId}`
-        )
+        const res = await fetchWithAuth(`/category/brands/${formData.categoryId}`)
         if (res?.status === 200) {
-          const brandString = (res.data.brands as string) || ''
-          const parsed = brandString
-            .split(',')
-            .map(b => b.trim())
-            .filter(b => b)
-          setBrands(parsed)
+          let parsed: string[] = []
+          if (Array.isArray(res.data.Equipament)) {
+            parsed = res.data.Equipament
+              .map((e: any) => e.brand)
+              .filter((b: string) => !!b && b.trim() !== '')
+          }
+          setBrands(Array.from(new Set(parsed)))
         }
       } else {
         const res = await fetchWithAuth('/category/distinct/brands')
@@ -248,7 +245,6 @@ const handleSubmit = async (e: React.FormEvent) => {
           name="brand"
           value={formData.brand}
           onChange={handleChange}
-          disabled={!formData.categoryId}
           options={[
             ...brands.map(b => ({ value: b, label: b })),
             { value: 'Outra', label: 'Outra' }
@@ -327,7 +323,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             type="submit"
             className="w-full py-3 font-bold text-white bg-indigo-950 rounded-xl hover:bg-indigo-900 transition"
           >
-            Cadastrar
+            {mode === 'create' ? 'Cadastrar' : 'Salvar'}
           </button>
           <button
             type="button"

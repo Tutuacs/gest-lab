@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation'
 import useFetch from '@/utils/useFetch'
 import { toast } from '@/components/ui/use-toast'
 import { ViewEquipamentDetails } from '@/components/ViewEquipamentDetails'
-import { CertifiedDisplay } from '@/components/CertifiedDisplay'
 import { EventActions } from '@/components/EventActions'
 
 export default function ViewEquipamentPage() {
@@ -47,15 +46,9 @@ export default function ViewEquipamentPage() {
         Visualizar Equipamento
       </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <ViewEquipamentDetails data={data} />
-        </div>
-
-        <div className="flex flex-col gap-6 bg-white p-6 rounded-lg shadow">
-          <EventActions equipamentId={id?.toString() || ''} />
-          <CertifiedDisplay certified={data.Certified} />
-        </div>
+      <div className="flex flex-col gap-6">
+        <ViewEquipamentDetails data={data} />
+        <EventActions equipamentId={id?.toString() || ''} />
       </div>
     </main>
   )

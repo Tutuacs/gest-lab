@@ -112,6 +112,8 @@ export class EquipamentFunctionsService extends PrismaService {
                 serie: true,
                 locationId: true,
                 status: true,
+                next_maintenance: true,           // <-- ADICIONE AQUI
+                maintenance_periodicity: true,    // <-- ADICIONE AQUI
                 _count: {
                     select: {
                         Event: true,
