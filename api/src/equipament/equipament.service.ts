@@ -37,11 +37,13 @@ export class EquipamentService {
     return this.prisma.find(id);
   }
 
-  pendents(profile: { role: ROLE, locationId: number }, locationId?: number) {
+  pendents(profile: { role: ROLE, locationId: number, periodicity: number }, locationId?: number) {
     if (profile.role !== ROLE.MASTER) {
       locationId = profile.locationId;
+    }else {
+      locationId = locationId || 0;
     }
-    return this.prisma.pendents(locationId);
+    return this.prisma.pendents(locationId, profile.periodicity);
   }
 
   async update(id: number, updateEquipamentDto: UpdateEquipamentDto) {

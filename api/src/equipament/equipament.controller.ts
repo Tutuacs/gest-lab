@@ -31,7 +31,7 @@ export class EquipamentController {
   
   @Access()
   @Get('consult/pendents')
-  pendents(@ProfileAuth() profile: { role: ROLE, locationId: number }, @Query('locationId') locationId?: number) {
+  pendents(@ProfileAuth() profile: { role: ROLE, locationId: number, periodicity: number }, @Query('locationId') locationId?: number) {
     return this.equipamentService.pendents(profile, locationId);
   }
 
