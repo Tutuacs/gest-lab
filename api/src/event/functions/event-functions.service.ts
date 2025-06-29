@@ -86,12 +86,28 @@ export class EventFunctionsService extends PrismaService {
     }
 
     async prepareEquipamentMaintenance(data: CreateEventDto) {
+        const next_maintenance = new Date();
+
+        const equipament = await this.equipament.findFirst({
+            where: {
+                id: data.equipamentId,
+            },
+            select: {
+                maintenance_periodicity: true,
+            }
+        });
+
+        if (equipament) {
+            next_maintenance.setDate(next_maintenance.getDate() + equipament.maintenance_periodicity);
+        }
+
         return this.equipament.update({
             where: {
                 id: data.equipamentId,
             },
             data: {
                 status: EQUIPAMENT_STATUS.MAINTENANCE,
+                next_maintenance: next_maintenance,
                 Certified: {
                     update: {
                         valid: CERTIFIED_STATUS.EXPIRED,
