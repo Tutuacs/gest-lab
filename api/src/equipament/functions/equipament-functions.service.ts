@@ -112,8 +112,8 @@ export class EquipamentFunctionsService extends PrismaService {
                 serie: true,
                 locationId: true,
                 status: true,
-                next_maintenance: true,           // <-- ADICIONE AQUI
-                maintenance_periodicity: true,    // <-- ADICIONE AQUI
+                next_maintenance: true,
+                maintenance_periodicity: true,
                 _count: {
                     select: {
                         Event: true,
@@ -177,6 +177,8 @@ export class EquipamentFunctionsService extends PrismaService {
                     take: 1,
                 },
                 Certified: true,
+                Location: true,
+                Category: true,
             }
         });
     }
@@ -206,6 +208,11 @@ export class EquipamentFunctionsService extends PrismaService {
                 id: id,
             },
             data,
+            include: {
+                Certified: true,
+                Location: true,
+                Category: true,
+            }
         });
     }
 
