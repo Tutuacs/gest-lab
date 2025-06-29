@@ -30,6 +30,8 @@ export class AuthController {
       email: string;
       role: ROLE;
       name: string;
+      locationId: number | null;
+      periodicity: number;
     },
   ) {
     return this.service.refreshTokens(profile);
