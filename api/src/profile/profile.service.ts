@@ -9,7 +9,7 @@ export class ProfileService {
 
   constructor(private readonly prisma: PrismaService) { }
 
-  async findAll(profile: { id: string, role: ROLE }) {
+  async findAll(profile: { id: string, role: ROLE, locationId: number }) {
 
     if (profile.role != ROLE.MASTER) {
       if (profile.role != ROLE.ADMIN) {
@@ -20,16 +20,7 @@ export class ProfileService {
         })
       }
 
-      const location = await this.prisma.profile.findFirst({
-        where: {
-          id: profile.id,
-        },
-        include: {
-          Location: true,
-        }
-      }).Location();
-
-      if (!location) {
+      if (!profile.locationId) {
         return this.prisma.profile.findFirst({
           where: {
             id: profile.id,
@@ -39,12 +30,19 @@ export class ProfileService {
 
       return this.prisma.profile.findMany({
         where: {
-          locationId: location.id,
+          OR: [
+            {
+              locationId: profile.locationId,
+            },
+            {
+              locationId: null,
+            }
+          ]
         },
       });
     }
 
-    return this.prisma.profile.findMany({});
+    return this.prisma.profile.findMany();
   }
 
   findOne(id: string, profile: { id: string, role: ROLE, locationId: number }) {

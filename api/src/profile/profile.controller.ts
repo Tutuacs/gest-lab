@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards, MethodNotAllowedException } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AuthGuard, RoleGuard } from 'src/guards';
@@ -13,7 +13,7 @@ export class ProfileController {
 
   @Access(ROLE.ADMIN, ROLE.MASTER)
   @Get()
-  findAll(@ProfileAuth() profile: {id: string, role: ROLE}) {
+  findAll(@ProfileAuth() profile: {id: string, role: ROLE, locationId: number}) {
     return this.profileService.findAll(profile);
   }
   
@@ -30,6 +30,7 @@ export class ProfileController {
   @Access(ROLE.MASTER)
   @Delete(':id')
   remove(@Param('id') id: string, @ProfileAuth() profile: {id: string, role: ROLE}) {
+    throw new MethodNotAllowedException('This method is not allowed.')
     return this.profileService.remove(id, profile);
   }
 }
