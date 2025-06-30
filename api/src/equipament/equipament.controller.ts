@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, MethodNotAllowedException } from '@nestjs/common';
 import { EquipamentService } from './equipament.service';
 import { CreateEquipamentDto } from './dto/create-equipament.dto';
 import { UpdateEquipamentDto } from './dto/update-equipament.dto';
@@ -43,6 +43,7 @@ export class EquipamentController {
   // @Access(ROLE.MASTER)
   @Delete(':id')
   remove(@Param('id') id: string) {
+    throw new MethodNotAllowedException('This method is not allowed.')
     return this.equipamentService.remove(+id);
   }
 }

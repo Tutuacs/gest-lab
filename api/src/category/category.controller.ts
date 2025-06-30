@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, MethodNotAllowedException } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -46,6 +46,7 @@ export class CategoryController {
   @Access(ROLE.MASTER)
   @Delete(':id')
   remove(@Param('id') id: string) {
+    throw new MethodNotAllowedException('This method is not allowed.')
     return this.categoryService.remove(+id);
   }
 }
