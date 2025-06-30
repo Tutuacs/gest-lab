@@ -73,10 +73,12 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             locationId: data.locationId?.toString() ?? '',
             categoryId: data.categoryId?.toString() ?? '',
             next_maintenance: data.next_maintenance?.substring(0, 10) || '',
-            maintenance_periodicity: data.maintenance_periodicity?.toString() || '30',
+            maintenance_periodicity:
+              data.maintenance_periodicity?.toString() || '30',
             certifiedDescription: data.Certified?.description || '',
             certifiedNeedsRenovation: data.Certified?.needsRenovation || false,
-            certifiedRenovateInYears: data.Certified?.renovateInYears?.toString() || '1'
+            certifiedRenovateInYears:
+              data.Certified?.renovateInYears?.toString() || '1'
           })
         } else {
           toast({
@@ -93,13 +95,15 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   useEffect(() => {
     const fetchBrands = async () => {
       if (formData.categoryId) {
-        const res = await fetchWithAuth(`/category/brands/${formData.categoryId}`)
+        const res = await fetchWithAuth(
+          `/category/brands/${formData.categoryId}`
+        )
         if (res?.status === 200) {
           let parsed: string[] = []
           if (Array.isArray(res.data.Equipament)) {
-            parsed = res.data.Equipament
-              .map((e: any) => e.brand)
-              .filter((b: string) => !!b && b.trim() !== '')
+            parsed = res.data.Equipament.map((e: any) => e.brand).filter(
+              (b: string) => !!b && b.trim() !== ''
+            )
           }
           setBrands(Array.from(new Set(parsed)))
         }
@@ -134,71 +138,76 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   }
 
   interface FormDataPayload {
-  name: string
-  patrimonio: string
-  tag: string
-  serie: string
-  brand: string
-  description: string
-  locationId: number
-  categoryId: number
-  next_maintenance: string 
-  maintenance_periodicity: number
-  certifiedDescription: string
-  certifiedNeedsRenovation: boolean
-  certifiedRenovateInYears: number
-}
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  
-  const isoMaintenance = formData.next_maintenance
-    ? `${formData.next_maintenance}T00:00:00Z`
-    : new Date().toISOString()
-
-  const payload: FormDataPayload = {
-    name: formData.name,
-    patrimonio: formData.patrimonio,
-    tag: formData.tag,
-    serie: formData.serie,
-    brand: isOtherBrand ? otherBrand : formData.brand,
-    description: formData.description,
-    locationId: parseInt(formData.locationId),
-    categoryId: parseInt(formData.categoryId),
-    next_maintenance: isoMaintenance,
-    maintenance_periodicity: parseInt(formData.maintenance_periodicity),
-    certifiedDescription: formData.certifiedDescription,
-    certifiedNeedsRenovation: formData.certifiedNeedsRenovation,
-    certifiedRenovateInYears: parseInt(formData.certifiedRenovateInYears)
+    name: string
+    patrimonio: string
+    tag: string
+    serie: string
+    brand: string
+    description: string
+    locationId: number
+    categoryId: number
+    next_maintenance: string
+    maintenance_periodicity: number
+    certifiedDescription: string
+    certifiedNeedsRenovation: boolean
+    certifiedRenovateInYears: number
   }
 
-  const result =
-    mode === 'create'
-      ? await fetchWithAuth('/equipament', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
-      : await fetchWithAuth(`/equipament/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-  if (result?.status === 200 || result?.status === 201) {
-    toast({
-      title: mode === 'create' ? 'Equipamento cadastrado!' : 'Equipamento atualizado!',
-      description: 'Redirecionando...'
-    })
-    router.push('/equipament')
-  } else {
-    toast({
-      title: 'Erro',
-      description: result?.data?.message || 'Erro ao salvar os dados.',
-      variant: 'destructive'
-    })
+    const isoMaintenance = formData.next_maintenance
+      ? `${formData.next_maintenance}T00:00:00Z`
+      : new Date().toISOString()
+
+    const payload: FormDataPayload = {
+      name: formData.name,
+      patrimonio: formData.patrimonio,
+      tag: formData.tag,
+      serie: formData.serie,
+      brand: isOtherBrand ? otherBrand : formData.brand,
+      description: formData.description,
+      locationId: parseInt(formData.locationId),
+      categoryId: parseInt(formData.categoryId),
+      next_maintenance: isoMaintenance,
+      maintenance_periodicity: parseInt(formData.maintenance_periodicity),
+      certifiedDescription: formData.certifiedDescription,
+      certifiedNeedsRenovation: formData.certifiedNeedsRenovation,
+      certifiedRenovateInYears: parseFloat(
+        formData.certifiedRenovateInYears.replace(',', '.')
+      )
+    }
+
+    const result =
+      mode === 'create'
+        ? await fetchWithAuth('/equipament', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+        : await fetchWithAuth(`/equipament/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+
+    if (result?.status === 200 || result?.status === 201) {
+      toast({
+        title:
+          mode === 'create'
+            ? 'Equipamento cadastrado!'
+            : 'Equipamento atualizado!',
+        description: 'Redirecionando...'
+      })
+      router.push('/equipament')
+    } else {
+      toast({
+        title: 'Erro',
+        description: result?.data?.message || 'Erro ao salvar os dados.',
+        variant: 'destructive'
+      })
+    }
   }
-}
 
   return (
     <form
@@ -255,7 +264,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             label="Nova Marca"
             name="otherBrand"
             value={otherBrand}
-            onChange={(e) => setOtherBrand(e.target.value)}
+            onChange={e => setOtherBrand(e.target.value)}
           />
         )}
         <Select

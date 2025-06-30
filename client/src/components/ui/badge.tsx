@@ -3,7 +3,7 @@ import classNames from 'classnames'
 
 interface BadgeProps {
   children: React.ReactNode
-  variant?: 'default' | 'outline' | 'success' | 'danger'
+  variant?: 'default' | 'outline' | 'success' | 'danger' | 'maintenance'
   className?: string
 }
 
@@ -17,7 +17,8 @@ export const Badge = ({
     default: 'bg-gray-200 text-gray-800',
     outline: 'border border-gray-400 text-gray-800',
     success: 'bg-green-200 text-green-800',
-    danger: 'bg-red-200 text-red-800'
+    danger: 'bg-red-200 text-red-800',
+    maintenance: 'bg-orange-200 text-orange-800'
   }
 
   return (
