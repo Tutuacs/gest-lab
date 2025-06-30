@@ -129,7 +129,7 @@ export class EquipamentFunctionsService extends PrismaService {
     async pendents(locationId: number, periodicity: number) {
         const today = new Date();
         // add 30 days from today
-        const nextMonth = new Date(today.getFullYear(), today.getMonth() , today.getDate() + periodicity);
+        const nextMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate() + periodicity);
         return await this.equipament.findMany({
             where: {
                 ...(locationId != 0 && { locationId }),
@@ -199,16 +199,39 @@ export class EquipamentFunctionsService extends PrismaService {
 
     async update(id: number, data: UpdateEquipamentDto) {
         return await this.equipament.update({
-            where: {
-                id: id,
+            where: { id },
+            data: {
+                name: data.name,
+                patrimonio: data.patrimonio,
+                tag: data.tag,
+                serie: data.serie,
+                brand: data.brand,
+                description: data.description,
+                next_maintenance: data.next_maintenance,
+                maintenance_periodicity: data.maintenance_periodicity,
+                status: data.status,
+
+                Location: {
+                    connect: { id: data.locationId },
+                },
+                Category: {
+                    connect: { id: data.categoryId },
+                },
+
+                Certified: {
+                    update: {
+                        description: data.certifiedDescription,
+                        needsRenovation: data.certifiedNeedsRenovation,
+                        renovateInYears: data.certifiedRenovateInYears,
+                    },
+                },
             },
-            data,
             include: {
                 Certified: true,
                 Location: true,
                 Category: true,
-            }
-        });
+            },
+        })
     }
 
 }

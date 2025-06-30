@@ -80,6 +80,8 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             certifiedRenovateInYears:
               data.Certified?.renovateInYears?.toString() || '1'
           })
+          setIsOtherBrand(data.brand === 'Outra')
+          setOtherBrand(data.brand === 'Outra' ? '' : '')
         } else {
           toast({
             title: 'Erro',
@@ -120,6 +122,10 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     }
     fetchBrands()
   }, [formData.categoryId])
+
+  useEffect(() => {
+    setIsOtherBrand(formData.brand === 'Outra')
+  }, [formData.brand])
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -244,10 +250,13 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           name="categoryId"
           value={formData.categoryId}
           onChange={handleChange}
-          options={categories.map(c => ({
-            value: c.id.toString(),
-            label: c.name
-          }))}
+          options={[
+            { value: '', label: 'Nenhuma' },
+            ...categories.map(c => ({
+              value: c.id.toString(),
+              label: c.name
+            }))
+          ]}
         />
         <Select
           label="Marca"
@@ -255,6 +264,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           value={formData.brand}
           onChange={handleChange}
           options={[
+            { value: '', label: 'Nenhuma' },
             ...brands.map(b => ({ value: b, label: b })),
             { value: 'Outra', label: 'Outra' }
           ]}
@@ -272,10 +282,13 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           name="locationId"
           value={formData.locationId}
           onChange={handleChange}
-          options={locations.map(loc => ({
-            value: loc.id.toString(),
-            label: loc.block + ' - Sala ' + loc.room
-          }))}
+          options={[
+            { value: '', label: 'Nenhum' },
+            ...locations.map(loc => ({
+              value: loc.id.toString(),
+              label: loc.block + ' - Sala ' + loc.room
+            }))
+          ]}
         />
         <TextArea
           label="Descrição"
