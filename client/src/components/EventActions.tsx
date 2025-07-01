@@ -16,7 +16,7 @@ export function EventActions({ equipamentId }: { equipamentId: string }) {
     })
 
     if (res?.status === 200) {
-      setEvents(res.data)
+      setEvents(res.data.filter || [])
     } else {
       setEvents([])
     }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import useFetch from '@/utils/useFetch'
 import { useRouter } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { Search, Edit, Trash } from 'lucide-react'
 
 export default function RelEvent() {
   const { fetchWithAuth } = useFetch('Listagem de Eventos')
@@ -27,9 +27,13 @@ export default function RelEvent() {
     fetchData()
   }, [])
 
+  const handleDelete = (id: string) => {
+    alert('Excluir não permitido neste CRUD (apenas simulação).')
+  }
+
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white shadow">
+      <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
             <th className="py-3 px-4 text-left">Descrição</th>
@@ -38,11 +42,13 @@ export default function RelEvent() {
             <th className="py-3 px-4 text-left">Data Início</th>
             <th className="py-3 px-4 text-left">Data Fim</th>
             <th className="py-3 px-4 text-left">Visualizar</th>
+            <th className="py-3 px-4 text-left">Editar</th>
+            <th className="py-3 px-4 text-left">Excluir</th>
           </tr>
         </thead>
         <tbody>
           {events.map(event => (
-            <tr key={event.id} className="border-t hover:bg-gray-50">
+            <tr key={event.id} className="border-t hover:bg-gray-50 transition">
               <td className="py-3 px-4">{event.description}</td>
               <td className="py-3 px-4">{event.eventType}</td>
               <td className="py-3 px-4">{event.value}</td>
@@ -57,15 +63,36 @@ export default function RelEvent() {
                   onClick={() => router.push(`/event/${event.id}`)}
                   className="text-blue-700 hover:text-blue-900 transition"
                   aria-label="Visualizar"
+                  title="Visualizar"
                 >
                   <Search size={18} />
+                </button>
+              </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => router.push(`/event/edit/${event.id}`)}
+                  className="text-yellow-600 hover:text-yellow-800 transition"
+                  aria-label="Editar"
+                  title="Editar"
+                >
+                  <Edit size={18} />
+                </button>
+              </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => handleDelete(event.id)}
+                  className="text-red-600 hover:text-red-800 transition"
+                  aria-label="Excluir"
+                  title="Excluir"
+                >
+                  <Trash size={18} />
                 </button>
               </td>
             </tr>
           ))}
           {events.length === 0 && (
             <tr>
-              <td colSpan={6} className="text-center py-6 text-gray-500">
+              <td colSpan={8} className="text-center py-6 text-gray-500">
                 Nenhum evento registrado.
               </td>
             </tr>

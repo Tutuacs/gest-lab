@@ -26,6 +26,8 @@ export default function EventForm({ mode, id }: EventFormProps) {
     equipamentId: ''
   })
 
+  const isValueDisabled = formData.eventType === 'VERIFICATION'
+
   useEffect(() => {
     // para create - pegando equipamentId da URL
     if (mode === 'create') {
@@ -144,6 +146,7 @@ export default function EventForm({ mode, id }: EventFormProps) {
         name="value"
         value={formData.value}
         onChange={handleChange}
+        disabled={isValueDisabled}
       />
 
       <Select
@@ -179,9 +182,17 @@ interface InputProps {
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   type?: string
+  disabled?: boolean
 }
 
-const Input = ({ label, name, value, onChange, type = 'text' }: InputProps) => (
+const Input = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = 'text',
+  disabled = false
+}: InputProps) => (
   <div className="flex flex-col">
     <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
@@ -192,7 +203,10 @@ const Input = ({ label, name, value, onChange, type = 'text' }: InputProps) => (
       type={type}
       value={value}
       onChange={onChange}
-      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      disabled={disabled}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+      }`}
       required
     />
   </div>
