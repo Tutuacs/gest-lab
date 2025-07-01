@@ -84,35 +84,42 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
           <h2 className="text-xl font-bold text-blue-900 mb-4">Certificado</h2>
           {Certified ? (
             <>
-              <p>
-                <strong>Descrição:</strong> {Certified.description || '-'}
-              </p>
-              <p>
-                <strong>Status:</strong>{' '}
-                <Badge variant={getCertifiedVariant(Certified.valid)}>
-                  {Certified.valid}
-                </Badge>
-              </p>
-              <p>
-                <strong>Início:</strong>{' '}
-                {new Date(Certified.from).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Fim:</strong>{' '}
-                {new Date(Certified.to).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Precisa Renovação:</strong>{' '}
-                {Certified.needsRenovation ? 'Sim' : 'Não'}
-              </p>
-              <p>
-                <strong>Renova em:</strong> {Certified.renovateInYears}{' '}
-                {Certified.renovateInYears == 1 ? 'ano' : 'anos'}
-              </p>
-              <p>
-                <strong>Atualizado em:</strong>{' '}
-                {new Date(Certified.updatedAt).toLocaleDateString()}
-              </p>
+              {Certified.needsRenovation ? (
+                <>
+                  <p>
+                    <strong>Descrição:</strong> {Certified.description || '-'}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{' '}
+                    <Badge variant={getCertifiedVariant(Certified.valid)}>
+                      {Certified.valid}
+                    </Badge>
+                  </p>
+                  <p>
+                    <strong>Início:</strong>{' '}
+                    {new Date(Certified.from).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Fim:</strong>{' '}
+                    {new Date(Certified.to).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Precisa Certificação:</strong> Sim
+                  </p>
+                  <p>
+                    <strong>Renova em:</strong> {Certified.renovateInYears}{' '}
+                    {Certified.renovateInYears == 1 ? 'ano' : 'anos'}
+                  </p>
+                  <p>
+                    <strong>Atualizado em:</strong>{' '}
+                    {new Date(Certified.updatedAt).toLocaleDateString()}
+                  </p>
+                </>
+              ) : (
+                <p>
+                  <strong>Precisa Certificação:</strong> Não
+                </p>
+              )}
             </>
           ) : (
             <p className="text-gray-500">Nenhum certificado registrado.</p>

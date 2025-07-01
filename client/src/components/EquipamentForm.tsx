@@ -14,6 +14,11 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   const router = useRouter()
   const { toast } = useToast()
   const { fetchWithAuth } = useFetch()
+  const EQUIPAMENT_STATUS = {
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE',
+    MAINTENANCE: 'MAINTENANCE'
+  } as const
 
   const [formData, setFormData] = useState({
     name: '',
@@ -24,6 +29,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     description: '',
     locationId: '',
     categoryId: '',
+    status: 'EQUIPAMENT_STATUS.INACTIVE',
     next_maintenance: '',
     maintenance_periodicity: '30',
     certifiedDescription: '',
@@ -69,6 +75,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             tag: data.tag ?? '',
             serie: data.serie ?? '',
             brand: data.brand ?? '',
+            status: data.status || 'INACTIVE',
             description: data.description ?? '',
             locationId: data.locationId?.toString() ?? '',
             categoryId: data.categoryId?.toString() ?? '',
@@ -149,6 +156,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     tag: string
     serie: string
     brand: string
+    status: 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE'
     description: string
     locationId: number
     categoryId: number
@@ -166,7 +174,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       ? `${formData.next_maintenance}T00:00:00Z`
       : new Date().toISOString()
 
-    const payload: FormDataPayload = {
+    const basePayload = {
       name: formData.name,
       patrimonio: formData.patrimonio,
       tag: formData.tag,
@@ -183,6 +191,14 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
         formData.certifiedRenovateInYears.replace(',', '.')
       )
     }
+
+    const payload =
+      mode === 'edit'
+        ? {
+            ...basePayload,
+            status: formData.status as 'ACTIVE' | 'INACTIVE' | 'MAINTENANCE'
+          }
+        : basePayload
 
     const result =
       mode === 'create'
@@ -296,34 +312,21 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           value={formData.description}
           onChange={handleChange}
         />
+        {mode === 'edit' && (
+          <Select
+            label="Status do Equipamento"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            options={Object.values(EQUIPAMENT_STATUS).map(status => ({
+              value: status,
+              label: status
+            }))}
+          />
+        )}
       </div>
 
       <div className="w-full md:w-1/2 bg-white rounded-2xl shadow p-6 space-y-4">
-        <Input
-          type="date"
-          label="Próxima Manutenção"
-          name="next_maintenance"
-          value={formData.next_maintenance}
-          onChange={handleChange}
-        />
-        <Input
-          label="Periodicidade (dias)"
-          name="maintenance_periodicity"
-          value={formData.maintenance_periodicity}
-          onChange={handleChange}
-        />
-        <TextArea
-          label="Descrição Certificado"
-          name="certifiedDescription"
-          value={formData.certifiedDescription}
-          onChange={handleChange}
-        />
-        <Input
-          label="Renovação em Anos"
-          name="certifiedRenovateInYears"
-          value={formData.certifiedRenovateInYears}
-          onChange={handleChange}
-        />
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -336,9 +339,39 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             htmlFor="certifiedNeedsRenovation"
             className="text-sm text-gray-700"
           >
-            Precisa de renovação
+            Precisa de certificação
           </label>
         </div>
+
+        {formData.certifiedNeedsRenovation && (
+          <>
+            <Input
+              type="date"
+              label="Próxima Manutenção"
+              name="next_maintenance"
+              value={formData.next_maintenance}
+              onChange={handleChange}
+            />
+            <Input
+              label="Periodicidade (dias)"
+              name="maintenance_periodicity"
+              value={formData.maintenance_periodicity}
+              onChange={handleChange}
+            />
+            <TextArea
+              label="Descrição Certificado"
+              name="certifiedDescription"
+              value={formData.certifiedDescription}
+              onChange={handleChange}
+            />
+            <Input
+              label="Renovação em Anos"
+              name="certifiedRenovateInYears"
+              value={formData.certifiedRenovateInYears}
+              onChange={handleChange}
+            />
+          </>
+        )}
 
         <div className="flex flex-col gap-3 pt-4">
           <button
