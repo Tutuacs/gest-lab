@@ -55,7 +55,7 @@ export class EventFunctionsService extends PrismaService {
 
         const to_date = new Date();
         to_date.setDate(to_date.getDate() + renew);
-        if (! equipament!.Certified!.needsRenovation) {
+        if (!equipament!.Certified!.needsRenovation) {
             to_date.setFullYear(to_date.getFullYear() + 100);
         }
 
@@ -64,6 +64,11 @@ export class EventFunctionsService extends PrismaService {
                 equipamentId: data.equipamentId,
             },
             data: {
+                Equipament: {
+                    update: {
+                        status: EQUIPAMENT_STATUS.ACTIVE,
+                    }
+                },
                 valid: CERTIFIED_STATUS.ACTIVE,
                 from: new Date(),
                 to: to_date,
@@ -86,7 +91,8 @@ export class EventFunctionsService extends PrismaService {
     }
 
     async prepareEquipamentMaintenance(data: CreateEventDto) {
-        const next_maintenance = new Date();
+        // TODO: next_maintenance should be data.to
+        const next_maintenance = new Date(data.to);
 
         const equipament = await this.equipament.findFirst({
             where: {
