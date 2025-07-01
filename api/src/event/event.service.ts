@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventFunctionsService } from './functions/event-functions.service';
@@ -11,6 +11,12 @@ export class EventService {
   constructor(private readonly prisma: EventFunctionsService) { }
 
   async create(createEventDto: CreateEventDto) {
+
+    const validEvent = await this.prisma.dontRenovateEquipament(createEventDto.equipamentId);
+
+    if (validEvent && createEventDto.eventType != EVENT_TYPE.VERIFICATION) {
+      throw new MethodNotAllowedException('This event cannot be created because the equipment does not need renovation.');
+    }
 
     switch (createEventDto.eventType) {
       case EVENT_TYPE.INACTIVATE_EQUIPAMENT:
@@ -30,8 +36,6 @@ export class EventService {
       default:
         console.log(`Event Type not implemented: ${createEventDto.eventType}`)
     }
-
-    // TODO: Execute the changes before creating the event based on type
 
     return this.prisma.create(createEventDto);
   }

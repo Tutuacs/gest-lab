@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateEventDto } from '../dto/update-event.dto';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { FilterEventDto } from '../dto/filter-event.dto';
-import { CERTIFIED_STATUS, EQUIPAMENT_STATUS } from '@prisma/client';
+import { CERTIFIED_STATUS, EQUIPAMENT_STATUS, EVENT_TYPE } from '@prisma/client';
 
 @Injectable()
 export class EventFunctionsService extends PrismaService {
@@ -16,6 +16,17 @@ export class EventFunctionsService extends PrismaService {
                 id: id,
             },
         });
+    }
+
+    async dontRenovateEquipament(equipamentId: number) {
+        return this.equipament.count({
+            where: {
+                id: equipamentId,
+                Certified: {
+                    needsRenovation: false,
+                }
+            }
+        })
     }
 
     async prepareEquipamentInactivate(data: CreateEventDto) {
