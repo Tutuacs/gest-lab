@@ -89,7 +89,7 @@ export default function EventForm({ mode, id }: EventFormProps) {
       ...formData,
       from: `${formData.from}T00:00:00Z`,
       to: `${formData.to}T00:00:00Z`,
-      value: parseFloat(formData.value),
+      value: parseFloat(formData.value.replace(',', '.')),
       equipamentId: parseInt(formData.equipamentId)
     }
 
