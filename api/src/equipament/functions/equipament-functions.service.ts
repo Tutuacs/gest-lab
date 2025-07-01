@@ -4,7 +4,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateEquipamentDto } from '../dto/update-equipament.dto';
 import { CreateEquipamentDto } from '../dto/create-equipament.dto';
-import { CERTIFIED_STATUS, EQUIPAMENT_STATUS } from '@prisma/client';
+import { CERTIFIED_STATUS, EQUIPAMENT_STATUS, EVENT_TYPE } from '@prisma/client';
 import { FilterEquipamentDto } from '../dto/filter-equipament.dto';
 
 @Injectable()
@@ -135,6 +135,7 @@ export class EquipamentFunctionsService extends PrismaService {
                 ...(locationId != 0 && { locationId }),
                 next_maintenance: {
                     lte: nextMonth,
+                    gte: today,
                 },
                 OR: [
                     {
@@ -147,6 +148,7 @@ export class EquipamentFunctionsService extends PrismaService {
                                 {
                                     to: {
                                         lte: nextMonth,
+                                        gte: today,
                                     },
                                 },
                                 {
