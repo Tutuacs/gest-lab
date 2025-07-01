@@ -64,7 +64,7 @@ export class EquipamentFunctionsService extends PrismaService {
         return await this.equipament.create({
             data: {
                 name: data.name,
-                brand: data.brand,
+                brand: data.brand.toLocaleLowerCase(),
                 categoryId: data.categoryId,
                 next_maintenance: data.next_maintenance,
                 maintenance_periodicity: data.maintenance_periodicity,
@@ -175,12 +175,15 @@ export class EquipamentFunctionsService extends PrismaService {
         });
     }
 
-    async list({ skip, take, brand, locationId, status, search }: FilterEquipamentDto) {
+    async list({ skip, take, categoryId, brand, locationId, status, search }: FilterEquipamentDto) {
         return await this.equipament.findMany({
             skip,
             take,
             where: {
-                ...(brand && { brand }),
+                ...(categoryId && { categoryId }),
+                ...(brand && { brand: {
+                    contains: brand.toLocaleLowerCase(),
+                } }),
                 ...(locationId != 0 && { locationId }),
                 ...(status && { status }),
                 ...(search && {
@@ -207,7 +210,7 @@ export class EquipamentFunctionsService extends PrismaService {
                 patrimonio: data.patrimonio,
                 tag: data.tag,
                 serie: data.serie,
-                brand: data.brand,
+                brand: data.brand?.toLocaleLowerCase(),
                 description: data.description,
                 next_maintenance: data.next_maintenance,
                 maintenance_periodicity: data.maintenance_periodicity,

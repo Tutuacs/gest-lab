@@ -21,6 +21,7 @@ export class EquipamentController {
   
   @Get()
   findAll(@Query() query: FilterEquipamentDto, @ProfileAuth() profile: { role: ROLE, locationId: number }) {
+    console.log('Query:', query);
     return this.equipamentService.findAll(query, profile);
   }
   

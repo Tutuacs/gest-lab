@@ -40,7 +40,7 @@ export class EquipamentService {
     } else {
       query.locationId = query.locationId || 0;
     }
-
+    console.log('Query OK:', query);
     return this.prisma.list(query);
   }
 
