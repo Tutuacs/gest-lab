@@ -42,36 +42,41 @@ export default function EquipamentRelatorio() {
   const [equipaments, setEquipaments] = useState<Equipament[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [filters, setFilters] = useState({
+    categoryId: '',
+    locationId: '',
+    status: '',
+    brand: '',
+    search: ''
+  })
+
+  const fetchEquipaments = async () => {
+    try {
+      const query = new URLSearchParams()
+
+      if (filters.categoryId) query.append('categoryId', filters.categoryId)
+      if (filters.locationId) query.append('locationId', filters.locationId)
+      if (filters.status) query.append('status', filters.status)
+      if (filters.brand) query.append('brand', filters.brand)
+      if (filters.search) query.append('search', filters.search)
+
+      const [equipamentRes, locRes, catRes] = await Promise.all([
+        fetchWithAuth(`/equipament?${query.toString()}`, { method: 'GET' }),
+        fetchWithAuth('/location', { method: 'GET' }),
+        fetchWithAuth('/category', { method: 'GET' })
+      ])
+
+      if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
+      if (locRes?.status === 200) setLocations(locRes.data)
+      if (catRes?.status === 200) setCategories(catRes.data)
+    } catch (err) {
+      console.error('Erro ao buscar dados:', err)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [equipamentRes, locRes, catRes] = await Promise.all([
-          fetchWithAuth('/equipament', { method: 'GET' }),
-          fetchWithAuth('/location', { method: 'GET' }),
-          fetchWithAuth('/category', { method: 'GET' })
-        ])
-
-        if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
-        if (locRes?.status === 200) setLocations(locRes.data)
-        if (catRes?.status === 200) setCategories(catRes.data)
-      } catch (err) {
-        console.error('Erro ao buscar dados:', err)
-      }
-    }
-
-    fetchData()
+    fetchEquipaments()
   }, [])
-
-  const getLocationName = (id: number) => {
-    const loc = locations.find(l => l.id === id)
-    return loc ? `${loc.block} / Sala ${loc.room}` : '-'
-  }
-
-  const getCategoryName = (id: number) => {
-    const cat = categories.find(c => c.id === id)
-    return cat?.name || '-'
-  }
 
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm(
@@ -92,6 +97,64 @@ export default function EquipamentRelatorio() {
 
   return (
     <div className="overflow-x-auto">
+      <div className="flex flex-wrap gap-4 p-4 bg-white shadow rounded-xl mb-6">
+        <select
+          value={filters.categoryId}
+          onChange={e => setFilters(prev => ({ ...prev, categoryId: e.target.value }))}
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todas Categorias</option>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+
+        <select
+          value={filters.locationId}
+          onChange={e => setFilters(prev => ({ ...prev, locationId: e.target.value }))}
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todos Locais</option>
+          {locations.map(l => (
+            <option key={l.id} value={l.id}>{l.block} / Sala {l.room}</option>
+          ))}
+        </select>
+
+        <select
+          value={filters.status}
+          onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todos Status</option>
+          <option value="ACTIVE">Ativo</option>
+          <option value="INACTIVE">Inativo</option>
+          <option value="MAINTENANCE">Manutenção</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Marca"
+          value={filters.brand}
+          onChange={e => setFilters(prev => ({ ...prev, brand: e.target.value }))}
+          className="border px-3 py-2 rounded-xl"
+        />
+
+        <input
+          type="text"
+          placeholder="Buscar por Série, Patrimônio ou Tag"
+          value={filters.search}
+          onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+          className="border px-3 py-2 rounded-xl flex-grow"
+        />
+
+        <button
+          onClick={fetchEquipaments}
+          className="bg-blue-950 text-white px-4 py-2 rounded-xl hover:bg-blue-900"
+        >
+          Filtrar
+        </button>
+      </div>
+
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
