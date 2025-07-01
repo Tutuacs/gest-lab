@@ -141,14 +141,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
         value={formData.to}
         onChange={handleChange}
       />
-      <Input
-        label="Valor"
-        name="value"
-        value={formData.value}
-        onChange={handleChange}
-        disabled={isValueDisabled}
-      />
-
       <Select
         label="Tipo de Evento"
         name="eventType"
@@ -164,6 +156,13 @@ export default function EventForm({ mode, id }: EventFormProps) {
           // { value: 'ENABLE_EQUIPAMENT', label: 'Ativar Equipamento' }
         ]}
         disabled={mode === 'edit'}
+      />
+      <Input
+        label="Valor (R$)"
+        name="value"
+        value={formData.value}
+        onChange={handleChange}
+        disabled={isValueDisabled}
       />
 
       <button

@@ -31,6 +31,15 @@ export default function RelEvent() {
     alert('Excluir não permitido neste CRUD (apenas simulação).')
   }
 
+  const formatUTCDate = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getUTCDate().toString().padStart(2, '0')}/${(
+      d.getUTCMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${d.getUTCFullYear()}`
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white shadow overflow-hidden">
@@ -52,12 +61,8 @@ export default function RelEvent() {
               <td className="py-3 px-4">{event.description}</td>
               <td className="py-3 px-4">{event.eventType}</td>
               <td className="py-3 px-4">{event.value}</td>
-              <td className="py-3 px-4">
-                {new Date(event.from).toLocaleDateString()}
-              </td>
-              <td className="py-3 px-4">
-                {new Date(event.to).toLocaleDateString()}
-              </td>
+              <td className="py-3 px-4">{formatUTCDate(event.from)}</td>
+              <td className="py-3 px-4">{formatUTCDate(event.to)}</td>
               <td className="py-3 px-4">
                 <button
                   onClick={() => router.push(`/event/${event.id}`)}

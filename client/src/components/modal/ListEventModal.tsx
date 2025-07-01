@@ -14,6 +14,15 @@ export default function ListEventModal({
   onClose,
   events
 }: ListEventModalProps) {
+  const formatUTCDate = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getUTCDate().toString().padStart(2, '0')}/${(
+      d.getUTCMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${d.getUTCFullYear()}`
+  }
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -34,9 +43,8 @@ export default function ListEventModal({
                     <strong>Descrição:</strong> {event.description}
                   </p>
                   <p>
-                    <strong>Período:</strong>{' '}
-                    {new Date(event.from).toLocaleDateString()} -{' '}
-                    {new Date(event.to).toLocaleDateString()}
+                    <strong>Período:</strong> {formatUTCDate(event.from)} -{' '}
+                    {formatUTCDate(event.to)}
                   </p>
                   <p>
                     <strong>Valor:</strong> R$ {event.value.toFixed(2)}
