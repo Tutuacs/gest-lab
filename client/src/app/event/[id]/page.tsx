@@ -11,6 +11,15 @@ export default function EventDetailPage() {
   const router = useRouter()
   const [data, setData] = useState<any>(null)
 
+  const formatUTCDate = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getUTCDate().toString().padStart(2, '0')}/${(
+      d.getUTCMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${d.getUTCFullYear()}`
+  }
+
   useEffect(() => {
     const fetchDetails = async () => {
       const res = await fetchWithAuth(`/event/${id}`, { method: 'GET' })
@@ -48,11 +57,10 @@ export default function EventDetailPage() {
           <strong>Valor:</strong> {data.value}
         </p>
         <p>
-          <strong>Data Início:</strong>{' '}
-          {new Date(data.from).toLocaleDateString()}
+          <strong>Data Início:</strong> {formatUTCDate(data.from)}
         </p>
         <p>
-          <strong>Data Fim:</strong> {new Date(data.to).toLocaleDateString()}
+          <strong>Data Fim:</strong> {formatUTCDate(data.to)}
         </p>
         <p>
           <strong>Equipamento:</strong> {data.Equipament?.name} (Patrimônio:{' '}
