@@ -5,14 +5,6 @@ import { IsBase64, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsStr
 export class CreateEventDto {
 
     @ApiProperty({
-        description: 'Name of the event',
-        example: 'Calibração semanal'
-    })
-    @IsNotEmpty()
-    @IsString()
-    name: string;
-
-    @ApiProperty({
         description: 'Description of the event',
         example: 'Calibração preventiva, encontrado erros nas faixas X, Y e Z'
     })

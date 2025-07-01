@@ -17,7 +17,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
   const { fetchWithAuth } = useFetch()
 
   const [formData, setFormData] = useState({
-    name: '',
     description: '',
     from: '',
     to: '',
@@ -43,7 +42,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
         if (res?.status === 200) {
           const data = res.data
           setFormData({
-            name: data.name ?? '',
             description: data.description ?? '',
             from: data.from?.substring(0, 10) || '',
             to: data.to?.substring(0, 10) || '',
@@ -74,6 +72,19 @@ export default function EventForm({ mode, id }: EventFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const startDate = new Date(formData.from)
+    const endDate = new Date(formData.to)
+
+    if (startDate > endDate) {
+      toast({
+        title: 'Erro',
+        description: 'A Data Início não pode ser maior que a Data Fim.',
+        variant: 'destructive'
+      })
+      return
+    }
+
     const payload = {
       ...formData,
       from: `${formData.from}T00:00:00Z`,
@@ -115,12 +126,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-xl shadow space-y-4 w-full max-w-2xl mx-auto"
     >
-      <Input
-        label="Nome"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-      />
       <TextArea
         label="Descrição"
         name="description"
@@ -157,6 +162,19 @@ export default function EventForm({ mode, id }: EventFormProps) {
         ]}
         disabled={mode === 'edit'}
       />
+      {formData.eventType.toUpperCase().includes('MAINTENANCE') && (
+        <p className="text-yellow-600 text-sm font-bold italic">
+          * Ao criar um evento deste tipo o equipamento será INATIVADO e o
+          certificado EXPIRADO, impossibilitando o uso do equipamento!
+        </p>
+      )}
+      {formData.eventType === 'CALIBRATION' && (
+        <p className="text-red-600 text-sm font-bold italic">
+          * Ao criar um evento deste tipo o equipamento será ATIVADO e o
+          certificado RENOVADO, garanta a CONFORMIDADE do equipamento antes da
+          criação deste evento!
+        </p>
+      )}
       <Input
         label="Valor (R$)"
         name="value"
@@ -238,7 +256,9 @@ const Select = ({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+      }`}
       required
     >
       {options.map(opt => (
