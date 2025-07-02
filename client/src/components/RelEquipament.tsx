@@ -61,10 +61,9 @@ export default function EquipamentRelatorio() {
       if (filters.brand) query.append('brand', filters.brand)
       if (filters.search) query.append('search', filters.search)
 
-      const [equipamentRes, locRes, catRes] = await Promise.all([
+      const [equipamentRes, locRes] = await Promise.all([
         fetchWithAuth(`/equipament?${query.toString()}`, { method: 'GET' }),
         fetchWithAuth('/location', { method: 'GET' }),
-        fetchWithAuth('/category', { method: 'GET' })
       ])
 
       if (equipamentRes?.status === 200)
@@ -77,7 +76,18 @@ export default function EquipamentRelatorio() {
         return
       }
 
-      if (locRes?.status === 200) setLocations(locRes.data)
+      if (locRes?.status === 200) {
+        setLocations(locRes.data)
+      }
+      else if (locRes?.status === 412) {
+        // wait 5 seconds before redirecting
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        setStatus(412)
+        router.push('/home')
+        return
+      }
+
+      const catRes = await fetchWithAuth('/category', { method: 'GET' })
       if (catRes?.status === 200) {
         setCategories(catRes.data)
       } else if (catRes?.status === 412) {
@@ -95,10 +105,9 @@ export default function EquipamentRelatorio() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [equipamentRes, locRes, catRes] = await Promise.all([
+        const [equipamentRes, locRes] = await Promise.all([
           fetchWithAuth('/equipament', { method: 'GET' }),
           fetchWithAuth('/location', { method: 'GET' }),
-          fetchWithAuth('/category', { method: 'GET' })
         ])
 
         if (equipamentRes?.status === 200)
@@ -111,9 +120,18 @@ export default function EquipamentRelatorio() {
           return
         }
 
-        if (locRes?.status === 200)
+        if (locRes?.status === 200) {
           setLocations(locRes.data)
+        }
+        else if (locRes?.status === 412) {
+          // wait 5 seconds before redirecting
+          await new Promise(resolve => setTimeout(resolve, 5000))
+          setStatus(412)
+          router.push('/home')
+          return
+        }
 
+        const catRes = await fetchWithAuth('/category', { method: 'GET' })
         if (catRes?.status === 200)
           setCategories(catRes.data)
         else if (catRes?.status === 412) {
