@@ -39,19 +39,22 @@ export default function RelEvent() {
   })
 
   const fetchEvents = async () => {
-    const query = new URLSearchParams()
-    if (filters.equipamentId) query.append('equipamentId', filters.equipamentId)
-    if (filters.categoryId) query.append('categoryId', filters.categoryId)
-    if (filters.startDate) query.append('startDate', filters.startDate)
-    if (filters.endDate) query.append('endDate', filters.endDate)
-    if (filters.eventType) query.append('eventType', filters.eventType)
-    if (filters.orderValue) query.append('orderValue', filters.orderValue)
-    if (filters.search) query.append('search', filters.search)
+    try {
+      const query = new URLSearchParams()
 
-    const res = await fetchWithAuth(`/event?${query.toString()}`, {
-      method: 'GET'
-    })
-    if (res?.status === 200) setEvents(res.data.filter || [])
+      if (filters.equipamentId) query.append('equipamentId', filters.equipamentId)
+      if (filters.categoryId) query.append('categoryId', filters.categoryId)
+      if (filters.startDate) query.append('startDate', filters.startDate)
+      if (filters.endDate) query.append('endDate', filters.endDate)
+      if (filters.eventType) query.append('eventType', filters.eventType)
+      if (filters.orderValue) query.append('orderValue', filters.orderValue)
+      if (filters.search) query.append('search', filters.search)
+
+      const res = await fetchWithAuth(`/event?${query.toString()}`, { method: 'GET' })
+      if (res?.status === 200) setEvents(res.data.filter || [])
+    } catch (err) {
+      console.error('Erro ao buscar eventos:', err)
+    }
   }
 
   useEffect(() => {
@@ -146,9 +149,7 @@ export default function RelEvent() {
 
         <select
           value={filters.orderValue}
-          onChange={e =>
-            setFilters(prev => ({ ...prev, orderValue: e.target.value }))
-          }
+          onChange={e => setFilters(prev => ({ ...prev, orderValue: e.target.value }))}
           className="border px-3 py-2 rounded-xl"
         >
           <option value="">Ordenar por Valor</option>
