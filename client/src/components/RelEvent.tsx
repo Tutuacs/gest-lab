@@ -15,16 +15,56 @@ export default function RelEvent() {
     value: number
     from: string
     to: string
+    Equipament: {
+      id: number
+      name: string
+      Category?: {
+        id: number
+        name: string
+      }
+    }
   }
 
   const [events, setEvents] = useState<Event[]>([])
+  const [equipaments, setEquipaments] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
+  const [filters, setFilters] = useState({
+    equipamentId: '',
+    categoryId: '',
+    startDate: '',
+    endDate: '',
+    eventType: '',
+    orderValue: '',
+    search: ''
+  })
+
+  const fetchEvents = async () => {
+    const query = new URLSearchParams()
+    if (filters.equipamentId) query.append('equipamentId', filters.equipamentId)
+    if (filters.categoryId) query.append('categoryId', filters.categoryId)
+    if (filters.startDate) query.append('startDate', filters.startDate)
+    if (filters.endDate) query.append('endDate', filters.endDate)
+    if (filters.eventType) query.append('eventType', filters.eventType)
+    if (filters.orderValue) query.append('orderValue', filters.orderValue)
+    if (filters.search) query.append('search', filters.search)
+
+    const res = await fetchWithAuth(`/event?${query.toString()}`, {
+      method: 'GET'
+    })
+    if (res?.status === 200) setEvents(res.data.filter || [])
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetchWithAuth('/event', { method: 'GET' })
-      if (res?.status === 200) setEvents(res.data.filter || [])
+    const loadData = async () => {
+      const [equipRes, catRes] = await Promise.all([
+        fetchWithAuth('/equipament', { method: 'GET' }),
+        fetchWithAuth('/category', { method: 'GET' })
+      ])
+      if (equipRes?.status === 200) setEquipaments(equipRes.data)
+      if (catRes?.status === 200) setCategories(catRes.data)
     }
-    fetchData()
+    loadData()
+    fetchEvents()
   }, [])
 
   const handleDelete = (id: string) => {
@@ -42,6 +82,98 @@ export default function RelEvent() {
 
   return (
     <div className="overflow-x-auto">
+      <div className="flex flex-wrap gap-4 p-4 bg-white shadow rounded-xl mb-6">
+        <select
+          value={filters.equipamentId}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, equipamentId: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todos Equipamentos</option>
+          {equipaments.map(eq => (
+            <option key={eq.id} value={eq.id}>
+              {eq.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={filters.categoryId}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, categoryId: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todas Categorias</option>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          value={filters.startDate}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, startDate: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        />
+        <input
+          type="date"
+          value={filters.endDate}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, endDate: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        />
+
+        <select
+          value={filters.eventType}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, eventType: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todos Tipos</option>
+          <option value="CALIBRATION">Calibração</option>
+          <option value="VERIFICATION">Verificação</option>
+          <option value="MAINTENANCE_CORRECTIVE">Manutenção Corretiva</option>
+          <option value="MAINTENANCE_PREVENTIVE">Manutenção Preventiva</option>
+        </select>
+
+        <select
+          value={filters.orderValue}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, orderValue: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Ordenar por Valor</option>
+          <option value="asc">Menor para Maior</option>
+          <option value="desc">Maior para Menor</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Buscar descrição"
+          value={filters.search}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, search: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl flex-grow"
+        />
+
+        <button
+          onClick={fetchEvents}
+          className="bg-blue-950 text-white px-4 py-2 rounded-xl hover:bg-blue-900"
+        >
+          Filtrar
+        </button>
+      </div>
+
       <table className="min-w-full bg-white shadow overflow-hidden">
         <thead>
           <tr className="bg-blue-950 text-white">
