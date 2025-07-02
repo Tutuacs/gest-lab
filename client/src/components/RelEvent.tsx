@@ -86,7 +86,7 @@ export default function RelEvent() {
               <td className="py-3 px-4">
                 <button
                   onClick={() => handleDelete(event.id)}
-                  className="text-red-600 hover:text-red-800 transition"
+                  className="text-gray-600 hover:text-gray-800 transition"
                   aria-label="Excluir"
                   title="Excluir"
                 >

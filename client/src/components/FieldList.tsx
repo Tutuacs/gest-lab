@@ -39,7 +39,7 @@ export default function FieldList({ fields, onDelete }: FieldListProps) {
           <button
             type="button"
             onClick={() => onDelete(field.id)}
-            className="text-red-600 hover:text-red-800 transition"
+            className="text-gray-600 hover:text-gray-800 transition"
             title="Excluir campo"
           >
             <Trash2 size={18} />

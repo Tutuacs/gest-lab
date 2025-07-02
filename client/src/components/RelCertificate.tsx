@@ -36,7 +36,7 @@ export default function LicenseList({ licenses, onDelete }: LicenseListProps) {
           <button
             type="button"
             onClick={() => onDelete(license.id)}
-            className="text-red-600 hover:text-red-800 transition"
+            className="text-gray-600 hover:text-gray-800 transition"
             title="Excluir licença"
           >
             <Trash2 size={18} />
