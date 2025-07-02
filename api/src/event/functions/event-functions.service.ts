@@ -181,8 +181,8 @@ export class EventFunctionsService extends PrismaService {
             where: {
                 ...(equipamentId && { equipamentId }),
                 ...(categoryId && { Equipament: { categoryId } }),
-                ...(startDate && { from: { gte: startDate } }),
-                ...(endDate && { to: { lte: endDate } }),
+                ...(startDate && { from: { gte: new Date(startDate) } }),
+                ...(endDate && { to: { lte: new Date(endDate) } }),
                 ...(eventType && { eventType }),
                 ...(search && {
                     OR: [
@@ -195,7 +195,7 @@ export class EventFunctionsService extends PrismaService {
                     createdAt: 'desc',
                 },
                 ...(orderValue ? [{ value: orderValue }] : []),
-            ]
+            ],
         });
     }
 

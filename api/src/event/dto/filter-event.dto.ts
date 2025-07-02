@@ -17,12 +17,12 @@ export class FilterEventDto extends PartialType(ListDto) {
 
     @ApiPropertyOptional({ description: 'Start date for filtering events' })
     @IsOptional()
-    @IsDateString()
+    @IsString()
     startDate?: string;
 
     @ApiPropertyOptional({ description: 'End date for filtering events' })
     @IsOptional()
-    @IsDateString()
+    @IsString()
     endDate?: string;
 
     @ApiPropertyOptional({ description: 'Type of event, e.g., maintenance, repair' })

@@ -193,7 +193,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
               }
             ]
             : [
-              { value: '', label: 'Selecione' },
               { value: 'VERIFICATION', label: 'Verificação Periódica' }
             ]
         }
