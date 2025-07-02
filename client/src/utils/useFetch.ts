@@ -65,6 +65,18 @@ const useFetch = (title?: string) => {
       data.message = data.message || title;
     }
 
+    if (res.status === 412) {
+      data.message = "Contate seu superior, seu cadástro não está completo. Adicione um local de atuação."
+      config!.title = "Cadastro Incompleto";
+      config!.variant = "warning";
+      toast({
+        title: config!.title,
+        description: data!.message,
+        variant: config!.variant
+      });
+      return { data, status: res.status };
+    }
+
     toast({
       title: config!.title,
       description: data!.message,

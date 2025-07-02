@@ -39,6 +39,7 @@ export default function EquipamentRelatorio() {
   const { fetchWithAuth } = useFetch('Listagem de Equipamentos')
   const router = useRouter()
 
+  const [status, setStatus] = useState(0)
   const [equipaments, setEquipaments] = useState<Equipament[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -66,9 +67,26 @@ export default function EquipamentRelatorio() {
         fetchWithAuth('/category', { method: 'GET' })
       ])
 
-      if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
+      if (equipamentRes?.status === 200)
+        setEquipaments(equipamentRes.data)
+      else if (equipamentRes?.status === 412) {
+        // wait 5 seconds before redirecting
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        setStatus(412)
+        router.push('/home')
+        return
+      }
+
       if (locRes?.status === 200) setLocations(locRes.data)
-      if (catRes?.status === 200) setCategories(catRes.data)
+      if (catRes?.status === 200) {
+        setCategories(catRes.data)
+      } else if (catRes?.status === 412) {
+        // wait 5 seconds before redirecting
+        await new Promise(resolve => setTimeout(resolve, 5000))
+        setStatus(412)
+        router.push('/home')
+        return
+      }
     } catch (err) {
       console.error('Erro ao buscar dados:', err)
     }
@@ -83,18 +101,40 @@ export default function EquipamentRelatorio() {
           fetchWithAuth('/category', { method: 'GET' })
         ])
 
-        if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
-        if (locRes?.status === 200) setLocations(locRes.data)
-        if (catRes?.status === 200) setCategories(catRes.data)
+        if (equipamentRes?.status === 200)
+          setEquipaments(equipamentRes.data)
+        else if (equipamentRes?.status === 412) {
+          // wait 5 seconds before redirecting
+          await new Promise(resolve => setTimeout(resolve, 5000))
+          setStatus(412)
+          router.push('/home')
+          return
+        }
+
+        if (locRes?.status === 200)
+          setLocations(locRes.data)
+
+        if (catRes?.status === 200)
+          setCategories(catRes.data)
+        else if (catRes?.status === 412) {
+          // wait 5 seconds before redirecting
+          await new Promise(resolve => setTimeout(resolve, 5000))
+          setStatus(412)
+          router.push('/home')
+          return
+        }
       } catch (err) {
         console.error('Erro ao buscar dados:', err)
       }
     }
+    if (status === 412) {
+      router.push('/home')
+    }
 
-    if (equipaments.length === 0) {
+    if (equipaments.length === 0 && status !== 412) {
       fetchData()
     }
-  })
+  }, [status])
 
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm(
