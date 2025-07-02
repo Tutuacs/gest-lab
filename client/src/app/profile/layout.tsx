@@ -9,11 +9,7 @@ interface PrivateLayoutProps {
 export default async function PrivateLayout({ children }: PrivateLayoutProps) {
   const session = await getServerSession(authOptions)
 
-  if (
-    !session ||
-    (session.profile.role !== 'MASTER' && session.profile.role !== 'ADMIN')
-  ) {
-    // if (!session) {
+    if (!session) {
     redirect('/login')
   }
 

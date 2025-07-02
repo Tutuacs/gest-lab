@@ -32,14 +32,14 @@ export class CreateProfileDto {
     @IsEmail()
     email: string;
 
-    @ApiProperty({
-        description: 'Password of the profile',
-        example: 'senha123',
-        required: true,
-        minLength: 3,
-    })
-    @IsString()
-    password: string;
+    // @ApiProperty({
+    //     description: 'Password of the profile',
+    //     example: 'senha123',
+    //     required: true,
+    //     minLength: 3,
+    // })
+    // @IsString()
+    // password: string;
 
     @ApiProperty({
         description: 'Validation periodicity in days',

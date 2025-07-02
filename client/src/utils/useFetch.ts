@@ -66,7 +66,7 @@ const useFetch = (title?: string) => {
     }
 
     if (res.status === 412) {
-      data.message = "Contate seu superior, seu cadástro não está completo. Adicione um local de atuação."
+      data.message = "Contate seu superior, seu cadastro não está completo. Adicione um local de atuação."
       config!.title = "Cadastro Incompleto";
       config!.variant = "warning";
       toast({

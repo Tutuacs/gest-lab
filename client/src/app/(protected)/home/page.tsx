@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/utils/authOptions'
 import { ROLE } from '@/common/role.enums'
 import Link from 'next/link'
+import AccessOverlay from '@/components/Pendents'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -12,6 +13,8 @@ export default async function Home() {
       <h1 className="text-4xl font-bold text-center text-black mb-10">
         Bem vindo ao GestLab App
       </h1>
+
+      <AccessOverlay/>
 
       <div className="bg-white shadow rounded-3xl p-12 w-full max-w-3xl grid grid-cols-1 md:grid-cols-[1fr_10px_1fr] gap-6">
         <div className="flex flex-col gap-4">

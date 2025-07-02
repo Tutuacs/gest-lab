@@ -16,6 +16,9 @@ export class ProfileService {
         return this.prisma.profile.findFirst({
           where: {
             id: profile.id,
+          },
+          include: {
+            Location: true,
           }
         })
       }
@@ -24,6 +27,9 @@ export class ProfileService {
         return this.prisma.profile.findFirst({
           where: {
             id: profile.id,
+          },
+          include: {
+            Location: true,
           }
         })
       }
@@ -39,10 +45,17 @@ export class ProfileService {
             }
           ]
         },
+        include: {
+          Location: true,
+        }
       });
     }
 
-    return this.prisma.profile.findMany();
+    return this.prisma.profile.findMany({
+      include: {
+        Location: true,
+      }
+    });
   }
 
   findOne(id: string, profile: { id: string, role: ROLE, locationId: number }) {
