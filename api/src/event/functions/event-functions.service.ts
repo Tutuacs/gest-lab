@@ -190,12 +190,9 @@ export class EventFunctionsService extends PrismaService {
                     ]
                 }),
             },
-            orderBy: [
-                {
-                    createdAt: 'desc',
-                },
-                ...(orderValue ? [{ value: orderValue }] : []),
-            ],
+            orderBy: orderValue
+            ? [{ value: orderValue }]
+            : [{ createdAt: 'desc' }],
         });
     }
 
