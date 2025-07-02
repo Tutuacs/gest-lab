@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
 import useFetch from '@/utils/useFetch'
+import { useSession } from 'next-auth/react'
 
 type EventFormProps = {
   mode: 'create' | 'edit'
@@ -14,9 +15,9 @@ export default function EventForm({ mode, id }: EventFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [setup, setSetup] = useState(false)
-  const [setupEvent, setSetupEvent] = useState(false)
   const { toast } = useToast()
   const { fetchWithAuth } = useFetch()
+  const { status } = useSession()
 
   const [formData, setFormData] = useState({
     description: '',
@@ -31,60 +32,60 @@ export default function EventForm({ mode, id }: EventFormProps) {
   const isValueDisabled = formData.eventType === 'VERIFICATION'
 
   useEffect(() => {
-    if (mode === 'create') {
-      const equipId = searchParams.get('equipamentId') || ''
-      setFormData(prev => ({ ...prev, equipamentId: equipId }))
-
-      if (equipId) {
-        const fetchEquipament = async () => {
-          const res = await fetchWithAuth(`/equipament/${equipId}`, {
-            method: 'GET'
-          })
-          console.log('res:', res)
-
-          if (res?.status === 200) {
-            setEquipNeedsRenovation(
-              res.data?.Certified?.needsRenovation ?? false
-            )
-          }
-          console.log('res.data?.Certified?.needsRenovation:', res.data)
-        }
+    if (status === 'authenticated') {
+      if (mode === 'create') {
+        console.log("create")
         if (!setup) {
-          fetchEquipament()
+          console.log("setup false")
+          const equipId = searchParams.get('equipamentId') || ''
+          setFormData(prev => ({ ...prev, equipamentId: equipId }))
+
+          if (equipId) {
+            const fetchEquipament = async () => {
+              const res = await fetchWithAuth(`/equipament/${equipId}`, {
+                method: 'GET'
+              })
+              console.log('res:', res)
+
+              if (res?.status === 200) {
+                setEquipNeedsRenovation(
+                  res.data?.Certified?.needsRenovation ?? false
+                )
+              }
+              console.log('res.data?.Certified?.needsRenovation:', res.data)
+            }
+            fetchEquipament()
+            setSetup(true)
+          }
+        }
+      } else {
+        if (!setup) {
+          const fetchEvent = async () => {
+            const res = await fetchWithAuth(`/event/${id}`, { method: 'GET' })
+            if (res?.status === 200) {
+              const data = res.data
+              setFormData({
+                description: data.description ?? '',
+                from: data.from?.substring(0, 10) || '',
+                to: data.to?.substring(0, 10) || '',
+                eventType: data.eventType || '',
+                value: data.value?.toString() || '0',
+                equipamentId: data.Equipament?.id?.toString() || ''
+              })
+            } else {
+              toast({
+                title: 'Erro',
+                description: 'Erro ao carregar dados.',
+                variant: 'destructive'
+              })
+            }
+          }
+          fetchEvent()
           setSetup(true)
         }
       }
     }
-  })
-
-  useEffect(() => {
-    if (mode === 'edit' && id) {
-      const fetchEvent = async () => {
-        const res = await fetchWithAuth(`/event/${id}`, { method: 'GET' })
-        if (res?.status === 200) {
-          const data = res.data
-          setFormData({
-            description: data.description ?? '',
-            from: data.from?.substring(0, 10) || '',
-            to: data.to?.substring(0, 10) || '',
-            eventType: data.eventType || '',
-            value: data.value?.toString() || '0',
-            equipamentId: data.Equipament?.id?.toString() || ''
-          })
-        } else {
-          toast({
-            title: 'Erro',
-            description: 'Erro ao carregar dados.',
-            variant: 'destructive'
-          })
-        }
-      }
-      if (!setupEvent) {
-        fetchEvent()
-        setSetupEvent(true)
-      }
-    }
-  })
+  }, [status])
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -121,15 +122,15 @@ export default function EventForm({ mode, id }: EventFormProps) {
     const result =
       mode === 'create'
         ? await fetchWithAuth('/event', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
         : await fetchWithAuth(`/event/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
 
     if (result?.status === 200 || result?.status === 201) {
       toast({
@@ -179,22 +180,22 @@ export default function EventForm({ mode, id }: EventFormProps) {
         options={
           equipNeedsRenovation
             ? [
-                { value: '', label: 'Selecione' },
-                { value: 'CALIBRATION', label: 'Calibração' },
-                { value: 'VERIFICATION', label: 'Verificação Periódica' },
-                {
-                  value: 'MAINTENANCE_CORRECTIVE',
-                  label: 'Manutenção Corretiva'
-                },
-                {
-                  value: 'MAINTENANCE_PREVENTIVE',
-                  label: 'Manutenção Preventiva'
-                }
-              ]
+              { value: '', label: 'Selecione' },
+              { value: 'CALIBRATION', label: 'Calibração' },
+              { value: 'VERIFICATION', label: 'Verificação Periódica' },
+              {
+                value: 'MAINTENANCE_CORRECTIVE',
+                label: 'Manutenção Corretiva'
+              },
+              {
+                value: 'MAINTENANCE_PREVENTIVE',
+                label: 'Manutenção Preventiva'
+              }
+            ]
             : [
-                { value: '', label: 'Selecione' },
-                { value: 'VERIFICATION', label: 'Verificação Periódica' }
-              ]
+              { value: '', label: 'Selecione' },
+              { value: 'VERIFICATION', label: 'Verificação Periódica' }
+            ]
         }
         disabled={mode === 'edit'}
       />
@@ -257,9 +258,8 @@ const Input = ({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-      }`}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+        }`}
       required
     />
   </div>
@@ -292,9 +292,8 @@ const Select = ({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-      }`}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+        }`}
       required
     >
       {options.map(opt => (
