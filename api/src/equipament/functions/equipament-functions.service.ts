@@ -127,53 +127,59 @@ export class EquipamentFunctionsService extends PrismaService {
     }
 
     async pendents(locationId: number, periodicity: number) {
-        const today = new Date();
-        // add 30 days from today
-        const nextMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate() + periodicity);
+        const today = new Date()
+        const nextMonth = new Date()
+        nextMonth.setDate(today.getDate() + periodicity)  // adiciona periodicidade de forma robusta
+
+        // condição de intervalo de próxima manutenção
+        const maintenanceSchedule = {
+            next_maintenance: {
+                gte: today,
+                lte: nextMonth,
+            },
+        }
+
+        // condição de equipamento já em manutenção
+        const inMaintenance = {
+            status: EQUIPAMENT_STATUS.MAINTENANCE,
+        }
+
+        // condição de certificado expirado ou por vencer
+        const certifiedIssue = {
+            Certified: {
+                needsRenovation: true,
+                OR: [
+                    { to: { gte: today, lte: nextMonth } },
+                    { valid: CERTIFIED_STATUS.EXPIRED },
+                ],
+            },
+        }
+
+        // monta a lista de filtros para locationId (se for diferente de 0)
+        const locationFilter = locationId !== 0 ? { locationId } : {}
+
         return await this.equipament.findMany({
             where: {
-                ...(locationId != 0 && { locationId }),
-                next_maintenance: {
-                    lte: nextMonth,
-                    gte: today,
-                },
+                ...locationFilter,
                 OR: [
-                    {
-                        status: EQUIPAMENT_STATUS.MAINTENANCE,
-                    },
-                    {
-                        Certified: {
-                            needsRenovation: true,
-                            OR: [
-                                {
-                                    to: {
-                                        lte: nextMonth,
-                                        gte: today,
-                                    },
-                                },
-                                {
-                                    valid: CERTIFIED_STATUS.EXPIRED,
-                                }
-                            ]
-                        }
-                    },
+                    maintenanceSchedule,
+                    inMaintenance,
+                    certifiedIssue,
                 ],
             },
             include: {
-                Event: {
-                    take: 1,
-                },
+                Event: { take: 1 },
                 Certified: true,
                 Location: true,
                 Category: true,
             },
-            orderBy: {
-                Certified: {
-                    to: 'asc',
-                }
-            }
-        });
+            orderBy: [
+                {next_maintenance:  'asc'},
+                {Certified: { to: 'asc' }},
+            ],
+        })
     }
+
 
     async list({ skip, take, categoryId, brand, locationId, status, search }: FilterEquipamentDto) {
         return await this.equipament.findMany({
@@ -181,9 +187,11 @@ export class EquipamentFunctionsService extends PrismaService {
             take,
             where: {
                 ...(categoryId && { categoryId }),
-                ...(brand && { brand: {
-                    contains: brand.toLocaleLowerCase(),
-                } }),
+                ...(brand && {
+                    brand: {
+                        contains: brand.toLocaleLowerCase(),
+                    }
+                }),
                 ...(locationId != 0 && { locationId }),
                 ...(status && { status }),
                 ...(search && {

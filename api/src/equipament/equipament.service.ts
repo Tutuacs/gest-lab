@@ -49,6 +49,12 @@ export class EquipamentService {
   }
 
   pendents(profile: { role: ROLE, locationId: number, periodicity: number }, locationId?: number) {
+
+    if (!profile.locationId) {
+      console.log('Profile does not have a location associated');
+      throw new PreconditionFailedException('Profile does not have a location associated');
+    }
+
     if (profile.role !== ROLE.MASTER) {
       locationId = profile.locationId;
     }else {
