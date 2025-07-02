@@ -75,8 +75,26 @@ export default function EquipamentRelatorio() {
   }
 
   useEffect(() => {
-    fetchEquipaments()
-  }, [])
+    const fetchData = async () => {
+      try {
+        const [equipamentRes, locRes, catRes] = await Promise.all([
+          fetchWithAuth('/equipament', { method: 'GET' }),
+          fetchWithAuth('/location', { method: 'GET' }),
+          fetchWithAuth('/category', { method: 'GET' })
+        ])
+
+        if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
+        if (locRes?.status === 200) setLocations(locRes.data)
+        if (catRes?.status === 200) setCategories(catRes.data)
+      } catch (err) {
+        console.error('Erro ao buscar dados:', err)
+      }
+    }
+
+    if (equipaments.length === 0) {
+      fetchData()
+    }
+  })
 
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm(
@@ -100,29 +118,39 @@ export default function EquipamentRelatorio() {
       <div className="flex flex-wrap gap-4 p-4 bg-white shadow rounded-xl mb-6">
         <select
           value={filters.categoryId}
-          onChange={e => setFilters(prev => ({ ...prev, categoryId: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, categoryId: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl"
         >
           <option value="">Todas Categorias</option>
           {categories.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
           ))}
         </select>
 
         <select
           value={filters.locationId}
-          onChange={e => setFilters(prev => ({ ...prev, locationId: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, locationId: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl"
         >
           <option value="">Todos Locais</option>
           {locations.map(l => (
-            <option key={l.id} value={l.id}>{l.block} / Sala {l.room}</option>
+            <option key={l.id} value={l.id}>
+              {l.block} / Sala {l.room}
+            </option>
           ))}
         </select>
 
         <select
           value={filters.status}
-          onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, status: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl"
         >
           <option value="">Todos Status</option>
@@ -135,7 +163,9 @@ export default function EquipamentRelatorio() {
           type="text"
           placeholder="Marca"
           value={filters.brand}
-          onChange={e => setFilters(prev => ({ ...prev, brand: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, brand: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl"
         />
 
@@ -143,7 +173,9 @@ export default function EquipamentRelatorio() {
           type="text"
           placeholder="Buscar por Série, Patrimônio ou Tag"
           value={filters.search}
-          onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, search: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl flex-grow"
         />
 
@@ -182,7 +214,9 @@ export default function EquipamentRelatorio() {
               <td className="py-3 px-4">{equip.brand || '-'}</td>
               <td className="py-3 px-4">{equip.status}</td>
               <td className="py-3 px-4">
-                {equip.Location ? `${equip.Location.block} / Sala ${equip.Location.room}` : '-'}
+                {equip.Location
+                  ? `${equip.Location.block} / Sala ${equip.Location.room}`
+                  : '-'}
               </td>
               <td className="py-3 px-4">
                 <button

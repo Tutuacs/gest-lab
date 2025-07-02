@@ -13,6 +13,8 @@ type EventFormProps = {
 export default function EventForm({ mode, id }: EventFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [setup, setSetup] = useState(false)
+  const [setupEvent, setSetupEvent] = useState(false)
   const { toast } = useToast()
   const { fetchWithAuth } = useFetch()
 
@@ -25,15 +27,35 @@ export default function EventForm({ mode, id }: EventFormProps) {
     equipamentId: ''
   })
 
+  const [equipNeedsRenovation, setEquipNeedsRenovation] = useState(true)
   const isValueDisabled = formData.eventType === 'VERIFICATION'
 
   useEffect(() => {
-    // para create - pegando equipamentId da URL
     if (mode === 'create') {
       const equipId = searchParams.get('equipamentId') || ''
       setFormData(prev => ({ ...prev, equipamentId: equipId }))
+
+      if (equipId) {
+        const fetchEquipament = async () => {
+          const res = await fetchWithAuth(`/equipament/${equipId}`, {
+            method: 'GET'
+          })
+          console.log('res:', res)
+
+          if (res?.status === 200) {
+            setEquipNeedsRenovation(
+              res.data?.Certified?.needsRenovation ?? false
+            )
+          }
+          console.log('res.data?.Certified?.needsRenovation:', res.data)
+        }
+        if (!setup) {
+          fetchEquipament()
+          setSetup(true)
+        }
+      }
     }
-  }, [mode, searchParams])
+  })
 
   useEffect(() => {
     if (mode === 'edit' && id) {
@@ -57,9 +79,12 @@ export default function EventForm({ mode, id }: EventFormProps) {
           })
         }
       }
-      fetchEvent()
+      if (!setupEvent) {
+        fetchEvent()
+        setSetupEvent(true)
+      }
     }
-  }, [mode, id])
+  })
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -151,15 +176,26 @@ export default function EventForm({ mode, id }: EventFormProps) {
         name="eventType"
         value={formData.eventType}
         onChange={handleChange}
-        options={[
-          { value: '', label: 'Selecione' },
-          { value: 'CALIBRATION', label: 'Calibração' },
-          { value: 'VERIFICATION', label: 'Verificação Periódica' },
-          { value: 'MAINTENANCE_CORRECTIVE', label: 'Manutenção Corretiva' },
-          { value: 'MAINTENANCE_PREVENTIVE', label: 'Manutenção Preventiva' }
-          // { value: 'INACTIVATE_EQUIPAMENT', label: 'Inativar Equipamento' },
-          // { value: 'ENABLE_EQUIPAMENT', label: 'Ativar Equipamento' }
-        ]}
+        options={
+          equipNeedsRenovation
+            ? [
+                { value: '', label: 'Selecione' },
+                { value: 'CALIBRATION', label: 'Calibração' },
+                { value: 'VERIFICATION', label: 'Verificação Periódica' },
+                {
+                  value: 'MAINTENANCE_CORRECTIVE',
+                  label: 'Manutenção Corretiva'
+                },
+                {
+                  value: 'MAINTENANCE_PREVENTIVE',
+                  label: 'Manutenção Preventiva'
+                }
+              ]
+            : [
+                { value: '', label: 'Selecione' },
+                { value: 'VERIFICATION', label: 'Verificação Periódica' }
+              ]
+        }
         disabled={mode === 'edit'}
       />
       {formData.eventType.toUpperCase().includes('MAINTENANCE') && (
