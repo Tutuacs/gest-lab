@@ -173,6 +173,24 @@ export default function RelEvent() {
         >
           Filtrar
         </button>
+        <button
+          onClick={() => {
+            setFilters({
+              equipamentId: '',
+              categoryId: '',
+              startDate: '',
+              endDate: '',
+              eventType: '',
+              orderValue: '',
+              search: ''
+            })
+            setTimeout(fetchEvents, 0)
+          }}
+          className="text-gray-500 hover:text-red-800 text-xl px-2"
+          title="Remover Filtros"
+        >
+          ×
+        </button>
       </div>
 
       <table className="min-w-full bg-white shadow overflow-hidden">
