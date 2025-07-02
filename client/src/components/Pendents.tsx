@@ -79,8 +79,8 @@ export default function AccessOverlay() {
   // helper to decide event type color
   const eventColor = (type: string) =>
     ['VERIFICATION', 'CALIBRATION'].includes(type.toUpperCase())
-      ? 'text-green-600'
-      : 'text-yellow-600'
+      ? 'text-green-600 font-semibold'
+      : 'text-yellow-600 font-semibold'
 
   if (!visible || status === 'loading') return null
 
@@ -104,20 +104,34 @@ export default function AccessOverlay() {
                 const lastEvent = Array.isArray(item.Event) && item.Event.length > 0 ? item.Event[0] : null
                 return (
                   <li key={item.id} className="p-4 border rounded bg-white">
-                    <Link href={`/equipament/${item.id}`} className="block hover:bg-gray-50 transition">
+                    <Link href={`/equipament/${item.id}`} className="block hover:bg-gray-50 transition rounded-lg">
                       <p><strong>Equipamento:</strong> {item.name}</p>
                       <p><strong>Patrimônio:</strong> {item.patrimonio}</p>
                       <p>
                         <strong>Próxima Manutenção:</strong>{' '}
                         <span className={
-                          new Date(item.next_maintenance) <= new Date()
+                          session?.profile?.periodicity &&
+                            new Date(item.next_maintenance) <= new Date(Date.now())
                             ? 'text-red-600 font-semibold'
-                            : ''
+                            : new Date(item.next_maintenance) <= new Date(Date.now() + (session?.profile?.periodicity || 0) * 24 * 60 * 60 * 1000)
+                              ? 'text-yellow-600 font-semibold'
+                              : ''
                         }>
                           {new Date(item.next_maintenance).toLocaleDateString('pt-BR')}
                         </span>
                       </p>
-                      <p><strong>Status:</strong> {item.status}</p>
+                      <p>
+                        <strong>Status:</strong>{' '}
+                        <span className={
+                          item.status === 'MAINTENANCE'
+                            ? 'text-yellow-600 font-semibold'
+                            : item.status === 'ACTIVE'
+                              ? 'text-green-600 font-semibold'
+                              : 'text-red-600 font-semibold'
+                        }>
+                          {item.status}
+                        </span>
+                      </p>
                       {item.Certified && (
                         <div className="mt-2 text-sm">
                           <p><strong>Certificado:</strong> {item.Certified.description}</p>
