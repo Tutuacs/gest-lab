@@ -1,8 +1,12 @@
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/utils/authOptions'
 import { ROLE } from '@/common/role.enums'
-import ButtonByRole from '@/components/ButtonByRole'
 import Link from 'next/link'
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+  const role = session?.profile?.role as ROLE | undefined
+
   return (
     <main className="flex-1 w-full flex flex-col items-center justify-center p-12 bg-gray-200">
       <h1 className="text-4xl font-bold text-center text-black mb-10">
@@ -26,11 +30,22 @@ export default function Home() {
         <div className="md:border-l border-t md:border-t-0 border-gray-200 h-full md:w-full md:h-auto" />
 
         <div className="flex flex-col gap-4">
-          <Link href="/certificate">
-            <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
-              Certificados
-            </button>
-          </Link>
+          {(role === 'MASTER' || role === 'ADMIN') && (
+            <Link href="/profile">
+              <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
+                Perfis
+              </button>
+            </Link>
+          )}
+
+          {role === 'USER' && (
+            <Link href="/profile/edit/${session?.profile?.id}">
+              <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
+                Meu Perfil
+              </button>
+            </Link>
+          )}
+
           <Link href="/category">
             <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
               Categorias
