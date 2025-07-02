@@ -63,7 +63,10 @@ export class ProfileService {
     if (profile.role != ROLE.MASTER && profile.role != ROLE.ADMIN) {
       return this.prisma.profile.findFirst({
         where: {
-          id: profile.id,
+          id,
+        },
+        include: {
+          Location: true,
         }
       });
     }
@@ -83,14 +86,16 @@ export class ProfileService {
           id,
           locationId: profile.locationId,
         },
+        include: {
+          Location: true,
+        }
       });
     }
 
     return this.prisma.profile.findUnique({
-      where: {
-        id,
-      },
-    });
+      where: { id },
+      include: { Location: true },
+    })
   }
 
   async update(id: string, profile: { id: string, role: ROLE, locationId: number }, updateProfileDto: UpdateProfileDto) {

@@ -14,7 +14,7 @@ export default async function Home() {
         Bem vindo ao GestLab App
       </h1>
 
-      <AccessOverlay/>
+      <AccessOverlay />
 
       <div className="bg-white shadow rounded-3xl p-12 w-full max-w-3xl grid grid-cols-1 md:grid-cols-[1fr_10px_1fr] gap-6">
         <div className="flex flex-col gap-4">
@@ -42,7 +42,7 @@ export default async function Home() {
           )}
 
           {role === 'USER' && (
-            <Link href="/profile/edit/${session?.profile?.id}">
+            <Link href={`/profile/edit/${session?.profile?.id}`}>
               <button className="w-full py-5 text-gray-900 font-semibold bg-white border border-gray-300 rounded-2xl hover:bg-gray-100 transition-all duration-300 ease-in-out">
                 Meu Perfil
               </button>

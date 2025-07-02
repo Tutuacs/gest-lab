@@ -9,34 +9,41 @@ export default function EditProfilePage() {
   const { id } = useParams()
   const { fetchWithAuth } = useFetch('Editar Perfil')
   const router = useRouter()
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
     periodicity: '30',
     role: '',
     locationId: ''
   })
   const [locations, setLocations] = useState<any[]>([])
+  const [loggedUserRole, setLoggedUserRole] = useState<string>('')
 
   useEffect(() => {
     const load = async () => {
-      const [profileRes, locRes] = await Promise.all([
-        fetchWithAuth(`/profile/${id}`, { method: 'GET' }),
-        fetchWithAuth('/location', { method: 'GET' })
-      ])
+      // Carrega o perfil a ser editado
+      const profileRes = await fetchWithAuth(`/profile/${id}`, {
+        method: 'GET'
+      })
       if (profileRes?.status === 200) {
         const p = profileRes.data
         setFormData({
           name: p.name || '',
           email: p.email || '',
-          password: '',
           periodicity: p.periodicity?.toString() || '30',
           role: p.role,
-          locationId: p.Location?.id?.toString() || ''
+          locationId: p.locationId?.toString() || ''
         })
       }
+
+      // Carrega locais
+      const locRes = await fetchWithAuth('/location', { method: 'GET' })
       if (locRes?.status === 200) setLocations(locRes.data)
+
+      // Carrega perfil logado para saber o role
+      const meRes = await fetchWithAuth('/profile', { method: 'GET' })
+      if (meRes?.status === 200) setLoggedUserRole(meRes.data.role)
     }
     load()
   }, [id])
@@ -55,8 +62,6 @@ export default function EditProfilePage() {
       periodicity: parseInt(formData.periodicity),
       locationId: parseInt(formData.locationId)
     }
-    if (!payload.password) delete payload.password
-
     const res = await fetchWithAuth(`/profile/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -75,12 +80,13 @@ export default function EditProfilePage() {
   }
 
   return (
-    <main className="p-12 bg-gray-200 min-h-screen flex justify-center">
+    <main className="py-12 bg-gray-200 flex justify-center">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-2xl shadow w-full max-w-xl space-y-4"
       >
-        <h1 className="text-3xl font-bold text-center mb-6">Editar Perfil</h1>
+        <h1 className="text-3xl font-bold text-center">Editar Perfil</h1>
+
         <Input
           label="Nome"
           name="name"
@@ -94,13 +100,6 @@ export default function EditProfilePage() {
           onChange={handleChange}
         />
         <Input
-          label="Senha (opcional)"
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <Input
           label="Período de Pendências (dias)"
           name="periodicity"
           value={formData.periodicity}
@@ -111,6 +110,7 @@ export default function EditProfilePage() {
           name="locationId"
           value={formData.locationId}
           onChange={handleChange}
+          disabled={loggedUserRole === 'USER'}
           options={[
             { value: '', label: 'Nenhum' },
             ...locations.map((loc: any) => ({
@@ -119,12 +119,28 @@ export default function EditProfilePage() {
             }))
           ]}
         />
-        <button
-          type="submit"
-          className="w-full py-3 font-bold text-white bg-indigo-950 rounded-xl hover:bg-indigo-900 transition"
-        >
-          Salvar
-        </button>
+
+        <div className="flex flex-col gap-3 pt-4">
+          <button
+            type="submit"
+            className="w-full py-3 font-bold text-white bg-indigo-950 rounded-xl hover:bg-indigo-900 transition"
+          >
+            Salvar
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (loggedUserRole === 'USER') {
+                router.push('/home')
+              } else {
+                router.push('/profile')
+              }
+            }}
+            className="w-full py-3 font-bold text-indigo-950 border border-indigo-950 rounded-xl hover:bg-gray-100 transition"
+          >
+            Voltar
+          </button>
+        </div>
       </form>
     </main>
   )
@@ -132,7 +148,15 @@ export default function EditProfilePage() {
 
 // Components
 
-const Input = ({ label, name, value, onChange, type = 'text' }) => (
+interface InputProps {
+  label: string
+  name: string
+  value: string
+  onChange: React.ChangeEventHandler<HTMLInputElement>
+  type?: string
+}
+
+const Input = ({ label, name, value, onChange, type = 'text' }: InputProps) => (
   <div className="flex flex-col">
     <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
@@ -149,7 +173,21 @@ const Input = ({ label, name, value, onChange, type = 'text' }) => (
   </div>
 )
 
-const Select = ({ label, name, value, onChange, options }) => (
+const Select = ({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+  disabled = false
+}: {
+  label: string
+  name: string
+  value: string
+  onChange: React.ChangeEventHandler<HTMLSelectElement>
+  options: { value: string; label: string }[]
+  disabled?: boolean
+}) => (
   <div className="flex flex-col">
     <label htmlFor={name} className="mb-1 text-sm text-gray-700 font-medium">
       {label}
@@ -159,7 +197,10 @@ const Select = ({ label, name, value, onChange, options }) => (
       name={name}
       value={value}
       onChange={onChange}
-      className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      disabled={disabled}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+      }`}
       required
     >
       {options.map(opt => (
