@@ -31,12 +31,14 @@ export default function RelEvent() {
   const [filters, setFilters] = useState({
     equipamentId: '',
     categoryId: '',
+    locationId: '',
     startDate: '',
     endDate: '',
     eventType: '',
     orderValue: '',
     search: ''
   })
+  const [locations, setLocations] = useState<any[]>([])
 
   const fetchEvents = async () => {
     try {
@@ -44,6 +46,7 @@ export default function RelEvent() {
 
       if (filters.equipamentId) query.append('equipamentId', filters.equipamentId)
       if (filters.categoryId) query.append('categoryId', filters.categoryId)
+        if (filters.locationId) query.append('locationId', filters.locationId)
       if (filters.startDate) query.append('startDate', filters.startDate)
       if (filters.endDate) query.append('endDate', filters.endDate)
       if (filters.eventType) query.append('eventType', filters.eventType)
@@ -59,12 +62,14 @@ export default function RelEvent() {
 
   useEffect(() => {
     const loadData = async () => {
-      const [equipRes, catRes] = await Promise.all([
+      const [equipRes, catRes, locRes] = await Promise.all([
         fetchWithAuth('/equipament', { method: 'GET' }),
-        fetchWithAuth('/category', { method: 'GET' })
+        fetchWithAuth('/category', { method: 'GET' }),
+        fetchWithAuth('/location', { method: 'GET' })
       ])
       if (equipRes?.status === 200) setEquipaments(equipRes.data)
       if (catRes?.status === 200) setCategories(catRes.data)
+      if (locRes?.status === 200) setLocations(locRes.data)
     }
     loadData()
     fetchEvents()
@@ -85,7 +90,21 @@ export default function RelEvent() {
 
   return (
     <div className="overflow-x-auto">
-      <div className="flex flex-wrap gap-4 p-4 bg-white shadow rounded-xl mb-6">
+      <div className="flex flex-nowrap gap-4 p-4 bg-white shadow rounded-xl mb-6 overflow-x-auto">
+        <select
+          value={filters.locationId}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, locationId: e.target.value }))
+          }
+          className="border px-3 py-2 rounded-xl"
+        >
+          <option value="">Todos Locais</option>
+          {locations.map(l => (
+            <option key={l.id} value={l.id}>
+              {l.block} / Sala {l.room}
+            </option>
+          ))}
+        </select>
         <select
           value={filters.equipamentId}
           onChange={e =>
@@ -176,14 +195,15 @@ export default function RelEvent() {
         <button
           onClick={() => {
             setFilters({
-              equipamentId: '',
-              categoryId: '',
-              startDate: '',
-              endDate: '',
-              eventType: '',
-              orderValue: '',
-              search: ''
-            })
+                          equipamentId: '',
+                          categoryId: '',
+                          locationId: '',
+                          startDate: '',
+                          endDate: '',
+                          eventType: '',
+                          orderValue: '',
+                          search: ''
+                        })
             setTimeout(fetchEvents, 0)
           }}
           className="text-gray-500 hover:text-red-800 text-xl px-2"

@@ -174,13 +174,14 @@ export class EventFunctionsService extends PrismaService {
         });
     }
 
-    async list({ skip, take, equipamentId, categoryId, startDate, endDate, eventType, search, orderValue }: FilterEventDto) {
+    async list({ skip, take, equipamentId, categoryId, locationId, startDate, endDate, eventType, search, orderValue }: FilterEventDto) {
         return await this.event.findMany({
             skip,
             take,
             where: {
                 ...(equipamentId && { equipamentId }),
                 ...(categoryId && { Equipament: { categoryId } }),
+                ...(locationId && { Equipament: { locationId } }),
                 ...(startDate && { from: { gte: new Date(startDate) } }),
                 ...(endDate && { to: { lte: new Date(endDate) } }),
                 ...(eventType && { eventType }),

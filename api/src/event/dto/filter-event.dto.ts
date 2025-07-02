@@ -20,6 +20,11 @@ export class FilterEventDto extends PartialType(ListDto) {
   @IsNumber()
   categoryId?: number;
 
+  @ApiPropertyOptional({ description: 'Location ID' })
+  @IsOptional()
+  @IsNumber()
+  locationId?: number;
+  
   @ApiPropertyOptional({ description: 'Start date for filtering events' })
   @IsOptional()
   @IsString()
@@ -44,5 +49,4 @@ export class FilterEventDto extends PartialType(ListDto) {
   @IsOptional()
   @IsString()
   search?: string;
-
 }
