@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationFunctionsService } from './functions/location-functions.service';
@@ -35,7 +35,7 @@ export class LocationService {
     if (profile.role !== ROLE.MASTER) {
       if (!profile.locationId) {
         console.log('Profile does not have a location associated');
-        throw new ForbiddenException('Profile does not have a location associated');
+        throw new PreconditionFailedException('Profile does not have a location associated');
       }
 
       return [ await this.prisma.find(profile.locationId) ]

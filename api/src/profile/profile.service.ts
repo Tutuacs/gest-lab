@@ -56,6 +56,15 @@ export class ProfileService {
     }
 
     if (profile.role == ROLE.ADMIN) {
+
+      if (!profile.locationId) {
+        return this.prisma.profile.findFirst({
+          where: {
+            id,
+          }
+        });
+      }
+
       return this.prisma.profile.findFirst({
         where: {
           id,
