@@ -138,9 +138,12 @@ export default function AccessOverlay() {
                           <p>
                             <strong>Validade:</strong>{' '}
                             <span className={
-                              new Date(item.Certified.to) <= new Date()
+                              session?.profile?.periodicity &&
+                                new Date(item.Certified.to) <= new Date(Date.now())
                                 ? 'text-red-600 font-semibold'
-                                : ''
+                                : new Date(item.Certified.to) <= new Date(Date.now() + (session?.profile?.periodicity || 0) * 24 * 60 * 60 * 1000)
+                                  ? 'text-yellow-600 font-semibold'
+                                  : ''
                             }>
                               {new Date(item.Certified.to).toLocaleDateString('pt-BR')}
                             </span>
