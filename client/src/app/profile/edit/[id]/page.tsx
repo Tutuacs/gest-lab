@@ -69,7 +69,7 @@ export default function EditProfilePage() {
     })
     if (res?.status === 200) {
       toast({ title: 'Perfil atualizado!', description: 'Redirecionando...' })
-      router.push('/profile')
+      router.push('/home')
     } else {
       toast({
         title: 'Erro',
@@ -130,7 +130,7 @@ export default function EditProfilePage() {
           <button
             type="button"
             onClick={() => {
-              if (loggedUserRole === 'USER') {
+              if (loggedUserRole === 'USER' || loggedUserRole === 'ADMIN') {
                 router.push('/home')
               } else {
                 router.push('/profile')
