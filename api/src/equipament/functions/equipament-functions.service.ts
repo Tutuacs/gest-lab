@@ -61,6 +61,9 @@ export class EquipamentFunctionsService extends PrismaService {
     }
 
     async create(data: CreateEquipamentDto) {
+
+        console.log("Create Equipament: ", data);
+
         return await this.equipament.create({
             data: {
                 name: data.name,
