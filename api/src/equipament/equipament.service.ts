@@ -17,7 +17,16 @@ export class EquipamentService {
       throw new ConflictException('Equipament with this combination already exists');
     }
 
+    const certifiedDate = new Date(createEquipamentDto.lastCalibration);
+    certifiedDate.setDate(certifiedDate.getDate() + Math.floor(createEquipamentDto.certifiedRenovateInYears * 365));
+    createEquipamentDto.certifiedTo = certifiedDate.toISOString();
+
+
     createEquipamentDto.status = EQUIPAMENT_STATUS.INACTIVE;
+    
+    if (certifiedDate < new Date(Date.now())) {
+      createEquipamentDto.status = EQUIPAMENT_STATUS.ACTIVE;
+    }
 
     if (!createEquipamentDto.certifiedNeedsRenovation) {
       const futureDate = new Date();
@@ -54,7 +63,7 @@ export class EquipamentService {
 
     if (profile.role !== ROLE.MASTER) {
       locationId = profile.locationId;
-    }else {
+    } else {
       locationId = locationId || 0;
     }
     return this.prisma.pendents(locationId, profile.periodicity);

@@ -76,9 +76,9 @@ export class EquipamentFunctionsService extends PrismaService {
                 status: data.status,
                 Certified: {
                     create: {
-                        from: new Date(),
-                        to: new Date(),
-                        valid: CERTIFIED_STATUS.EXPIRED,
+                        from: data.status == EQUIPAMENT_STATUS.ACTIVE ? data.lastCalibration : new Date(),
+                        to: data.status == EQUIPAMENT_STATUS.ACTIVE ? data.certifiedTo : new Date(),
+                        valid: data.status == EQUIPAMENT_STATUS.ACTIVE ? CERTIFIED_STATUS.ACTIVE :CERTIFIED_STATUS.EXPIRED,
                         description: data.certifiedDescription,
                         needsRenovation: data.certifiedNeedsRenovation,
                         renovateInYears: data.certifiedRenovateInYears,

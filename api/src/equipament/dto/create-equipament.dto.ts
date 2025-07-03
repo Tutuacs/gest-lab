@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { EQUIPAMENT_STATUS } from "@prisma/client";
-import { IsBoolean, IsDate, IsDateString, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateEquipamentDto {
 
@@ -103,6 +103,25 @@ export class CreateEquipamentDto {
     })
     @IsString()
     certifiedDescription: string;
+
+    @ApiProperty({
+        description: 'Last date when the equipment was certified',
+        example: '2023-10-01',
+        required: true
+    })
+    @IsOptional()
+    @IsString()
+    lastCalibration: string;
+
+    @ApiProperty({
+        description: 'Expired date of the equipment certification',
+        example: '2024-10-01',
+        required: true
+    })
+    @IsOptional()
+    @IsEmpty()
+    @IsString()
+    certifiedTo: string;
 
     @ApiProperty({
         description: 'Indicates if the equipment needs renovation',
