@@ -63,11 +63,10 @@ export default function EquipamentRelatorio() {
 
       const [equipamentRes, locRes] = await Promise.all([
         fetchWithAuth(`/equipament?${query.toString()}`, { method: 'GET' }),
-        fetchWithAuth('/location', { method: 'GET' }),
+        fetchWithAuth('/location', { method: 'GET' })
       ])
 
-      if (equipamentRes?.status === 200)
-        setEquipaments(equipamentRes.data)
+      if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
       else if (equipamentRes?.status === 412) {
         // wait 5 seconds before redirecting
         await new Promise(resolve => setTimeout(resolve, 5000))
@@ -78,8 +77,7 @@ export default function EquipamentRelatorio() {
 
       if (locRes?.status === 200) {
         setLocations(locRes.data)
-      }
-      else if (locRes?.status === 412) {
+      } else if (locRes?.status === 412) {
         // wait 5 seconds before redirecting
         await new Promise(resolve => setTimeout(resolve, 5000))
         setStatus(412)
@@ -107,11 +105,10 @@ export default function EquipamentRelatorio() {
       try {
         const [equipamentRes, locRes] = await Promise.all([
           fetchWithAuth('/equipament', { method: 'GET' }),
-          fetchWithAuth('/location', { method: 'GET' }),
+          fetchWithAuth('/location', { method: 'GET' })
         ])
 
-        if (equipamentRes?.status === 200)
-          setEquipaments(equipamentRes.data)
+        if (equipamentRes?.status === 200) setEquipaments(equipamentRes.data)
         else if (equipamentRes?.status === 412) {
           // wait 5 seconds before redirecting
           await new Promise(resolve => setTimeout(resolve, 5000))
@@ -122,8 +119,7 @@ export default function EquipamentRelatorio() {
 
         if (locRes?.status === 200) {
           setLocations(locRes.data)
-        }
-        else if (locRes?.status === 412) {
+        } else if (locRes?.status === 412) {
           // wait 5 seconds before redirecting
           await new Promise(resolve => setTimeout(resolve, 5000))
           setStatus(412)
@@ -132,8 +128,7 @@ export default function EquipamentRelatorio() {
         }
 
         const catRes = await fetchWithAuth('/category', { method: 'GET' })
-        if (catRes?.status === 200)
-          setCategories(catRes.data)
+        if (catRes?.status === 200) setCategories(catRes.data)
         else if (catRes?.status === 412) {
           // wait 5 seconds before redirecting
           await new Promise(resolve => setTimeout(resolve, 5000))
@@ -242,6 +237,22 @@ export default function EquipamentRelatorio() {
           className="bg-blue-950 text-white px-4 py-2 rounded-xl hover:bg-blue-900"
         >
           Filtrar
+        </button>
+        <button
+          onClick={() => {
+            setFilters({
+              categoryId: '',
+              locationId: '',
+              status: '',
+              brand: '',
+              search: ''
+            })
+            setTimeout(fetchEquipaments, 0)
+          }}
+          className="text-gray-500 hover:text-red-800 text-xl px-2"
+          title="Remover Filtros"
+        >
+          ×
         </button>
       </div>
 
