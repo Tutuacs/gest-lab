@@ -170,9 +170,13 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    console.log(formData.next_maintenance)
+    
     const isoMaintenance = formData.next_maintenance
-      ? `${formData.next_maintenance}T00:00:00Z`
-      : new Date().toISOString()
+    ? `${formData.next_maintenance}T01:00:00Z`
+    : new Date().toISOString()
+  
+    console.log(isoMaintenance)
 
     const basePayload = {
       name: formData.name,
@@ -267,7 +271,6 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           value={formData.categoryId}
           onChange={handleChange}
           options={[
-            { value: '', label: 'Nenhuma' },
             ...categories.map(c => ({
               value: c.id.toString(),
               label: c.name
@@ -280,9 +283,8 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           value={formData.brand}
           onChange={handleChange}
           options={[
-            { value: '', label: 'Nenhuma' },
+            { value: 'Outra', label: 'Adicionar Marca' },
             ...brands.map(b => ({ value: b, label: b })),
-            { value: 'Outra', label: 'Outra' }
           ]}
         />
         {isOtherBrand && (
@@ -299,7 +301,6 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           value={formData.locationId}
           onChange={handleChange}
           options={[
-            { value: '', label: 'Nenhum' },
             ...locations.map(loc => ({
               value: loc.id.toString(),
               label: loc.block + ' - Sala ' + loc.room

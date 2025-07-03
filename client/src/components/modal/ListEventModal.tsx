@@ -43,8 +43,8 @@ export default function ListEventModal({
                     <strong>Descrição:</strong> {event.description}
                   </p>
                   <p>
-                    <strong>Período:</strong> {formatUTCDate(event.from)} -{' '}
-                    {formatUTCDate(event.to)}
+                    <strong>Período:</strong> {new Date(event.from).toLocaleDateString('pt-BR')} -{' '}
+                    {new Date(event.to).toLocaleDateString('pt-BR')}
                   </p>
                   <p>
                     <strong>Valor:</strong> R$ {event.value.toFixed(2)}

@@ -45,6 +45,7 @@ export default function EventForm({ mode, id }: EventFormProps) {
               })
 
               if (res?.status === 200) {
+                console.log('Equipamento:', res.data)
                 setEquipNeedsRenovation(
                   res.data?.Certified?.needsRenovation ?? false
                 )
@@ -114,6 +115,12 @@ export default function EventForm({ mode, id }: EventFormProps) {
       value: parseFloat(formData.value.replace(',', '.')),
       equipamentId: parseInt(formData.equipamentId)
     }
+
+    if (!equipNeedsRenovation) {
+      payload.eventType = 'VERIFICATION'
+    }
+
+    console.log('Payload:', payload)
 
     const result =
       mode === 'create'

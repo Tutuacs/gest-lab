@@ -65,11 +65,11 @@ export default function LocationDetails() {
           />
           <Detail
             label="Criado em"
-            value={new Date(location.createdAt).toLocaleString()}
+            value={new Date(location.createdAt).toLocaleDateString('pt-BR')}
           />
           <Detail
             label="Atualizado em"
-            value={new Date(location.updatedAt).toLocaleString()}
+            value={new Date(location.updatedAt).toLocaleDateString('pt-BR')}
           />
         </div>
 

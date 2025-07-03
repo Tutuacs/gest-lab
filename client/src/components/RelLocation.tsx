@@ -77,7 +77,7 @@ export default function LocationRelatorio() {
               <td className="py-3 px-4">{loc.room}</td>
               <td className="py-3 px-4">{loc.description || '-'}</td>
               <td className="py-3 px-4">
-                {new Date(loc.createdAt).toLocaleDateString()}
+                {new Date(loc.createdAt).toLocaleDateString('pt-BR')}
               </td>
               <td className="py-3 px-4">
                 <button

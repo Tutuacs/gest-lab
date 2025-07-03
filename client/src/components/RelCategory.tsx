@@ -108,7 +108,7 @@ export default function CategoryTable() {
                   <td className="py-3 px-4">{category.name}</td>
                   <td className="py-3 px-4">{category.description || '-'}</td>
                   <td className="py-3 px-4">
-                    {new Date(category.createdAt).toLocaleDateString()}
+                    {new Date(category.createdAt).toLocaleDateString('pt-BR')}
                   </td>
                   <td className="py-3 px-4">
                     <button

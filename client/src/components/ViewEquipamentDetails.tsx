@@ -7,6 +7,15 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
   const router = useRouter()
   const { Category, Location, Certified } = data
 
+  const formatUTCDate = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getUTCDate().toString().padStart(2, '0')}/${(
+      d.getUTCMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${d.getUTCFullYear()}`
+  }
+
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'ACTIVE':
@@ -73,7 +82,7 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
           </p>
           <p>
             <strong>Próxima Manutenção:</strong>{' '}
-            {new Date(data.next_maintenance).toLocaleDateString()}
+            {formatUTCDate(data.next_maintenance)}
           </p>
           <p>
             <strong>Periodicidade:</strong> {data.maintenance_periodicity} dias
@@ -97,11 +106,11 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
                   </p>
                   <p>
                     <strong>Início:</strong>{' '}
-                    {new Date(Certified.from).toLocaleDateString()}
+                    {new Date(Certified.from).toLocaleDateString('pt-BR')}
                   </p>
                   <p>
                     <strong>Fim:</strong>{' '}
-                    {new Date(Certified.to).toLocaleDateString()}
+                    {new Date(Certified.to).toLocaleDateString('pt-BR')}
                   </p>
                   <p>
                     <strong>Precisa Certificação:</strong> Sim
@@ -112,7 +121,7 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
                   </p>
                   <p>
                     <strong>Atualizado em:</strong>{' '}
-                    {new Date(Certified.updatedAt).toLocaleDateString()}
+                    {new Date(Certified.updatedAt).toLocaleDateString('pt-BR')}
                   </p>
                 </>
               ) : (

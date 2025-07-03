@@ -232,8 +232,8 @@ export default function RelEvent() {
               <td className="py-3 px-4">{event.description}</td>
               <td className="py-3 px-4">{event.eventType}</td>
               <td className="py-3 px-4">{event.value}</td>
-              <td className="py-3 px-4">{formatUTCDate(event.from)}</td>
-              <td className="py-3 px-4">{formatUTCDate(event.to)}</td>
+              <td className="py-3 px-4">{new Date(event.from).toLocaleDateString('pt-BR')}</td>
+              <td className="py-3 px-4">{new Date(event.to).toLocaleDateString('pt-BR')}</td>
               <td className="py-3 px-4">
                 <button
                   onClick={() => router.push(`/event/${event.id}`)}
