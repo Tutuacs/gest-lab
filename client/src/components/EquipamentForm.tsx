@@ -198,7 +198,6 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       certifiedRenovateInYears: parseFloat(
         formData.certifiedRenovateInYears.replace(',', '.')
       ),
-      alreadyInUse: formData.alreadyInUse,
       lastCalibration: formData.lastCalibration || null
     }
 
