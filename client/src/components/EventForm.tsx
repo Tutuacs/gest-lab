@@ -29,7 +29,8 @@ export default function EventForm({ mode, id }: EventFormProps) {
   })
 
   const [equipNeedsRenovation, setEquipNeedsRenovation] = useState(true)
-  const isValueDisabled = formData.eventType === 'VERIFICATION'
+  const isValueDisabled =
+    !equipNeedsRenovation || formData.eventType === 'VERIFICATION'
 
   useEffect(() => {
     if (status === 'authenticated') {
