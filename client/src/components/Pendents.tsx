@@ -118,6 +118,18 @@ export default function AccessOverlay() {
       .padStart(2, '0')}/${d.getUTCFullYear()}`
   }
 
+  const getValidityVariant = (dateStr: string) => {
+    if (!session?.profile?.periodicity) return 'outline'
+    const dueDate = new Date(dateStr)
+    if (dueDate <= new Date(Date.now())) return 'danger'
+    if (
+      dueDate <=
+      new Date(Date.now() + session.profile.periodicity * 24 * 60 * 60 * 1000)
+    )
+      return 'maintenance'
+    return 'outline'
+  }
+
   if (!visible || status === 'loading') return null
 
   return (
@@ -193,30 +205,13 @@ export default function AccessOverlay() {
                           </p>
                           <p>
                             <strong>Validade:</strong>{' '}
-                            <span
-                              className={
-                                session?.profile?.periodicity &&
-                                new Date(item.Certified.to) <=
-                                  new Date(Date.now())
-                                  ? 'text-red-600 font-semibold'
-                                  : new Date(item.Certified.to) <=
-                                    new Date(
-                                      Date.now() +
-                                        (session?.profile?.periodicity || 0) *
-                                          24 *
-                                          60 *
-                                          60 *
-                                          1000
-                                    )
-                                  ? 'text-yellow-600 font-semibold'
-                                  : ''
-                              }
+                            <Badge
+                              variant={getValidityVariant(item.Certified.to)}
                             >
-                              {new Date(item.Certified.to).toLocaleDateString(
-                                'pt-BR'
-                              )}
-                            </span>
+                              {formatUTCDate(item.Certified.to)}
+                            </Badge>
                           </p>
+
                           <p>
                             <strong>Situação:</strong>{' '}
                             <Badge
