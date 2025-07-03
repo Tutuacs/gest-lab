@@ -44,16 +44,19 @@ export default function RelEvent() {
     try {
       const query = new URLSearchParams()
 
-      if (filters.equipamentId) query.append('equipamentId', filters.equipamentId)
+      if (filters.equipamentId)
+        query.append('equipamentId', filters.equipamentId)
       if (filters.categoryId) query.append('categoryId', filters.categoryId)
-        if (filters.locationId) query.append('locationId', filters.locationId)
+      if (filters.locationId) query.append('locationId', filters.locationId)
       if (filters.startDate) query.append('startDate', filters.startDate)
       if (filters.endDate) query.append('endDate', filters.endDate)
       if (filters.eventType) query.append('eventType', filters.eventType)
       if (filters.orderValue) query.append('orderValue', filters.orderValue)
       if (filters.search) query.append('search', filters.search)
 
-      const res = await fetchWithAuth(`/event?${query.toString()}`, { method: 'GET' })
+      const res = await fetchWithAuth(`/event?${query.toString()}`, {
+        method: 'GET'
+      })
       if (res?.status === 200) setEvents(res.data.filter || [])
     } catch (err) {
       console.error('Erro ao buscar eventos:', err)
@@ -168,7 +171,9 @@ export default function RelEvent() {
 
         <select
           value={filters.orderValue}
-          onChange={e => setFilters(prev => ({ ...prev, orderValue: e.target.value }))}
+          onChange={e =>
+            setFilters(prev => ({ ...prev, orderValue: e.target.value }))
+          }
           className="border px-3 py-2 rounded-xl"
         >
           <option value="">Ordenar por Valor</option>
@@ -195,15 +200,15 @@ export default function RelEvent() {
         <button
           onClick={() => {
             setFilters({
-                          equipamentId: '',
-                          categoryId: '',
-                          locationId: '',
-                          startDate: '',
-                          endDate: '',
-                          eventType: '',
-                          orderValue: '',
-                          search: ''
-                        })
+              equipamentId: '',
+              categoryId: '',
+              locationId: '',
+              startDate: '',
+              endDate: '',
+              eventType: '',
+              orderValue: '',
+              search: ''
+            })
             setTimeout(fetchEvents, 0)
           }}
           className="text-gray-500 hover:text-red-800 text-xl px-2"
@@ -232,8 +237,8 @@ export default function RelEvent() {
               <td className="py-3 px-4">{event.description}</td>
               <td className="py-3 px-4">{event.eventType}</td>
               <td className="py-3 px-4">{event.value}</td>
-              <td className="py-3 px-4">{new Date(event.from).toLocaleDateString('pt-BR')}</td>
-              <td className="py-3 px-4">{new Date(event.to).toLocaleDateString('pt-BR')}</td>
+              <td className="py-3 px-4">{formatUTCDate(event.from)}</td>
+              <td className="py-3 px-4">{formatUTCDate(event.to)}</td>
               <td className="py-3 px-4">
                 <button
                   onClick={() => router.push(`/event/${event.id}`)}

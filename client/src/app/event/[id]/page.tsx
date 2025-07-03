@@ -57,10 +57,10 @@ export default function EventDetailPage() {
           <strong>Valor:</strong> {data.value}
         </p>
         <p>
-          <strong>Data Início:</strong> {new Date(data.from).toLocaleDateString('pt-BR')}
+          <strong>Data Início:</strong> {formatUTCDate(data.from)}
         </p>
         <p>
-          <strong>Data Fim:</strong> {new Date(data.to).toLocaleDateString('pt-BR')}
+          <strong>Data Fim:</strong> {formatUTCDate(data.to)}
         </p>
         <p>
           <strong>Equipamento:</strong> {data.Equipament?.name} (Patrimônio:{' '}
