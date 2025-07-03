@@ -19,17 +19,17 @@ export class EquipamentService {
 
     createEquipamentDto.status = EQUIPAMENT_STATUS.INACTIVE;
 
-    console.log("payload: ",createEquipamentDto);
+    console.log("payload: ", createEquipamentDto);
 
-    if (!createEquipamentDto.lastCalibration) {
+    if (createEquipamentDto.lastCalibration) {
 
       const certifiedDate = new Date(createEquipamentDto.lastCalibration);
       certifiedDate.setDate(certifiedDate.getDate() + Math.floor(createEquipamentDto.certifiedRenovateInYears * 365));
       createEquipamentDto.certifiedTo = certifiedDate.toISOString();
 
-      console.log("CertifiedDate: ",certifiedDate);
-      
-      if (certifiedDate < new Date(Date.now())) {
+      console.log("CertifiedDate: ", certifiedDate);
+
+      if (certifiedDate > new Date(Date.now())) {
         createEquipamentDto.status = EQUIPAMENT_STATUS.ACTIVE;
       }
     }

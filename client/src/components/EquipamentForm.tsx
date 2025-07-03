@@ -181,6 +181,9 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       : new Date().toISOString()
 
     console.log(isoMaintenance)
+    const isoLastCalibration = formData.lastCalibration
+      ? `${formData.lastCalibration}T01:00:00Z`
+      : new Date().toISOString()
 
     const basePayload = {
       name: formData.name,
@@ -198,7 +201,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       certifiedRenovateInYears: parseFloat(
         formData.certifiedRenovateInYears.replace(',', '.')
       ),
-      lastCalibration: formData.lastCalibration || null
+      lastCalibration: isoLastCalibration
     }
 
     const payload =

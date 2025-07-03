@@ -105,12 +105,10 @@ export function ViewEquipamentDetails({ data }: { data: any }) {
                     </Badge>
                   </p>
                   <p>
-                    <strong>Início:</strong>{' '}
-                    {new Date(Certified.from).toLocaleDateString('pt-BR')}
+                    <strong>Início:</strong> {formatUTCDate(Certified.from)}
                   </p>
                   <p>
-                    <strong>Fim:</strong>{' '}
-                    {new Date(Certified.to).toLocaleDateString('pt-BR')}
+                    <strong>Fim:</strong> {formatUTCDate(Certified.to)}
                   </p>
                   <p>
                     <strong>Precisa Certificação:</strong> Sim
