@@ -176,9 +176,7 @@ export default function AccessOverlay() {
                               : 'outline'
                           }
                         >
-                          {new Date(item.next_maintenance).toLocaleDateString(
-                            'pt-BR'
-                          )}
+                          {formatUTCDate(item.next_maintenance)}
                         </Badge>
                       </p>
                       <p>
