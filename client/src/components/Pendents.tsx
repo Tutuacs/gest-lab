@@ -122,7 +122,7 @@ export default function AccessOverlay() {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-lg w-full">
+      <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-2xl w-full">
         <h2 className="text-xl font-bold mb-4">Aviso de Pendências</h2>
         <p className="text-gray-700 mb-4">
           Você está logado como:{' '}
