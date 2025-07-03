@@ -100,7 +100,7 @@ export class ProfileService {
 
   async update(id: string, profile: { id: string, role: ROLE, locationId: number }, updateProfileDto: UpdateProfileDto) {
 
-    if (profile.role != ROLE.MASTER && profile.id != id) {
+    if (profile.role == ROLE.USER  && profile.id != id) {
       throw new UnauthorizedException(`You are not allowed to update this profile`);
     }
 

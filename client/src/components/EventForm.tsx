@@ -34,9 +34,7 @@ export default function EventForm({ mode, id }: EventFormProps) {
   useEffect(() => {
     if (status === 'authenticated') {
       if (mode === 'create') {
-        console.log("create")
         if (!setup) {
-          console.log("setup false")
           const equipId = searchParams.get('equipamentId') || ''
           setFormData(prev => ({ ...prev, equipamentId: equipId }))
 
@@ -45,14 +43,12 @@ export default function EventForm({ mode, id }: EventFormProps) {
               const res = await fetchWithAuth(`/equipament/${equipId}`, {
                 method: 'GET'
               })
-              console.log('res:', res)
 
               if (res?.status === 200) {
                 setEquipNeedsRenovation(
                   res.data?.Certified?.needsRenovation ?? false
                 )
               }
-              console.log('res.data?.Certified?.needsRenovation:', res.data)
             }
             fetchEquipament()
             setSetup(true)

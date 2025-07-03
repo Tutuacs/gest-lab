@@ -33,14 +33,12 @@ export class EquipamentService {
 
     if (profile.role !== ROLE.MASTER) {
       if (!profile.locationId) {
-        console.log('Profile does not have a location associated');
         throw new PreconditionFailedException('Profile does not have a location associated');
       }
       query.locationId = profile.locationId;
     } else {
       query.locationId = query.locationId || 0;
     }
-    console.log('Query OK:', query);
     return this.prisma.list(query);
   }
 
@@ -51,7 +49,6 @@ export class EquipamentService {
   pendents(profile: { role: ROLE, locationId: number, periodicity: number }, locationId?: number) {
 
     if (!profile.locationId) {
-      console.log('Profile does not have a location associated');
       throw new PreconditionFailedException('Profile does not have a location associated');
     }
 

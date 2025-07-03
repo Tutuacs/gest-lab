@@ -20,13 +20,11 @@ export class EquipamentController {
 
   @Get()
   findAll(@Query() query: FilterEquipamentDto, @ProfileAuth() profile: { role: ROLE, locationId: number }) {
-    console.log('Query:', query);
     return this.equipamentService.findAll(query, profile);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log('Finding equipament with ID:', id);
     return this.equipamentService.findOne(+id);
   }
 

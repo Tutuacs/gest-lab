@@ -11,13 +11,11 @@ export class AuthController {
 
   @Post('login')
   login(@Body() login: LoginDto) {
-    console.log(login);
     return this.service.login(login);
   }
 
   @Post('register')
   registerGym(@Body() register: RegisterDto) {
-    console.log(register);
     return this.service.register(register);
   }
 

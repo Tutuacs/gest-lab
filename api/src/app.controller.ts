@@ -11,21 +11,18 @@ export class AppController {
   @Access(ROLE.USER, ROLE.ADMIN, ROLE.MASTER)
   @Get(`${ROLE.USER}`)
   findAllUSER(@ProfileAuth() profile: { id: string; email: string; role: ROLE; name: string }) {
-    console.log(profile);
     return "User"
   }
 
   @Access(ROLE.ADMIN, ROLE.MASTER)
   @Get(`${ROLE.ADMIN}`)
   findAllADMIN(@ProfileAuth() profile: { id: string; email: string; role: ROLE; name: string }) {
-    console.log(profile);
     return "Admin"
   }
 
   @Access(ROLE.MASTER)
   @Get(`${ROLE.MASTER}`)
   findAllMASTER(@ProfileAuth() profile: { id: string; email: string; role: ROLE; name: string }) {
-    console.log(profile);
     return "Master"
   }
 }

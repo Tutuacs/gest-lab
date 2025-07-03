@@ -18,7 +18,6 @@ const useFetch = (title?: string) => {
     });
 
     const response = await res.json();
-    console.log("refresh ", response);
     session.profile = response.profile;
 
     session.tokens = response;
@@ -41,22 +40,18 @@ const useFetch = (title?: string) => {
     }
 
     const res = await fetch(`${Backend_URL}${url}`, { ...options, headers });
-    console.log("fetchWithAuth ", res);
     return handleResponse(res);
   };
 
   const handleResponse = async (res: Response) => {
-    console.log("handleResponse1 ");
 
     let data: any = null;
     const contentType = res.headers.get("content-type");
 
     if (contentType && contentType.includes("application/json")) {
       data = await res.json();
-      console.log("handleResponse2 JSON parsed");
     } else {
       data = { message: await res.text() };
-      console.log("handleResponse2 Text parsed");
     }
 
     const config = getToastConfig(res.status.toString());
@@ -82,8 +77,6 @@ const useFetch = (title?: string) => {
       description: data!.message,
       variant: config!.variant
     });
-
-    console.log("handleResponse ", { data, status: res.status });
 
     return { data, status: res.status };
   };

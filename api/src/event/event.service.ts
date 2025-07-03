@@ -34,7 +34,6 @@ export class EventService {
       case EVENT_TYPE.MAINTENANCE_PREVENTIVE:
         await this.prisma.prepareEquipamentMaintenance(createEventDto)
       default:
-        console.log(`Event Type not implemented: ${createEventDto.eventType}`)
     }
 
     return this.prisma.create(createEventDto);

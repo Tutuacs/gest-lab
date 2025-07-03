@@ -52,7 +52,6 @@ export default function AccessOverlay() {
         method: 'GET'
       })
 
-      console.log('Resposta de /equipament/consult/pendents:', result.data)
 
       if (result?.status === 412) {
         setMessage(

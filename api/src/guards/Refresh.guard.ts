@@ -13,14 +13,12 @@ export class RefreshJwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-    console.log('Refresh token:', !token);
     if (!token) throw new UnauthorizedException("Refresh token not provided.");
 
     try {
       const profile = await this.authService.checkRefreshToken(token);
       request.profile = profile;
     } catch {
-      console.log('"Login expired. Please log in again."');
       throw new UnauthorizedException("Login expired. Please log in again.");
     }
 
