@@ -125,15 +125,15 @@ export default function EventForm({ mode, id }: EventFormProps) {
     const result =
       mode === 'create'
         ? await fetchWithAuth('/event', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
         : await fetchWithAuth(`/event/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
 
     if (result?.status === 200 || result?.status === 201) {
       toast({
@@ -183,21 +183,19 @@ export default function EventForm({ mode, id }: EventFormProps) {
         options={
           equipNeedsRenovation
             ? [
-              { value: '', label: 'Selecione' },
-              { value: 'CALIBRATION', label: 'Calibração' },
-              { value: 'VERIFICATION', label: 'Verificação Periódica' },
-              {
-                value: 'MAINTENANCE_CORRECTIVE',
-                label: 'Manutenção Corretiva'
-              },
-              {
-                value: 'MAINTENANCE_PREVENTIVE',
-                label: 'Manutenção Preventiva'
-              }
-            ]
-            : [
-              { value: 'VERIFICATION', label: 'Verificação Periódica' }
-            ]
+                { value: '', label: 'Selecione' },
+                { value: 'CALIBRATION', label: 'Calibração' },
+                { value: 'VERIFICATION', label: 'Verificação Periódica' },
+                {
+                  value: 'MAINTENANCE_CORRECTIVE',
+                  label: 'Manutenção Corretiva'
+                },
+                {
+                  value: 'MAINTENANCE_PREVENTIVE',
+                  label: 'Manutenção Preventiva'
+                }
+              ]
+            : [{ value: 'VERIFICATION', label: 'Verificação Periódica' }]
         }
         disabled={mode === 'edit'}
       />
@@ -227,6 +225,13 @@ export default function EventForm({ mode, id }: EventFormProps) {
         className="w-full py-3 font-bold text-white bg-indigo-950 rounded-xl hover:bg-indigo-900 transition"
       >
         {mode === 'create' ? 'Cadastrar' : 'Salvar'}
+      </button>
+      <button
+        type="button"
+        onClick={() => router.push(`/equipament/${formData.equipamentId}`)}
+        className="w-full py-3 font-bold text-indigo-950 border border-indigo-950 rounded-xl hover:bg-gray-100 transition"
+      >
+        Voltar
       </button>
     </form>
   )
@@ -260,8 +265,9 @@ const Input = ({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-        }`}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+      }`}
       required
     />
   </div>
@@ -294,8 +300,9 @@ const Select = ({
       value={value}
       onChange={onChange}
       disabled={disabled}
-      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-        }`}
+      className={`border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+        disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
+      }`}
       required
     >
       {options.map(opt => (
