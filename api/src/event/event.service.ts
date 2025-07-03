@@ -3,7 +3,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventFunctionsService } from './functions/event-functions.service';
 import { FilterEventDto } from './dto/filter-event.dto';
-import { EVENT_TYPE } from '@prisma/client';
+import { EVENT_TYPE, ROLE } from '@prisma/client';
 
 @Injectable()
 export class EventService {
@@ -40,7 +40,16 @@ export class EventService {
     return this.prisma.create(createEventDto);
   }
 
-  async findAll(filter: FilterEventDto) {
+  async findAll(filter: FilterEventDto, profile: { role: ROLE, locationId: number }) {
+
+    if (!filter.locationId) {
+      filter.locationId = 0;
+    }
+
+    if (profile.role !== ROLE.MASTER) {
+      filter.locationId = profile.locationId;
+    }
+
     const filtered = await this.prisma.list(filter);
 
     if (filter.categoryId || filter.eventType || filter.equipamentId || filter.search) {
@@ -58,21 +67,34 @@ export class EventService {
 
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, profile: { role: ROLE, locationId: number }) {
 
     const exist = await this.prisma.exist(id);
     if (!exist) {
       throw new NotFoundException(`Event with id ${id} does not exist`);
     }
 
-    return this.prisma.find(id);
+    if (profile.role !== ROLE.MASTER) {
+      profile.locationId = profile.locationId;
+    } else {
+      profile.locationId = 0;
+    }
+
+    return this.prisma.find(id, profile.locationId);
   }
 
-  async update(id: number, updateEventDto: UpdateEventDto) {
+  async update(id: number, updateEventDto: UpdateEventDto, profile: { role: ROLE, locationId: number }) {
 
     const exist = await this.prisma.exist(id);
     if (!exist) {
       throw new NotFoundException(`Event with id ${id} does not exist`);
+    }
+
+    if (profile.role !== ROLE.MASTER) {
+      const canUpdate = await this.prisma.canUpdate(id, profile.locationId);
+      if (!canUpdate) {
+        throw new MethodNotAllowedException(`Event with id ${id} cannot be updated`);
+      }
     }
 
     return this.prisma.update(id, updateEventDto);

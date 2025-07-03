@@ -23,7 +23,7 @@ export class EquipamentService {
       const futureDate = new Date();
       futureDate.setFullYear(futureDate.getFullYear() + 100);
       createEquipamentDto.next_maintenance = futureDate.toISOString();
-      createEquipamentDto.maintenance_periodicity = 1000;
+      createEquipamentDto.maintenance_periodicity = 0;
     }
 
     return this.prisma.create(createEquipamentDto);

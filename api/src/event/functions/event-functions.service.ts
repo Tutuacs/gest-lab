@@ -18,6 +18,17 @@ export class EventFunctionsService extends PrismaService {
         });
     }
 
+    async canUpdate(id: number, locationId: number) {
+        return 0 < await this.event.count({
+            where: {
+                id: id,
+                Equipament: {
+                    locationId: locationId,
+                },
+            },
+        });
+    }
+
     async dontRenovateEquipament(equipamentId: number) {
         return this.equipament.count({
             where: {
@@ -157,10 +168,11 @@ export class EventFunctionsService extends PrismaService {
         });
     }
 
-    async find(id: number) {
+    async find(id: number, locationId: number) {
         return await this.event.findUnique({
             where: {
                 id: id,
+                ...(locationId !== 0 && { Equipament: { locationId: locationId } })
             },
             select: {
                 id: true,
@@ -181,7 +193,7 @@ export class EventFunctionsService extends PrismaService {
             where: {
                 ...(equipamentId && { equipamentId }),
                 ...(categoryId && { Equipament: { categoryId } }),
-                ...(locationId && { Equipament: { locationId } }),
+                ...(locationId !== 0 && { Equipament: { locationId } }),
                 ...(startDate && { from: { gte: new Date(startDate) } }),
                 ...(endDate && { to: { lte: new Date(endDate) } }),
                 ...(eventType && { eventType }),
@@ -192,8 +204,8 @@ export class EventFunctionsService extends PrismaService {
                 }),
             },
             orderBy: orderValue
-            ? [{ value: orderValue }]
-            : [{ createdAt: 'desc' }],
+                ? [{ value: orderValue }]
+                : [{ createdAt: 'desc' }],
         });
     }
 

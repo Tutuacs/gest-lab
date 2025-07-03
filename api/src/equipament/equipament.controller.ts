@@ -13,7 +13,6 @@ import { ProfileAuth } from 'src/decorators/ProfileAtuh.decorator';
 export class EquipamentController {
   constructor(private readonly equipamentService: EquipamentService) { }
 
-  // @Access(ROLE.ADMIN, ROLE.MASTER)
   @Post()
   create(@Body() createEquipamentDto: CreateEquipamentDto) {
     return this.equipamentService.create(createEquipamentDto);
@@ -36,13 +35,11 @@ export class EquipamentController {
     return this.equipamentService.pendents(profile, locationId);
   }
 
-  // @Access(ROLE.ADMIN, ROLE.MASTER)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEquipamentDto: UpdateEquipamentDto) {
     return this.equipamentService.update(+id, updateEquipamentDto);
   }
 
-  // @Access(ROLE.MASTER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     throw new MethodNotAllowedException('This method is not allowed.')
