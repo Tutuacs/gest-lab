@@ -34,7 +34,9 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     maintenance_periodicity: '30',
     certifiedDescription: '',
     certifiedNeedsRenovation: false,
-    certifiedRenovateInYears: '1'
+    certifiedRenovateInYears: '1',
+    alreadyInUse: false,
+    lastCalibration: ''
   })
 
   const [locations, setLocations] = useState<
@@ -85,7 +87,9 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
             certifiedDescription: data.Certified?.description || '',
             certifiedNeedsRenovation: data.Certified?.needsRenovation || false,
             certifiedRenovateInYears:
-              data.Certified?.renovateInYears?.toString() || '1'
+              data.Certified?.renovateInYears?.toString() || '1',
+            alreadyInUse: data.alreadyInUse || false,
+            lastCalibration: data.lastCalibration || ''
           })
           setIsOtherBrand(data.brand === 'Outra')
           setOtherBrand(data.brand === 'Outra' ? '' : '')
@@ -171,11 +175,11 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
     e.preventDefault()
 
     console.log(formData.next_maintenance)
-    
+
     const isoMaintenance = formData.next_maintenance
-    ? `${formData.next_maintenance}T01:00:00Z`
-    : new Date().toISOString()
-  
+      ? `${formData.next_maintenance}T01:00:00Z`
+      : new Date().toISOString()
+
     console.log(isoMaintenance)
 
     const basePayload = {
@@ -193,7 +197,9 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
       certifiedNeedsRenovation: formData.certifiedNeedsRenovation,
       certifiedRenovateInYears: parseFloat(
         formData.certifiedRenovateInYears.replace(',', '.')
-      )
+      ),
+      alreadyInUse: formData.alreadyInUse,
+      lastCalibration: formData.lastCalibration || null
     }
 
     const payload =
@@ -284,7 +290,7 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
           onChange={handleChange}
           options={[
             { value: 'Outra', label: 'Adicionar Marca' },
-            ...brands.map(b => ({ value: b, label: b })),
+            ...brands.map(b => ({ value: b, label: b }))
           ]}
         />
         {isOtherBrand && (
@@ -346,6 +352,29 @@ export default function EquipamentForm({ mode, id }: EquipamentFormProps) {
 
         {formData.certifiedNeedsRenovation && (
           <>
+            <div className="flex items-center gap-2 pt-4">
+              <input
+                type="checkbox"
+                id="alreadyInUse"
+                name="alreadyInUse"
+                checked={formData.alreadyInUse}
+                onChange={handleChange}
+              />
+              <label htmlFor="alreadyInUse" className="text-sm text-gray-700">
+                Equipamento já em uso
+              </label>
+            </div>
+
+            {formData.alreadyInUse && (
+              <Input
+                type="date"
+                label="Última Calibração"
+                name="lastCalibration"
+                value={formData.lastCalibration}
+                onChange={handleChange}
+              />
+            )}
+
             <Input
               type="date"
               label="Próxima Manutenção"
