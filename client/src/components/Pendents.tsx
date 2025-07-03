@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import useFetch from '@/utils/useFetch'
 import { ROLE } from '@/common/role.enums'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
 
 export default function AccessOverlay() {
   const { data: session, status } = useSession()
@@ -52,13 +53,11 @@ export default function AccessOverlay() {
         method: 'GET'
       })
 
-
       if (result?.status === 412) {
         setMessage(
           'Cadastro incompleto: contate um Master ou Admin do laboratório para definir sua área de atuação.'
         )
         setCanClose(true)
-
       } else if (result?.status === 200) {
         const data = Array.isArray(result.data) ? result.data : []
         if (data.length === 0) {
@@ -81,6 +80,44 @@ export default function AccessOverlay() {
       ? 'text-green-600 font-semibold'
       : 'text-yellow-600 font-semibold'
 
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success'
+      case 'INACTIVE':
+        return 'danger'
+      case 'MAINTENANCE':
+        return 'maintenance'
+      default:
+        return 'outline'
+    }
+  }
+
+  const getCertifiedVariant = (status: string) => {
+    switch (status) {
+      case 'ACTIVE':
+        return 'success'
+      case 'EXPIRED':
+        return 'danger'
+      default:
+        return 'outline'
+    }
+  }
+
+  const getEventVariant = (type: string) =>
+    ['VERIFICATION', 'CALIBRATION'].includes(type.toUpperCase())
+      ? 'success'
+      : 'maintenance'
+
+  const formatUTCDate = (dateStr: string) => {
+    const d = new Date(dateStr)
+    return `${d.getUTCDate().toString().padStart(2, '0')}/${(
+      d.getUTCMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}/${d.getUTCFullYear()}`
+  }
+
   if (!visible || status === 'loading') return null
 
   return (
@@ -88,7 +125,8 @@ export default function AccessOverlay() {
       <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-lg w-full">
         <h2 className="text-xl font-bold mb-4">Aviso de Pendências</h2>
         <p className="text-gray-700 mb-4">
-          Você está logado como: <strong>{session?.profile?.role ?? 'Desconhecido'}</strong>
+          Você está logado como:{' '}
+          <strong>{session?.profile?.role ?? 'Desconhecido'}</strong>
         </p>
 
         {message && (
@@ -97,60 +135,99 @@ export default function AccessOverlay() {
 
         {pendings.length > 0 && (
           <div className="mb-4 text-left">
-            <p className="text-gray-800 font-medium mb-2">Pendências encontradas:</p>
+            <p className="text-gray-800 font-medium mb-2">
+              Pendências encontradas:
+            </p>
             <ul className="space-y-4 max-h-96 overflow-auto bg-gray-100 rounded-lg p-2">
               {pendings.map(item => {
-                const lastEvent = Array.isArray(item.Event) && item.Event.length > 0 ? item.Event[0] : null
+                const lastEvent =
+                  Array.isArray(item.Event) && item.Event.length > 0
+                    ? item.Event[0]
+                    : null
                 return (
                   <li key={item.id} className="p-4 border rounded bg-white">
-                    <Link href={`/equipament/${item.id}`} className="block hover:bg-gray-50 transition rounded-lg">
-                      <p><strong>Equipamento:</strong> {item.name}</p>
-                      <p><strong>Patrimônio:</strong> {item.patrimonio}</p>
+                    <Link
+                      href={`/equipament/${item.id}`}
+                      className="block hover:bg-gray-50 transition rounded-lg"
+                    >
+                      <p>
+                        <strong>Equipamento:</strong> {item.name}
+                      </p>
+                      <p>
+                        <strong>Patrimônio:</strong> {item.patrimonio}
+                      </p>
                       <p>
                         <strong>Próxima Manutenção:</strong>{' '}
-                        <span className={
-                          session?.profile?.periodicity &&
-                            new Date(item.next_maintenance) <= new Date(Date.now())
-                            ? 'text-red-600 font-semibold'
-                            : new Date(item.next_maintenance) <= new Date(Date.now() + (session?.profile?.periodicity || 0) * 24 * 60 * 60 * 1000)
-                              ? 'text-yellow-600 font-semibold'
-                              : ''
-                        }>
-                          {new Date(item.next_maintenance).toLocaleDateString('pt-BR')}
-                        </span>
+                        <Badge
+                          variant={
+                            new Date(item.next_maintenance) <=
+                            new Date(Date.now())
+                              ? 'danger'
+                              : new Date(item.next_maintenance) <=
+                                new Date(
+                                  Date.now() +
+                                    (session?.profile?.periodicity || 0) *
+                                      24 *
+                                      60 *
+                                      60 *
+                                      1000
+                                )
+                              ? 'maintenance'
+                              : 'outline'
+                          }
+                        >
+                          {new Date(item.next_maintenance).toLocaleDateString(
+                            'pt-BR'
+                          )}
+                        </Badge>
                       </p>
                       <p>
                         <strong>Status:</strong>{' '}
-                        <span className={
-                          item.status === 'MAINTENANCE'
-                            ? 'text-yellow-600 font-semibold'
-                            : item.status === 'ACTIVE'
-                              ? 'text-green-600 font-semibold'
-                              : 'text-red-600 font-semibold'
-                        }>
+                        <Badge variant={getStatusVariant(item.status)}>
                           {item.status}
-                        </span>
+                        </Badge>
                       </p>
                       {item.Certified && (
                         <div className="mt-2 text-sm">
-                          <p><strong>Certificado:</strong> {item.Certified.description}</p>
+                          <p>
+                            <strong>Certificado:</strong>{' '}
+                            {item.Certified.description}
+                          </p>
                           <p>
                             <strong>Validade:</strong>{' '}
-                            <span className={
-                              session?.profile?.periodicity &&
-                                new Date(item.Certified.to) <= new Date(Date.now())
-                                ? 'text-red-600 font-semibold'
-                                : new Date(item.Certified.to) <= new Date(Date.now() + (session?.profile?.periodicity || 0) * 24 * 60 * 60 * 1000)
+                            <span
+                              className={
+                                session?.profile?.periodicity &&
+                                new Date(item.Certified.to) <=
+                                  new Date(Date.now())
+                                  ? 'text-red-600 font-semibold'
+                                  : new Date(item.Certified.to) <=
+                                    new Date(
+                                      Date.now() +
+                                        (session?.profile?.periodicity || 0) *
+                                          24 *
+                                          60 *
+                                          60 *
+                                          1000
+                                    )
                                   ? 'text-yellow-600 font-semibold'
                                   : ''
-                            }>
-                              {new Date(item.Certified.to).toLocaleDateString('pt-BR')}
+                              }
+                            >
+                              {new Date(item.Certified.to).toLocaleDateString(
+                                'pt-BR'
+                              )}
                             </span>
                           </p>
-                          <p><strong>Situação:</strong>{' '}
-                            <span className={eventColor(item.Certified.valid)}>
+                          <p>
+                            <strong>Situação:</strong>{' '}
+                            <Badge
+                              variant={getCertifiedVariant(
+                                item.Certified.valid
+                              )}
+                            >
                               {item.Certified.valid}
-                            </span>
+                            </Badge>
                           </p>
                         </div>
                       )}
@@ -158,23 +235,33 @@ export default function AccessOverlay() {
                         <div className="mt-2 text-sm">
                           <p>
                             <strong>Último Evento:</strong>{' '}
-                            <span className={eventColor(lastEvent.eventType)}>
+                            <Badge
+                              variant={getEventVariant(lastEvent.eventType)}
+                            >
                               {lastEvent.eventType}
-                            </span>
+                            </Badge>
                           </p>
-                          {lastEvent.eventType && lastEvent.eventType !== "VERIFICATION" && (
-                            <p><strong>Custo:</strong> {lastEvent.value ? `R$ ${parseFloat(lastEvent.value).toFixed(2)}`.replace('.', ',') : 'Não informado'}</p>
-                          )}
+                          {lastEvent.eventType &&
+                            lastEvent.eventType !== 'VERIFICATION' && (
+                              <p>
+                                <strong>Custo:</strong>{' '}
+                                {lastEvent.value
+                                  ? `R$ ${parseFloat(lastEvent.value).toFixed(
+                                      2
+                                    )}`.replace('.', ',')
+                                  : 'Não informado'}
+                              </p>
+                            )}
                           <p>
-                            <strong>Descrição:</strong>{lastEvent.description}
+                            <strong>Descrição:</strong>
+                            {lastEvent.description}
                           </p>
                           <p>
                             <strong>Inicio:</strong>{' '}
-                            {new Date(lastEvent.from).toLocaleDateString('pt-BR')}
+                            {formatUTCDate(lastEvent.from)}
                           </p>
                           <p>
-                            <strong>Fim:</strong>{' '}
-                            {new Date(lastEvent.to).toLocaleDateString('pt-BR')}
+                            <strong>Fim:</strong> {formatUTCDate(lastEvent.to)}
                           </p>
                         </div>
                       )}
@@ -188,17 +275,19 @@ export default function AccessOverlay() {
 
         {!canClose && secondsLeft !== null && (
           <p className="text-sm text-gray-500 mb-4">
-            Aguarde {secondsLeft} segundo{secondsLeft > 1 ? 's' : ''} para liberar o botão.
+            Aguarde {secondsLeft} segundo{secondsLeft > 1 ? 's' : ''} para
+            liberar o botão.
           </p>
         )}
 
         <button
           onClick={() => setVisible(false)}
           disabled={!canClose}
-          className={`px-6 py-2 rounded-xl font-bold transition ${canClose
-            ? 'bg-rose-600 text-white hover:bg-rose-700'
-            : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-            }`}
+          className={`px-6 py-2 rounded-xl font-bold transition ${
+            canClose
+              ? 'bg-rose-600 text-white hover:bg-rose-700'
+              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+          }`}
         >
           Fechar
         </button>
