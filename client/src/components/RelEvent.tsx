@@ -39,6 +39,7 @@ export default function RelEvent() {
     search: ''
   })
   const [locations, setLocations] = useState<any[]>([])
+  const [aggregate, setAggregate] = useState<any[]>([])
 
   const fetchEvents = async () => {
     try {
@@ -57,7 +58,10 @@ export default function RelEvent() {
       const res = await fetchWithAuth(`/event?${query.toString()}`, {
         method: 'GET'
       })
-      if (res?.status === 200) setEvents(res.data.filter || [])
+      if (res?.status === 200) {
+        setEvents(res.data.filter || [])
+        setAggregate(res.data.aggregate || [])
+      }
     } catch (err) {
       console.error('Erro ao buscar eventos:', err)
     }
@@ -77,6 +81,24 @@ export default function RelEvent() {
     loadData()
     fetchEvents()
   }, [])
+
+  const totalValue = aggregate.reduce((sum, item) => sum + (item.value || 0), 0)
+
+  useEffect(() => {
+    if (aggregate.length > 0) {
+      const total = aggregate.reduce((sum, item) => sum + (item.value || 0), 0)
+      let message = `Valor total da consulta: R$ ${total
+        .toFixed(2)
+        .replace('.', ',')}\n\n`
+      message += 'Detalhes:\n'
+      aggregate.forEach(item => {
+        message += `- ${item.type}: ${
+          item.count
+        } evento(s) - Subtotal: R$ ${item.value.toFixed(2).replace('.', ',')}\n`
+      })
+      alert(message)
+    }
+  }, [aggregate])
 
   const handleDelete = (id: string) => {
     alert('Excluir não permitido neste CRUD (apenas simulação).')

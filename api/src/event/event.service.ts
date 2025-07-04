@@ -50,14 +50,13 @@ export class EventService {
     }
 
     const filtered = await this.prisma.list(filter);
-
-    if (filter.categoryId || filter.eventType || filter.equipamentId || filter.search) {
-      return {
-        filter: filtered,
-      }
-    }
-
     const aggregate = this.agregate(filtered);
+
+    // if (filter.categoryId || filter.eventType || filter.equipamentId || filter.search) {
+    //   return {
+    //     filter: filtered,
+    //   }
+    // }
 
     return {
       filter: filtered,
