@@ -156,26 +156,6 @@ export default function EventForm({ mode, id }: EventFormProps) {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-xl shadow space-y-4 w-full max-w-2xl mx-auto"
     >
-      <TextArea
-        label="Descrição"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-      />
-      <Input
-        type="date"
-        label="Data Início"
-        name="from"
-        value={formData.from}
-        onChange={handleChange}
-      />
-      <Input
-        type="date"
-        label="Data Fim"
-        name="to"
-        value={formData.to}
-        onChange={handleChange}
-      />
       <Select
         label="Tipo de Evento"
         name="eventType"
@@ -213,6 +193,26 @@ export default function EventForm({ mode, id }: EventFormProps) {
           criação deste evento!
         </p>
       )}
+      <TextArea
+        label="Descrição"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+      />
+      <Input
+        type="date"
+        label="Data Início"
+        name="from"
+        value={formData.from}
+        onChange={handleChange}
+      />
+      <Input
+        type="date"
+        label="Data Fim"
+        name="to"
+        value={formData.to}
+        onChange={handleChange}
+      />
       <Input
         label="Valor (R$)"
         name="value"
